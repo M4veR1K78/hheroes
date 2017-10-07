@@ -22,16 +22,16 @@ public class ShopController {
 	private ShopService shopService;
 
 	@Autowired
-	private GameService heroesService;
+	private GameService gameService;
 
 	@RequestMapping(value = "/gifts", method = RequestMethod.GET)
 	public List<Cadeau> getCadeaux() throws IOException {
-		return shopService.getCadeauAvailable(heroesService.getShop());
+		return shopService.getCadeauAvailable(gameService.getShop());
 	}
 	
 	@RequestMapping(value = "/gifts/image", method = RequestMethod.GET, produces = "image/png")
 	public ResponseEntity<byte[]> getAvatar(@RequestParam("urlImage") String urlImage) throws IOException {
-		byte[] image = heroesService.getGiftImage(urlImage);
+		byte[] image = gameService.getImage(urlImage);
 		return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
 	}
 }

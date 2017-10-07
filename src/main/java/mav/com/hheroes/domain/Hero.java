@@ -1,36 +1,31 @@
 package mav.com.hheroes.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Hero {
 	private Integer id;
 
 	private Integer xp;
 
-	@JsonProperty("energy_quest")
 	private Integer energyQuest;
 
-	@JsonProperty("energy_fight")
 	private Integer energyFight;
 
-	@JsonProperty("soft_currency")
 	private Integer money;
 
-	@JsonProperty("hard_currency")
 	private Integer kobans;
 
 	private Integer level;
 
-	@JsonProperty("Name")
 	private String name;
 
-	@JsonProperty("energy_quest_max")
 	private Integer eneryQuestMax;
 
-	@JsonProperty("energy_fight_max")
 	private Integer energyFightMax;
+	
+	private String classe;
+	
+	private Experience experience;
+	
+	private String avatarUrl;
 
 	public Integer getId() {
 		return id;
@@ -110,6 +105,30 @@ public class Hero {
 
 	public void setEnergyFightMax(Integer energyFightMax) {
 		this.energyFightMax = energyFightMax;
+	}
+
+	public String getClasse() {
+		return classe;
+	}
+
+	public void setClasse(String classe) {
+		this.classe = classe;
+	}
+
+	public Experience getExperience() {
+		return experience;
+	}
+
+	public void setExperience(Experience experience) {
+		this.experience = experience;
+	}
+
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
 	}
 
 }

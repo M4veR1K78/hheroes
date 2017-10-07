@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,17 +21,13 @@ import mav.com.hheroes.services.exceptions.AuthenticationException;
 public class TaskExecutor {
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@Autowired
-	private FilleService filleService;
+	private GameService gameService = new GameService();
+	
+	private FilleService filleService = new FilleService(gameService);
 
-	@Autowired
-	private GameService gameService;
+	private MissionService missionService = new MissionService(gameService);
 
-	@Autowired
-	private MissionService missionService;
-
-	@Autowired
-	private BossService bossService;
+	private BossService bossService = new BossService(gameService);
 
 	@Value("${hheroes.login}")
 	private String login;
@@ -139,8 +134,6 @@ public class TaskExecutor {
 		while (response.getSuccess()) {
 			response = bossService.fight(boss);
 		}
-		
-		logger.info("Batch doBoss End");
 	}
 
 }

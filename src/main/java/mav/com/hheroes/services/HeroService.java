@@ -12,13 +12,14 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mav.com.hheroes.domain.Hero;
+import mav.com.hheroes.services.dtos.HeroDTO;
+import mav.com.hheroes.services.mappers.DomainMapper;
 
 @Service
 public class HeroService {
 	@Resource
 	private GameService gameService;
-	
-	
+		
 	public Hero getHero() throws IOException {
 		Document home = gameService.getHome();
 		String heroJson = "";
@@ -30,6 +31,8 @@ public class HeroService {
 			}
 		}
 		
-		return new ObjectMapper().readValue(heroJson, Hero.class);		
+		Hero hero = DomainMapper.asHero(new ObjectMapper().readValue(heroJson, HeroDTO.class));
+		hero.setAvatarUrl(home.select("div[rel=\"avatar\"] img").attr("src"));
+		return hero;		
 	}
 }

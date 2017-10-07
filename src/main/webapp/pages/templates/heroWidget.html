@@ -1,0 +1,18 @@
+<div class="box box-widget widget-user-2">
+	<!-- Add the bg color to the header using any of the bg-* classes -->
+	<div class="widget-user-header bg-yellow">
+		<div class="widget-user-image">
+			<img class="img-circle" ng-src="image?urlImage={{ vm.hero.avatarUrl }}" alt="User Avatar">
+		</div>
+		<!-- /.widget-user-image -->
+		<h3 class="widget-user-username">{{ vm.hero.name }}</h3>
+		<h5 class="widget-user-desc">Level <b>{{ vm.hero.level }}</b> ({{ vm.hero.xp.toLocaleString() }} xp)</h5>
+	</div>
+	<div class="box-footer no-padding">
+		<ul class="nav nav-stacked">
+			<li><a href="#">Compte en banque <span class="pull-right badge bg-blue">{{ vm.hero.money.toLocaleString() }} $</span></a></li>
+			<li><a href="#">Kobans <span class="pull-right badge bg-aqua">{{ vm.hero.kobans.toLocaleString() }}</span></a></li>
+			<li><a href="#">Expérience avant prochain niveau <span class="pull-right badge bg-green">{{ vm.hero.experience.left.toLocaleString() }}</span></a></li>
+		</ul>
+	</div>
+</div>

@@ -88,7 +88,7 @@ public class GameService {
 				.get();
 	}
 
-	public byte[] getImage(String url) throws IOException {
+	public byte[] getGirlImage(String url) throws IOException {
 		Response resultImageResponse = Jsoup.connect(URL_HHEROES + url)
 				.cookie(COOKIE_NAME, getCookie())
 				.ignoreContentType(true).execute();
@@ -110,7 +110,7 @@ public class GameService {
 		return resultImageResponse.bodyAsBytes();
 	}
 
-	public byte[] getGiftImage(String urlImage) throws IOException {
+	public byte[] getImage(String urlImage) throws IOException {
 		Response resultImageResponse = Jsoup
 				.connect(urlImage)
 				.cookie(COOKIE_NAME, getCookie())

@@ -1,11 +1,12 @@
-"use strict";
+'use strict';
 
 var heroesApp = angular.module('heroesApp', ['ui.bootstrap', 'datatables', 'datatables.bootstrap']);
 
 // services
 heroesApp.service('FilleService', FilleService)
-	.service('HeroesService', HeroesService)
-	.service('ShopService', ShopService);
+	.service('GameService', GameService)
+	.service('ShopService', ShopService)
+	.service('HeroService', HeroService);
 
 // controllers
 heroesApp.controller('IndexController', IndexController)
@@ -37,9 +38,9 @@ function FilleService($http) {
 	return service;
 }
 
-HeroesService.$inject = ['$http'];
+GameService.$inject = ['$http'];
 
-function HeroesService($http) {
+function GameService($http) {
 	var service = {};
 	
 	service.login = login;
@@ -70,7 +71,21 @@ function ShopService($http) {
 	return service;
 }
 
-IndexController.$inject = ['$uibModal', 'FilleService', 'HeroesService', 'ShopService', 'conf'];
+HeroService.$inject = ['$http'];
+
+function HeroService($http) {
+	var service = {};
+	
+	service.getHero = getHero;
+	
+	function getHero(user) {
+		return $http.get('hero');
+	}
+	
+	return service;
+}
+
+IndexController.$inject = ['$uibModal', 'FilleService', 'GameService', 'ShopService', 'HeroService', 'conf'];
 
 /**
  * Controller de la liste des filles.
@@ -79,7 +94,7 @@ IndexController.$inject = ['$uibModal', 'FilleService', 'HeroesService', 'ShopSe
  * @param conf
  * @returns
  */
-function IndexController($uibModal, FilleService, HeroesService, ShopService, conf) {
+function IndexController($uibModal, FilleService, GameService, ShopService, HeroService, conf) {
 	var vm = this;
 
 	var Status = {
@@ -103,7 +118,7 @@ function IndexController($uibModal, FilleService, HeroesService, ShopService, co
 	activate();
 	
 	function activate() {
-		HeroesService.isAuthenticated().then(function(response) {
+		GameService.isAuthenticated().then(function(response) {
 			if (response.data) {
 				getFilles();				
 			} else {
@@ -121,7 +136,9 @@ function IndexController($uibModal, FilleService, HeroesService, ShopService, co
 		ShopService.getAvailableGifts().then(function(response) {
 			vm.cadeaux = response.data;
 		});
-		
+		HeroService.getHero().then(function(response) {
+			vm.hero = response.data;
+		});
 	}
 	
 	function login() {
@@ -216,21 +233,20 @@ function IndexController($uibModal, FilleService, HeroesService, ShopService, co
 	}
 	
 	function collectSalary() {
-		console.log(2);
 		return FilleService.collectSalary();
 	}
 }
 
-ModalLoginController.$inject = ['$uibModalInstance', 'HeroesService'];
+ModalLoginController.$inject = ['$uibModalInstance', 'GameService'];
 
 /**
  * Modal de connexion à HHeroes.
  * 
  * @param $uibModalInstance
- * @param HeroesService
+ * @param GameService
  * @returns
  */
-function ModalLoginController($uibModalInstance, HeroesService) {
+function ModalLoginController($uibModalInstance, GameService) {
 	var vm = this;
 	vm.user = {};
 		
@@ -238,7 +254,7 @@ function ModalLoginController($uibModalInstance, HeroesService) {
 	vm.close = close;
 	
 	function login() {
-		HeroesService.login(vm.user).then(function() {
+		GameService.login(vm.user).then(function() {
 			$uibModalInstance.close(true);
 		}, function(response) {
 			vm.errorMessage = response.data.message;
@@ -370,3 +386,12 @@ function GiftSumWidgetController() {
 		});
 	}
 }
+
+heroesApp.component('heroWidget', {
+	templateUrl: 'pages/templates/heroWidget.html',
+	controller: function HeroWidgetController() { var vm = this; },
+	controllerAs: 'vm',
+	bindings: {
+		hero: '<',
+	}
+});
