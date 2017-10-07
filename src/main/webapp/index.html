@@ -1,0 +1,69 @@
+<!doctype html>
+<html ng-app="heroesApp">
+<head>
+<meta charset="UTF-8">
+<title>Hentai Heroes Charts</title>
+<link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="css/vendor/datatables.min.css">
+<link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+<link rel="stylesheet" href="css/vendor/AdminLTE.min.css">
+<link rel="stylesheet" href="css/main.css">
+<script src="js/vendor/jquery.min.js"></script>
+<script src="js/vendor/popper.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/angular.min.js"></script>
+<script src="js/vendor/angular-animate.min.js"></script>
+<script src="js/vendor/ui-bootstrap-tpls.min.js"></script>
+<script src="js/vendor/datatables.min.js"></script>
+<script src="js/vendor/angular-datatables.min.js"></script>
+<script src="js/vendor/angular-datatables.bootstrap.min.js"></script>
+<script src="js/vendor/adminlte.min.js"></script>
+<script src="js/app.js"></script>
+<script src="pages/girl/girlList.ctrl.js"></script>
+</head>
+<body ng-controller="IndexController as vm">
+	<div class="container-fluid">
+		<h1>Hentai Heroes Charts</h1>
+		<div class="row" ng-if="vm.filles.length">	
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<girl-evolve-widget fille="vm.getCloseEvolveGirl()"></girl-evolve-widget>
+			</div>
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<girl-weakest-widget fille="vm.getWeakestGirl()"></girl-weakest-widget>		
+			</div>
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<girl-salary-widget filles="vm.filles" on-collect="vm.collectSalary()"></girl-salary-widget>	
+			</div>
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<gift-sum-widget cadeaux="vm.cadeaux"></gift-sum-widget>	
+			</div>
+		</div>
+		<div class="row" ng-if="vm.filles.length">
+			<div class="col-md-4 col-sm-6 col-xs-12">
+				<girl-best-widget fille="vm.getBestOnTypeGirl('hardcore')" type="'hardcore'"></girl-best-widget>		
+			</div>
+			<div class="col-md-4 col-sm-6 col-xs-12">
+				<girl-best-widget fille="vm.getBestOnTypeGirl('charme')" type="'charme'"></girl-best-widget>		
+			</div>
+			<div class="col-md-4 col-sm-6 col-xs-12">
+				<girl-best-widget fille="vm.getBestOnTypeGirl('savoirFaire')" type="'savoirFaire'"></girl-best-widget>		
+			</div>	
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box">
+					<div class="box-header with-border">
+						<h3 class="box-title">Harem</h3>
+						<div class="box-tools pull-right">
+		                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+		              </div>
+					</div>
+					<div class="box-body">
+						<girl-list filles="vm.filles"></girl-list>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

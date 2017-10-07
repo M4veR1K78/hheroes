@@ -1,0 +1,34 @@
+<table class="table table-bordered table-striped table-condensed dataTable" datatable="ng" dt-options="vm.dtOptions" dt-column-defs="vm.dtColumnDefs">
+	<thead>
+		<th></th>
+		<th>Nom</th>
+		<th>Spécialité</th>
+		<th class="text-center">Grade</th>
+		<th class="text-center">Salaire par heure <!-- sort-widget sort-item="vm.sortSalary"></sort-widget--></th>
+		<th class="text-center">Exp. restante</th>
+		<th class="text-center">Aff. restante <!--sort-widget sort-item="vm.sortAffRest"></sort-widget--></th>
+		<th>Position favorite</th>
+		<th class="text-center">Hardcore <!--sort-widget sort-item="vm.sortHardcore"></sort-widget--></th>
+		<th class="text-center">Charme <!--sort-widget sort-item="vm.sortCharme"></sort-widget--></th>
+		<th class="text-center">Savoir-faire <!--sort-widget sort-item="vm.sortSavoirFaire"></sort-widget--></th>
+	</thead>
+	<tbody class="align-middle">
+		<tr ng-repeat="fille in vm.filles | filter:vm.search track by fille.id">
+			<td class="text-center"><img ng-src="{{ ::'data:image/png;base64,' + fille.avatar }}" width="60px" height="60px" /></td>
+			<td class="align-middle">{{ ::fille.name }} <span class="badge badge-secondary" title="Niveau">{{ ::fille.level }}</span></td>
+			<td class="text-center align-middle">
+				<span ng-class="{ 'label-dark': fille.typeId === 1, 'label-danger': fille.typeId === 2, 'label-success': fille.typeId === 3, 'label': true}">
+					{{ ::fille.type }}
+				</span>
+			</td>
+			<td class="text-center align-middle"><a href class="btn btn-link" ng-click="vm.openModalAvatar(fille)">{{ ::fille.grade }}</a></td>
+			<td class="text-center align-middle">{{ ::fille.salaryPerHour }}</td>
+			<td class="text-center align-middle">{{ ::fille.expLeftNextLevel }}</td>
+			<td class="text-center align-middle">{{ ::fille.affLeftNextLevel }}</td>
+			<td class="align-middle">{{ ::fille.favoritePosition }}</td>
+			<td class="text-center align-middle">{{ ::fille.hardcore }}</td>
+			<td class="text-center align-middle">{{ ::fille.charme }}</td>
+			<td class="text-center align-middle">{{ ::fille.savoirFaire }}</td>
+		</tr>
+	</tbody>
+</table>

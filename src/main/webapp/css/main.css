@@ -1,0 +1,30 @@
+body {
+	width: 100%;
+	heigth: 100%;
+	background-color: #ecf0f5;
+}
+
+.icon {
+	width: 16px;
+	/*margin: 7px 9px 9px;*/
+}
+
+.white {
+	fill: white;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.align-middle {
+    vertical-align: middle!important;
+}
+
+.label-dark {
+	background-color: #111;
+}
+
+.img-circle {
+	background-color: wheat;
+}

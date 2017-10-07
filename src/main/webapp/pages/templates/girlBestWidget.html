@@ -1,0 +1,31 @@
+<div class="box box-widget widget-user">
+	<div class="widget-user-header bg-aqua-active">
+		<h3 class="widget-user-username">Meilleure en {{ ::vm.fille.type }}</h3>
+		<h5 class="widget-user-desc">{{ ::vm.fille.name }}</h5>
+	</div>
+	<div class="widget-user-image">
+		<img class="img-circle" ng-src="{{ ::'data:image/png;base64,' + vm.fille.avatar }}" alt="{{ ::vm.fille.name }}">
+	</div>
+	<div class="box-footer">
+		<div class="row">
+			<div class="col-sm-4 border-right">
+				<div class="description-block">
+					<h5 class="description-header">{{ ::vm.fille[vm.type] }}</h5>
+					<small class="description-text">ATTAQUE</small>
+				</div>
+			</div>
+			<div class="col-sm-4 border-right">
+				<div class="description-block">
+					<h5 class="description-header">{{ ::vm.fille.level }}</h5>
+					<small class="description-text">NIVEAU</small>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="description-block">
+					<h5 class="description-header"><span class="glyphicon glyphicon-star" ng-repeat="i in ::vm.getNumber(vm.fille.grade) track by $index"></span></h5>
+					<small class="description-text">GRADE</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
