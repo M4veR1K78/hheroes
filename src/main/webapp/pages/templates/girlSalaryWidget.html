@@ -1,0 +1,10 @@
+<div class="info-box">
+	<span class="info-box-icon bg-green"><i class="fa fa-money"></i></span>
+	<div class="info-box-content">
+		<span class="info-box-text">Somme des salaires</span> 
+		<span class="info-box-number">{{ vm.totalSalary.toLocaleString() }} $ <small> (soit {{ vm.totalSalaryPerHour.toLocaleString() }} / h)</small></span>
+		<button type="button" class="btn btn-primary" ng-click="vm.collect()" ng-if="vm.collectableSalary > 0">
+			Collecter <b>{{ vm.collectableSalary.toLocaleString() }}</b> $
+		</button>
+	</div>
+</div>

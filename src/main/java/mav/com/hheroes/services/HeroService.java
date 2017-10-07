@@ -1,0 +1,35 @@
+package mav.com.hheroes.services;
+
+import java.io.IOException;
+
+import javax.annotation.Resource;
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import mav.com.hheroes.domain.Hero;
+
+@Service
+public class HeroService {
+	@Resource
+	private GameService gameService;
+	
+	
+	public Hero getHero() throws IOException {
+		Document home = gameService.getHome();
+		String heroJson = "";
+		
+		Elements select = home.select("script");
+		for (Element script : select) {
+			if (script.html().contains("Hero[\"infos\"]")) {
+				heroJson = script.html().replaceAll("(?s).*?(\\{.*?\\});.+", "$1");
+			}
+		}
+		
+		return new ObjectMapper().readValue(heroJson, Hero.class);		
+	}
+}

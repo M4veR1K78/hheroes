@@ -1,0 +1,17 @@
+<div class="info-box bg-aqua">
+	<span class="info-box-icon" style="line-height:normal;">
+		<img ng-src="{{ ::'data:image/png;base64,' + vm.fille.avatar }}" style="object-fit: contain;"/>
+	</span>
+	
+	<div class="info-box-content">
+		<span class="info-box-text">Prochaine fille à évoluer</span>
+		<span class="info-box-number">{{ ::vm.fille.name }}</span>
+		
+		<div class="progress" title="{{ ::vm.fille.affProgress * 100 }}%">
+			<div class="progress-bar" style="width: {{ ::vm.fille.affProgress * 100 }}%"></div>
+		</div>
+		<span class="progress-description">
+			Affectation restante : <b>{{ ::vm.fille.affLeftNextLevel }}</b>
+		</span>
+	</div>
+</div>

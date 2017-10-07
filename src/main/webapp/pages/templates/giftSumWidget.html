@@ -1,0 +1,12 @@
+<div class="info-box">
+	<span class="info-box-icon bg-red">
+		<i ng-if="vm.totalAff <= 20" class="fa fa-gift"></i>
+		<img ng-if="vm.totalAff > 20" ng-src="shop/gifts/image?urlImage={{ vm.cadeaux[vm.cadeaux.length - 1].urlImage }}" />
+	</span>
+
+	<div class="info-box-content">
+		<span class="info-box-text">Cadeaux au marché</span> 
+		<span class="info-box-number">{{ vm.totalAff }} Aff.</span>
+		<small>Pour un total de <b>{{ vm.totalPrix.toLocaleString() }}</b> $</small>
+	</div>
+</div>
