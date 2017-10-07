@@ -15,14 +15,18 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Fille;
-import mav.com.hheroes.domain.TypeFille;
+import mav.com.hheroes.domain.Skill;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 
 @Service
 public class FilleService
 {	
-	@Resource
+	@Resource 
 	private GameService gameService;
+	
+	public FilleService(GameService gameService) {
+		this.gameService = gameService;
+	}
 	
 	public List<Fille> getFilles() throws IOException
 	{
@@ -48,14 +52,14 @@ public class FilleService
 			String avatarUrl = leftListInfo.select(".left img").attr("src");
 			
 			try {
-				fille.setAvatar(Base64.encodeBase64String(gameService.getImage(avatarUrl)));
+				fille.setAvatar(Base64.encodeBase64String(gameService.getGirlImage(avatarUrl)));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 			// retour à la liste de droite
 			Element typeElement = girl.select("h3 span[carac]").get(0);
-			TypeFille typeFille = TypeFille.valueOf(Integer.valueOf(typeElement.attr("carac")));
+			Skill typeFille = Skill.valueOf(Integer.valueOf(typeElement.attr("carac")));
 			fille.setType(typeFille.getType());
 			fille.setTypeId(typeFille.getCode());
 			fille.setLevel(Integer.parseInt(girl.select("span[rel='level']").text()));

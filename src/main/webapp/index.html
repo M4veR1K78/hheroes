@@ -39,13 +39,16 @@
 			</div>
 		</div>
 		<div class="row" ng-if="vm.filles.length">
-			<div class="col-md-4 col-sm-6 col-xs-12">
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<hero-widget hero="vm.hero"></hero-widget>		
+			</div>
+			<div class="col-md-3 col-sm-6 col-xs-12">
 				<girl-best-widget fille="vm.getBestOnTypeGirl('hardcore')" type="'hardcore'"></girl-best-widget>		
 			</div>
-			<div class="col-md-4 col-sm-6 col-xs-12">
+			<div class="col-md-3 col-sm-6 col-xs-12">
 				<girl-best-widget fille="vm.getBestOnTypeGirl('charme')" type="'charme'"></girl-best-widget>		
 			</div>
-			<div class="col-md-4 col-sm-6 col-xs-12">
+			<div class="col-md-3 col-sm-6 col-xs-12">
 				<girl-best-widget fille="vm.getBestOnTypeGirl('savoirFaire')" type="'savoirFaire'"></girl-best-widget>		
 			</div>	
 		</div>

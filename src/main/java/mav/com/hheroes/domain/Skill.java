@@ -1,12 +1,12 @@
 package mav.com.hheroes.domain;
 
-public enum TypeFille {
+public enum Skill {
 	HARDCORE(1, "Hardcore"), CHARME(2, "Charme"), SAVOIR_FAIRE(3, "Savoir-faire");
 
 	private String type;
 	private Integer code;
 
-	TypeFille(Integer code, String type)
+	Skill(Integer code, String type)
 	{
 		this.code = code;
 		this.type = type;
@@ -27,11 +27,11 @@ public enum TypeFille {
 		return getType();
 	}
 
-	public static TypeFille valueOf(Integer code)
+	public static Skill valueOf(Integer code)
 	{
-		TypeFille[] values = TypeFille.values();
+		Skill[] values = Skill.values();
 
-		for (TypeFille typeFille : values)
+		for (Skill typeFille : values)
 		{
 			if (typeFille.code.equals(code))
 			{

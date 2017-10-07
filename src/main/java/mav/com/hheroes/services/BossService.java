@@ -17,6 +17,10 @@ public class BossService {
 	private GameService gameService;
 	
 	private List<Boss> bosses = new ArrayList<>();
+	
+	public BossService(GameService gameService) {
+		this.gameService= gameService;
+	}
 
 	public List<Boss> getAllBosses() {
 		if (bosses.isEmpty()) {

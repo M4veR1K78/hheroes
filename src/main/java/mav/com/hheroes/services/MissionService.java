@@ -23,6 +23,10 @@ public class MissionService {
 	@Autowired
 	private GameService gameService;
 	
+	public MissionService(GameService gameService) {
+		this.gameService = gameService;
+	}
+	
 	public List<Mission> getMissions() throws IOException
 	{
 		Document activiteMission = gameService.getMissions();
