@@ -46,6 +46,41 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>openshift</id>
+
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<artifactId>maven-war-plugin</artifactId>
+							<configuration>
+								<outputDirectory>webapps</outputDirectory>
+								<warName>hheroes</warName> 
+								<!-- <warName>ROOT</warName> http://wotan-anthavio.rhcloud.com/ -->
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+
+			<repositories>
+				<repository>
+					<id>sonatype-oss-public</id>
+					<url>https://oss.sonatype.org/content/groups/public</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
