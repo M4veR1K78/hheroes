@@ -47,7 +47,10 @@ public class FilleService
 			
 			// récupération de données de la liste de gauche
 			Elements leftListInfo = leftPanel.select("[girl=" + fille.getId() + "]");
-			fille.setSalary(Double.valueOf(leftListInfo.select(".blue_text_button .s_value").text().replace("\u00a0", "")));
+			fille.setSalary(Double.valueOf(leftListInfo.select(".blue_text_button .s_value")
+					.text()
+					.replace("\u00a0", "")
+					.replace(",", "")));
 			fille.setCollectable(leftListInfo.select(".salary.loads>button").text().trim().isEmpty());
 			String avatarUrl = leftListInfo.select(".left img").attr("src");
 			
