@@ -32,7 +32,6 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
@@ -57,7 +56,7 @@
 							<artifactId>maven-war-plugin</artifactId>
 							<configuration>
 								<outputDirectory>deployments</outputDirectory>
-								<warName>hheroes</warName> 
+								<warName>hheroes</warName>
 								<!-- <warName>ROOT</warName> http://wotan-anthavio.rhcloud.com/ -->
 							</configuration>
 						</plugin>
