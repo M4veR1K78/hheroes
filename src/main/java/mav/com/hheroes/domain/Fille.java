@@ -170,7 +170,7 @@ public class Fille {
 		if (LEVEL_MAX.equals(cumulAff) || LEVEL_UPGRADE.equals(cumulAff)) {
 			return 1.0;
 		}
-
+		
 		Double cumul = getDoubleValue(cumulAff);
 		return new BigDecimal(cumul / (cumul + getDoubleValue(affLeftNextLevel)))
 				.setScale(2, RoundingMode.HALF_UP)
