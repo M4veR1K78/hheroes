@@ -6,7 +6,9 @@ var heroesApp = angular.module('heroesApp', ['ui.bootstrap', 'datatables', 'data
 heroesApp.service('FilleService', FilleService)
 	.service('GameService', GameService)
 	.service('ShopService', ShopService)
-	.service('HeroService', HeroService);
+	.service('HeroService', HeroService)
+	.service('BossService', BossService)
+	.service('EntityService', EntityService);
 
 // controllers
 heroesApp.controller('IndexController', IndexController)
@@ -85,7 +87,40 @@ function HeroService($http) {
 	return service;
 }
 
-IndexController.$inject = ['$uibModal', 'FilleService', 'GameService', 'ShopService', 'HeroService', 'conf'];
+BossService.$inject = ['$http'];
+
+function BossService($http) {
+	var service = {};
+	
+	service.getAll = getAll;
+	service.destroy = destroy;
+	
+	function getAll() {
+		return $http.get('boss/all');
+	}
+	
+	function destroy(id) {
+		return $http.post('boss/' + id + '/destroy');
+	}
+	
+	return service;
+}
+
+EntityService.$inject = ['GameService', 'FilleService', 'BossService', 'ShopService', 'HeroService'];
+
+function EntityService(GameService, FilleService, BossService, ShopService, HeroService) {
+	var service = {
+		gameSrv: GameService,
+		filleSrv: FilleService,
+		bossSrv: BossService,
+		shopSrv: ShopService,
+		heroSrv: HeroService
+	}
+	
+	return service;
+}
+
+IndexController.$inject = ['$uibModal', 'EntityService', 'conf'];
 
 /**
  * Controller de la liste des filles.
@@ -94,7 +129,7 @@ IndexController.$inject = ['$uibModal', 'FilleService', 'GameService', 'ShopServ
  * @param conf
  * @returns
  */
-function IndexController($uibModal, FilleService, GameService, ShopService, HeroService, conf) {
+function IndexController($uibModal, EntityService, conf) {
 	var vm = this;
 
 	var Status = {
@@ -108,17 +143,20 @@ function IndexController($uibModal, FilleService, GameService, ShopService, Hero
 	
 	vm.filles = [];
 	vm.cadeaux = [];
+	vm.bosses = [];
+	vm.bossSelected = "1";
 	vm.hhUrl = conf.HHEROES_URL;
 	vm.openModalAvatar = openModalAvatar;
 	vm.getBestOnTypeGirl = getBestOnTypeGirl;
 	vm.getCloseEvolveGirl = getCloseEvolveGirl;
 	vm.getWeakestGirl = getWeakestGirl;
 	vm.collectSalary = collectSalary;
+	vm.destroyBoss = destroyBoss;
 
 	activate();
 	
 	function activate() {
-		GameService.isAuthenticated().then(function(response) {
+		EntityService.gameSrv.isAuthenticated().then(function(response) {
 			if (response.data) {
 				getFilles();				
 			} else {
@@ -130,14 +168,17 @@ function IndexController($uibModal, FilleService, GameService, ShopService, Hero
 	}
 	
 	function getFilles() {
-		FilleService.getAll().then(function(response) {
+		EntityService.filleSrv.getAll().then(function(response) {
 			vm.filles = response.data;
 		});
-		ShopService.getAvailableGifts().then(function(response) {
+		EntityService.shopSrv.getAvailableGifts().then(function(response) {
 			vm.cadeaux = response.data;
 		});
-		HeroService.getHero().then(function(response) {
+		EntityService.heroSrv.getHero().then(function(response) {
 			vm.hero = response.data;
+		});
+		EntityService.bossSrv.getAll().then(function(response) {
+			vm.bosses = response.data;
 		});
 	}
 	
@@ -233,7 +274,17 @@ function IndexController($uibModal, FilleService, GameService, ShopService, Hero
 	}
 	
 	function collectSalary() {
-		return FilleService.collectSalary();
+		return EntityService.filleSrv.collectSalary();
+	}
+	
+	function destroyBoss() {
+		if (vm.bossSelected) {
+			EntityService.bossSrv.destroy(vm.bossSelected).then(function() {
+				vm.hero.eneryFight = 0;
+			}, function(response) {
+				console.debug(response.data);
+			});
+		}
 	}
 }
 

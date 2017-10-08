@@ -17,7 +17,7 @@ public class Hero {
 
 	private String name;
 
-	private Integer eneryQuestMax;
+	private Integer energyQuestMax;
 
 	private Integer energyFightMax;
 	
@@ -91,12 +91,12 @@ public class Hero {
 		this.name = name;
 	}
 
-	public Integer getEneryQuestMax() {
-		return eneryQuestMax;
+	public Integer getEnergyQuestMax() {
+		return energyQuestMax;
 	}
 
-	public void setEneryQuestMax(Integer eneryQuestMax) {
-		this.eneryQuestMax = eneryQuestMax;
+	public void setEnergyQuestMax(Integer eneryQuestMax) {
+		this.energyQuestMax = eneryQuestMax;
 	}
 
 	public Integer getEnergyFightMax() {

@@ -1,11 +1,11 @@
-package mav.com.hheroes.domain;
+package mav.com.hheroes.services.dtos;
 
-public class Boss {
-	public static final String DARK_LORD = "1";
-	public static final String ESPION_NINJA = "2";
-	
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class BossDTO {
+	@JsonProperty("id_troll")
 	private String id;
-	
+		
 	private Integer orgasm;
 	
 	private Double ego;
@@ -14,21 +14,13 @@ public class Boss {
 	
 	private Double d;
 	
+	@JsonProperty("nb_org")
 	private Integer nbOrg;
 	
 	private Integer figure;
 	
+	@JsonProperty("id_world")
 	private String world;
-	
-	private String libelle;
-
-	public String getWorld() {
-		return world;
-	}
-
-	public void setWorld(String world) {
-		this.world = world;
-	}
 
 	public String getId() {
 		return id;
@@ -37,7 +29,7 @@ public class Boss {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public Integer getOrgasm() {
 		return orgasm;
 	}
@@ -85,12 +77,12 @@ public class Boss {
 	public void setFigure(Integer figure) {
 		this.figure = figure;
 	}
-	
-	public String getLibelle() {
-		return libelle;
+
+	public String getWorld() {
+		return world;
 	}
-	
-	public void setLibelle(String lib) {
-		libelle = lib;
+
+	public void setWorld(String world) {
+		this.world = world;
 	}
 }

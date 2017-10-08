@@ -15,8 +15,8 @@ import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import mav.com.hheroes.domain.Boss;
 import mav.com.hheroes.domain.Mission;
+import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
@@ -166,7 +166,7 @@ public class GameService {
 				.execute();
 	}
 
-	public ResponseDTO fightBoss(Boss boss) throws IOException {
+	public ResponseDTO fightBoss(BossDTO boss) throws IOException {
 		Objects.requireNonNull(boss, "Le boss ne doit pas être null");
 		
 		Response res = Jsoup.connect(URL_ACTION)

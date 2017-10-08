@@ -1,8 +1,10 @@
 package mav.com.hheroes.services.mappers;
 
+import mav.com.hheroes.domain.Boss;
 import mav.com.hheroes.domain.Experience;
 import mav.com.hheroes.domain.Hero;
 import mav.com.hheroes.domain.Skill;
+import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.HeroDTO;
 
 public class DomainMapper {
@@ -15,7 +17,7 @@ public class DomainMapper {
 			hero.setEnergyFight(dto.getEnergyFight());
 			hero.setEnergyFightMax(dto.getEnergyFightMax());
 			hero.setEnergyQuest(dto.getEnergyQuest());
-			hero.setEneryQuestMax(dto.getEneryQuestMax());
+			hero.setEnergyQuestMax(dto.getEneryQuestMax());
 			hero.setKobans(dto.getKobans());
 			hero.setLevel(dto.getLevel());
 			hero.setName(dto.getName());
@@ -35,5 +37,23 @@ public class DomainMapper {
 		}
 		
 		return hero;
+	}
+	
+	public static BossDTO asBossDTO(Boss boss) {
+		BossDTO dto = null;
+		
+		if (boss != null) {
+			dto = new BossDTO();
+			dto.setId(boss.getId());
+			dto.setEgo(boss.getEgo());
+			dto.setFigure(boss.getFigure());
+			dto.setD(boss.getD());
+			dto.setX(boss.getX());
+			dto.setNbOrg(boss.getNbOrg());
+			dto.setWorld(boss.getWorld());
+			dto.setOrgasm(boss.getOrgasm());
+		}
+		
+		return dto;
 	}
 }

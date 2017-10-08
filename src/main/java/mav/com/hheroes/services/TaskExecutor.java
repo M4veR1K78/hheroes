@@ -118,9 +118,9 @@ public class TaskExecutor {
 	}
 
 	/**
-	 * On fait le boss toutes les 20 minutes (vu que la recharge d'énergie de combat est de 10 minutes)
+	 * On fait le boss toutes heures
 	 */
-	@Scheduled(cron = "0 0/20 * * * *")
+	@Scheduled(cron = "0 0 * * * *")
 	public void doBoss() throws IOException, AuthenticationException {
 		if (gameService.getCookie() == null) {
 			logger.info("Batch doBoss login");

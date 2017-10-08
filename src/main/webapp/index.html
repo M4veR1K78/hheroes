@@ -23,7 +23,7 @@
 </head>
 <body ng-controller="IndexController as vm">
 	<div class="container-fluid">
-		<h1>Hentai Heroes Charts</h1>
+		<h1>Hentai Heroes Manager</h1>
 		<div class="row" ng-if="vm.filles.length">	
 			<div class="col-md-3 col-sm-6 col-xs-12">
 				<girl-evolve-widget fille="vm.getCloseEvolveGirl()"></girl-evolve-widget>
@@ -53,13 +53,40 @@
 			</div>	
 		</div>
 		<div class="row">
+			<div class="col-md-6 col-sm-6 col-xs-12">
+				<div class="box collapsed-box">
+					<div class="box-header with-border">
+						<h3 class="box-title">Combats de boss</h3>
+						<div class="box-tools pull-right">
+							<button type="button" class="btn btn-box-tool" data-widget="collapse">
+								<i class="fa fa-plus"></i>
+							</button>
+						</div>
+					</div>
+					<div class="box-body">
+						<div class="form-group">
+						<label class="form-label" for="lstBoss">Sélectionner un boss à combattre :</label>
+						<select id="lstBoss" class="form-control" 
+							ng-init="vm.bosses[0].id" 
+							ng-model="vm.bossSelected" 
+							ng-options="boss.id as boss.libelle for boss in vm.bosses"></select>
+						</div>
+						<button ng-disabled="vm.hero.energyFight < 2" class="btn btn-primary" ng-click="vm.destroyBoss()">Dépenser toute son énergie sur le boss !</button>
+						<small class="help-block pull-right" style="display: inline-block">Energie de combat restante : {{ vm.hero.energyFight }}</small>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
 			<div class="col-md-12">
 				<div class="box">
 					<div class="box-header with-border">
 						<h3 class="box-title">Harem</h3>
 						<div class="box-tools pull-right">
-		                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-		              </div>
+							<button type="button" class="btn btn-box-tool" data-widget="collapse">
+								<i class="fa fa-minus"></i>
+							</button>
+						</div>
 					</div>
 					<div class="box-body">
 						<girl-list filles="vm.filles"></girl-list>
