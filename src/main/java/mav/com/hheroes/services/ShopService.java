@@ -33,7 +33,10 @@ public class ShopService {
 				cadeau.setUrlImage(gift.select("img").attr("src"));
 				cadeau.setNom(gift.select(".item_tooltip h5").text());
 				cadeau.setAffectation(Integer.valueOf(gift.select(".item_tooltip div[carac]").text().replaceAll(".*?(\\d+).*", "$1")));
-				cadeau.setPrix(Integer.valueOf(gift.select(".item_tooltip div[rel]").text().replaceAll("\u00a0", "")));
+				cadeau.setPrix(Integer.valueOf(gift.select(".item_tooltip div[rel]")
+						.text()
+						.replaceAll("\u00a0", "")
+						.replace(",", "")));
 				cadeaux.add(cadeau);
 			}
 		});
