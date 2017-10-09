@@ -3,6 +3,7 @@ package mav.com.hheroes.domain;
 public class Boss {
 	public static final String DARK_LORD = "1";
 	public static final String ESPION_NINJA = "2";
+	public static final String GRUNTT = "3";
 	
 	private String id;
 	

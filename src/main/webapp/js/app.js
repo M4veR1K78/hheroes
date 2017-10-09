@@ -446,3 +446,12 @@ heroesApp.component('heroWidget', {
 		hero: '<',
 	}
 });
+
+heroesApp.component('headerWidget', {
+	templateUrl: 'pages/templates/header.tpl.html',
+	controller: function HeaderWidgetController() { var vm = this; },
+	controllerAs: 'vm',
+	bindings: {
+		hero: '<',
+	}
+});

@@ -28,6 +28,7 @@ public class BossService {
 		if (bosses.isEmpty()) {
 			bosses.add(create(Boss.DARK_LORD, "Dark lord", 2394, 946.82, Double.valueOf(0), 946.82, 0, 3, "2"));
 			bosses.add(create(Boss.ESPION_NINJA, "Espion Ninja", 5618, 2076.32, Double.valueOf(0), 2076.32, 0, 12, "3"));
+			bosses.add(create(Boss.GRUNTT, "Gruntt", 6530, 2998.22, Double.valueOf(0), 2998.22, 0, 1, "4"));
 		}
 		return bosses;
 	}

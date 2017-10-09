@@ -1,0 +1,32 @@
+<header class="main-header">
+	<!-- Logo -->
+	<a href="" class="logo"> 
+		<span class="logo-mini"><b>HH</b>M</span> 
+		<span class="logo-lg"><b>HHeroes</b> Manager</span>
+	</a>
+	<nav class="navbar navbar-static-top">
+		<div class="navbar-custom-menu">
+			<ul class="nav navbar-nav">
+				<!-- Messages: style can be found in dropdown.less-->
+				<li class="dropdown messages-menu">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> 
+						<img src="img/energy.png" width="20px" /><span class="label label-success">{{ vm.hero.energyQuest }}</span>
+					</a>
+				</li>
+				<!-- Notifications: style can be found in dropdown.less -->
+				<li class="dropdown notifications-menu">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
+						<img src="img/fist.png" width="20px" /><span class="label label-warning">{{ vm.hero.energyFight }}</span>
+					</a>
+				</li>				
+				<!-- User Account: style can be found in dropdown.less -->
+				<li class="dropdown user user-menu">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> 
+						<img ng-src="image?urlImage={{ vm.hero.avatarUrl }}" class="user-image" alt="User Image"> 
+						<span class="hidden-xs">{{ vm.hero.name }}</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</header>
