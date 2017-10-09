@@ -36,8 +36,16 @@ public class GameService {
 	private static final String URL_LOGIN = URL_HHEROES + "/phoenix-ajax.php";
 	private static final String URL_ACTION = URL_HHEROES + "/ajax.php";
 	public static final String COOKIE_NAME = "stay_online";
+	public static final String LANGUAGE = "lang";
+	public static final String DEFAULT_LOCALE = "fr-FR";
 
 	private String cookie;
+	private String locale;
+	
+	public GameService() {
+		// français par défaut
+		locale = DEFAULT_LOCALE;
+	}
 
 	public String login(String mail, String password) throws AuthenticationException {
 		Response res;
@@ -60,7 +68,7 @@ public class GameService {
 		if (StringUtils.isEmpty(res.cookie(COOKIE_NAME))) {
 			throw new AuthenticationException("Les identifiants n'ont pas réussi à authentifier l'utilisateur");
 		}
-
+		
 		setCookie(res.cookie(COOKIE_NAME));
 		return res.cookie(COOKIE_NAME);
 	}
@@ -84,6 +92,7 @@ public class GameService {
 	private Document getPage(String url) throws IOException {
 		return Jsoup.connect(url)
 				.cookie(COOKIE_NAME, getCookie())
+				.header("Accept-Language", getLocale())
 				.parser(Parser.htmlParser())
 				.get();
 	}
@@ -186,6 +195,23 @@ public class GameService {
 				.ignoreContentType(true)
 				.execute();
 
-		return new ObjectMapper().readValue(res.body(), ResponseDTO.class);
+		ResponseDTO response = new ObjectMapper().readValue(res.body(), ResponseDTO.class);
+		if (response.getSuccess()) {
+			response.getReward().setDrops(Jsoup.parse(response.getReward().getDrops()).text());
+		}
+		return response;
+	}
+
+	public String getLocale() {
+		return locale;
+	}
+
+	public void setLocale(String language) {
+		if (language == null) {
+			this.locale = DEFAULT_LOCALE;
+		}
+		else {
+			this.locale = language;			
+		}
 	}
 }
