@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Boss;
@@ -15,6 +16,8 @@ import mav.com.hheroes.services.mappers.DomainMapper;
 
 @Service
 public class BossService {
+	private final Logger logger = Logger.getLogger(getClass());
+	
 	@Resource
 	private GameService gameService;
 	
@@ -78,6 +81,7 @@ public class BossService {
 		
 		ResponseDTO response = fight(boss);
 		while (response.getSuccess()) {
+			logger.info(String.format("\tRecolté de %s : %s", boss.getLibelle(), response.getReward()));
 			response = fight(boss);
 		}
 	}

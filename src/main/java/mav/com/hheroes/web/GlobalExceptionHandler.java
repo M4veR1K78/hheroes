@@ -15,6 +15,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
     public ErrorResponse genericExceptionHandler(Exception exception, final HttpServletResponse response) {
+		exception.printStackTrace();
 		logger.debug(exception);
 		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ErrorResponse(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());

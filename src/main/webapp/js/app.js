@@ -408,6 +408,7 @@ function GirlSalaryWidgetController() {
 	}
 	
 	function collect() {
+		vm.disabled = true;
 		vm.onCollect().then(function(response) {
 			vm.collectableSalary = 0;				
 		}, function(response) {

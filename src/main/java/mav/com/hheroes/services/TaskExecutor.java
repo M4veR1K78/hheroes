@@ -10,12 +10,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import mav.com.hheroes.domain.Boss;
 import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.domain.Mission;
 import mav.com.hheroes.domain.StatutMission;
-import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
+import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class TaskExecutor {
@@ -65,15 +64,14 @@ public class TaskExecutor {
 	}
 
 	/**
-	 * Tous les jours à 9h15, cette méthode sera appelée de manière asynchrone afin
+	 * Tous les jours à 5h15, cette méthode sera appelée de manière asynchrone afin
 	 * d'accepter les différentes missions du jeu.
 	 * 
 	 * @throws IOException
 	 * @throws AuthenticationException
 	 */
 	@Async
-	@Scheduled(cron = "0 15 09 * * *")
-	// @Scheduled(cron = "*/20 * * * * *")
+	@Scheduled(cron = "0 15 05 * * *")
 	public void doMissions() throws IOException, AuthenticationException {
 		if (gameService.getCookie() == null) {
 			logger.info("Batch doMissions login");
@@ -118,22 +116,21 @@ public class TaskExecutor {
 	}
 
 	/**
-	 * On fait le boss toutes heures
+	 * On fait le boss toutes heures.
+	 * 
+	 * @throws IOException
+	 * @throws AuthenticationException
+	 * @throws ObjectNotFoundException
 	 */
 	@Scheduled(cron = "0 0 * * * *")
-	public void doBoss() throws IOException, AuthenticationException {
+	public void doBoss() throws IOException, AuthenticationException, ObjectNotFoundException {
 		if (gameService.getCookie() == null) {
 			logger.info("Batch doBoss login");
 			gameService.setCookie(gameService.login(login, password));
 		}
-
-		logger.info(String.format("Batch doBoss Start (bossId: %s)", bossId));
-		Boss boss = bossService.getBoss(bossId);
-
-		ResponseDTO response = bossService.fight(boss);
-		while (response.getSuccess()) {
-			response = bossService.fight(boss);
-		}
+		
+		logger.info(String.format("Batch doBoss Start (boss id = %s)", bossId));
+		bossService.destroy(bossId);
 	}
 
 }

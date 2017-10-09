@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,8 +34,10 @@ public class GameController {
 	private BossService bossService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public void login(@RequestBody UserDTO user) throws AuthenticationException {
+	public void login(@RequestBody UserDTO user, @RequestHeader(value="Accept-Language") String locale) throws AuthenticationException {
+		gameService.setLocale(locale);
 		httpSession.setAttribute(GameService.COOKIE_NAME, gameService.login(user.getLogin(), user.getPassword()));
+		httpSession.setAttribute(GameService.LANGUAGE, locale);
 	}
 
 	@RequestMapping(value = "/auth", method = RequestMethod.GET)
