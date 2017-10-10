@@ -64,14 +64,14 @@ public class TaskExecutor {
 	}
 
 	/**
-	 * Tous les jours à 5h15, cette méthode sera appelée de manière asynchrone afin
+	 * Tous les jours à 7h15, cette méthode sera appelée de manière asynchrone afin
 	 * d'accepter les différentes missions du jeu.
 	 * 
 	 * @throws IOException
 	 * @throws AuthenticationException
 	 */
 	@Async
-	@Scheduled(cron = "0 15 05 * * *")
+	@Scheduled(cron = "0 15 07 * * *")
 	public void doMissions() throws IOException, AuthenticationException {
 		if (gameService.getCookie() == null) {
 			logger.info("Batch doMissions login");
@@ -130,7 +130,7 @@ public class TaskExecutor {
 		}
 		
 		logger.info(String.format("Batch doBoss Start (boss id = %s)", bossId));
-		bossService.destroy(bossId);
+		bossService.destroy(bossId, true);
 	}
 
 }
