@@ -2,6 +2,7 @@ package mav.com.hheroes.domain;
 
 public class Mission {
 	private String id;
+	private String titre;
 	private String idMember;
 	private Integer experience;
 	
@@ -54,5 +55,13 @@ public class Mission {
 
 	public void setIdMember(String idMember) {
 		this.idMember = idMember;
+	}
+
+	public String getTitre() {
+		return titre;
+	}
+
+	public void setTitre(String titre) {
+		this.titre = titre;
 	}
 }

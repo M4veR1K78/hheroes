@@ -4,6 +4,9 @@ public class Boss {
 	public static final String DARK_LORD = "1";
 	public static final String ESPION_NINJA = "2";
 	public static final String GRUNTT = "3";
+	public static final String EDWARDA = "4";
+	public static final String DONATIEN = "5";
+	public static final String SILVANUS = "6";
 	
 	private String id;
 	
