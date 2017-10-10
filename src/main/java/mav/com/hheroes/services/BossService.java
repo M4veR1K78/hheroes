@@ -72,7 +72,7 @@ public class BossService {
 		return fight(boss);
 	}
 	
-	public void destroy(String id) throws IOException, ObjectNotFoundException {
+	public void destroy(String id, boolean log) throws IOException, ObjectNotFoundException {
 		Boss boss = getBoss(id);
 		
 		if (boss == null) {
@@ -81,8 +81,14 @@ public class BossService {
 		
 		ResponseDTO response = fight(boss);
 		while (response.getSuccess()) {
-			logger.info(String.format("\tRecolté de %s : %s", boss.getLibelle(), response.getReward()));
+			if (log) {
+				logger.info(String.format("\tCollected from %s : %s", boss.getLibelle(), response.getReward()));				
+			}
 			response = fight(boss);
 		}
+	}
+	
+	public void destroy(String id) throws IOException, ObjectNotFoundException {
+		destroy(id, false);
 	}
 }
