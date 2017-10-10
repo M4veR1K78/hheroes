@@ -32,6 +32,9 @@ public class BossService {
 			bosses.add(create(Boss.DARK_LORD, "Dark lord", 2394, 946.82, Double.valueOf(0), 946.82, 0, 3, "2"));
 			bosses.add(create(Boss.ESPION_NINJA, "Espion Ninja", 5618, 2076.32, Double.valueOf(0), 2076.32, 0, 12, "3"));
 			bosses.add(create(Boss.GRUNTT, "Gruntt", 6530, 2998.22, Double.valueOf(0), 2998.22, 0, 1, "4"));
+			bosses.add(create(Boss.EDWARDA, "Edwarda", 14556, 5032.68, Double.valueOf(0), 5032.68, 0, 3, "5"));
+			bosses.add(create(Boss.DONATIEN, "Donatien", 15805, 5893.04, Double.valueOf(0), 5893.04, 0, 1, "6"));
+			bosses.add(create(Boss.SILVANUS, "Silvanus", 14641, 5972.48, Double.valueOf(0), 5972.48, 0, 11, "7"));
 		}
 		return bosses;
 	}

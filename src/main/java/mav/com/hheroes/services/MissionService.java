@@ -35,6 +35,7 @@ public class MissionService {
 		Elements select = activiteMission.select(".missions_wrap .mission_object");
 		select.forEach(block -> {
 			Mission mission = new Mission();
+			mission.setTitre(block.select(".mission_details h1").text().trim());
 			Elements exp = block.select(".slot_xp h3");
 			mission.setExperience(Integer.valueOf(exp.isEmpty() ? "0" : exp.text()));
 			Elements buttons = block.select(".mission_button");
