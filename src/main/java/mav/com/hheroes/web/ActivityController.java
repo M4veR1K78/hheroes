@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mav.com.hheroes.domain.Mission;
 import mav.com.hheroes.services.MissionService;
+import mav.com.hheroes.services.exceptions.AuthenticationException;
 
 @RestController
 @RequestMapping("/activity")
@@ -17,8 +18,13 @@ public class ActivityController {
 	@Autowired
 	private MissionService missionService;
 	
-	@RequestMapping(value = "/missions", method = RequestMethod.GET)
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public List<Mission> getMissions() throws IOException {
 		return missionService.getMissions();
+	}
+	
+	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	public void startMissions() throws IOException, AuthenticationException {
+		missionService.doAllMissions();
 	}
 }
