@@ -10,9 +10,9 @@
 		}
 	});
 	
-	ListeFilleController.$inject = ['$uibModal', 'DTOptionsBuilder', 'DTColumnDefBuilder'];
+	ListeFilleController.$inject = ['$uibModal', 'DTOptionsBuilder', 'DTColumnDefBuilder', 'UtilService'];
 	
-	function ListeFilleController($uibModal, DTOptionsBuilder, DTColumnDefBuilder) { 
+	function ListeFilleController($uibModal, DTOptionsBuilder, DTColumnDefBuilder, UtilService) { 
 		var vm = this;
 		vm.search = {};
 		vm.dtColumnDefs = [];
@@ -32,32 +32,9 @@
 			vm.dtOptions = DTOptionsBuilder.newOptions()
 				.withPaginationType('full_numbers')
 				.withOption('order', [])
-				.withOption('language', { 
-					search: 'Rechercher',
-					decimal:        '',
-				    emptyTable:     'Aucune donnée disponible',
-				    info:           '_START_ à _END_ sur _TOTAL_ entrées',
-				    infoEmpty:      '0 à 0 sur 0 entrée',
-				    infoFiltered:   '(filtré à partir d\'un total de _MAX_ entrées)',
-				    infoPostFix:    '',
-				    thousands:      ',',
-				    lengthMenu:     'Afficher _MENU_ entrées',
-				    loadingRecords: 'Chargement...',
-				    processing:     'En cours de calcul...',
-				    zeroRecords:    'Aucune donnée trouvée',
-				    paginate: {
-				        'first':      'Première',
-				        'last':       'Dernière',
-				        'next':       'Suivante',
-				        'previous':   'Précédente'
-				    },
-				    aria: {
-				        'sortAscending':  ': activate to sort column ascending',
-				        'sortDescending': ': activate to sort column descending'
-				    }
-					
-				})
+				.withOption('language', UtilService.getDTTLangues())
 				.withDisplayLength(10)
+				.withOption('deferRender', true)
 				.withBootstrap();
 			
 			vm.dtColumnDefs = [

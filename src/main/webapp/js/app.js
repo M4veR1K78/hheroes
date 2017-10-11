@@ -8,12 +8,17 @@ heroesApp.service('FilleService', FilleService)
 	.service('ShopService', ShopService)
 	.service('HeroService', HeroService)
 	.service('BossService', BossService)
+	.service('ActivityService', ActivityService)
+	.service('UtilService', UtilService)
 	.service('EntityService', EntityService);
 
 // controllers
 heroesApp.controller('IndexController', IndexController)
 	.controller('ModalLoginController', ModalLoginController)
 	.controller('ModalAvatarController', ModalAvatarController);
+
+// filters
+heroesApp.filter('secondsToDateTime', secondsToDateTime);
 
 // constants
 heroesApp.constant('conf', {
@@ -106,18 +111,83 @@ function BossService($http) {
 	return service;
 }
 
-EntityService.$inject = ['GameService', 'FilleService', 'BossService', 'ShopService', 'HeroService'];
+ActivityService.$inject = ['$http'];
 
-function EntityService(GameService, FilleService, BossService, ShopService, HeroService) {
+function ActivityService($http) {
+	var service = {};
+	
+	service.getAll = getAll;
+	service.start = start;
+	
+	function getAll() {
+		return $http.get('activity/all');
+	}
+	
+	function start() {
+		return $http.post('activity/start');
+	}
+	
+	return service;
+}
+
+function UtilService() {
+	var service = {};
+	
+	service.getDTTLangues = getDTTLangues;
+	
+	function getDTTLangues() {
+		return { 
+			search: 'Rechercher',
+			decimal:        '',
+		    emptyTable:     'Aucune donnée disponible',
+		    info:           '_START_ à _END_ sur _TOTAL_ entrées',
+		    infoEmpty:      '0 à 0 sur 0 entrée',
+		    infoFiltered:   '(filtré à partir d\'un total de _MAX_ entrées)',
+		    infoPostFix:    '',
+		    thousands:      ',',
+		    lengthMenu:     'Afficher _MENU_ entrées',
+		    loadingRecords: 'Chargement...',
+		    processing:     'En cours de calcul...',
+		    zeroRecords:    'Aucune donnée trouvée',
+		    paginate: {
+		        'first':      'Première',
+		        'last':       'Dernière',
+		        'next':       'Suivante',
+		        'previous':   'Précédente'
+		    },
+		    aria: {
+		        'sortAscending':  ': activate to sort column ascending',
+		        'sortDescending': ': activate to sort column descending'
+		    }
+		};
+	}
+	
+	return service;
+}
+
+EntityService.$inject = ['GameService', 'FilleService', 'BossService', 'ShopService', 'HeroService', 'ActivityService', 'UtilService'];
+
+function EntityService(GameService, FilleService, BossService, ShopService, HeroService, ActivityService, UtilService) {
 	var service = {
 		gameSrv: GameService,
 		filleSrv: FilleService,
 		bossSrv: BossService,
 		shopSrv: ShopService,
-		heroSrv: HeroService
+		heroSrv: HeroService,
+		activitySrv: ActivityService,
+		utilSrv: UtilService
 	}
 	
 	return service;
+}
+
+
+function secondsToDateTime() {
+    return function(seconds) {
+        var d = new Date(0,0,0,0,0,0,0);
+        d.setSeconds(seconds);
+        return d;
+    };
 }
 
 IndexController.$inject = ['$uibModal', 'EntityService', 'conf'];
@@ -179,6 +249,9 @@ function IndexController($uibModal, EntityService, conf) {
 		});
 		EntityService.bossSrv.getAll().then(function(response) {
 			vm.bosses = response.data;
+		});
+		EntityService.activitySrv.getAll().then(function(response) {
+			vm.missions = response.data;
 		});
 	}
 	

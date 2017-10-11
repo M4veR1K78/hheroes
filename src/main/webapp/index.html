@@ -21,6 +21,7 @@
 <script src="js/vendor/adminlte.min.js"></script>
 <script src="js/app.js"></script>
 <script src="pages/girl/girlList.ctrl.js"></script>
+<script src="pages/activity/activity.ctrl.js"></script>
 </head>
 <body ng-controller="IndexController as vm" class="skin-blue sidebar-mini">
 	<div class="wrapper">
@@ -92,8 +93,7 @@
 								</div>
 							</div>
 							<div class="box-body">
-								<p><span>Wuba Luba Dub Dub ! Motherf*cker !<br>(A venir)</span>
-								<img src="https://static.comicvine.com/uploads/original/11/119238/5230235-ricksanchez.jpg" width="100"/></p>
+								<activity-list missions="vm.missions"></activity-list>
 							</div>
 						</div>
 					</div>

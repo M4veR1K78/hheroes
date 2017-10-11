@@ -2,7 +2,6 @@ package mav.com.hheroes.services;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Fille;
-import mav.com.hheroes.domain.Mission;
-import mav.com.hheroes.domain.StatutMission;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 
@@ -21,7 +18,7 @@ public class TaskExecutor {
 	private final Logger logger = Logger.getLogger(getClass());
 
 	private GameService gameService = new GameService();
-	
+
 	private FilleService filleService = new FilleService(gameService);
 
 	private MissionService missionService = new MissionService(gameService);
@@ -71,48 +68,13 @@ public class TaskExecutor {
 	 * @throws AuthenticationException
 	 */
 	@Async
-	@Scheduled(cron = "0 15 07 * * *")
+	@Scheduled(cron = "0 15 06 * * *")
 	public void doMissions() throws IOException, AuthenticationException {
 		if (gameService.getCookie() == null) {
 			logger.info("Batch doMissions login");
 			gameService.setCookie(gameService.login(login, password));
 		}
-
-		logger.info("Batch doMissions Start");
-		List<Mission> missions = missionService.getMissions();
-		while (!missions.isEmpty() && !allFinished(missions)) {
-			Optional<Mission> findAny = missions.stream()
-					.filter(mission -> StatutMission.PRETE.equals(mission.getStatut()))
-					.findAny();
-
-			if (findAny.isPresent()) {
-				Mission mission = findAny.get();
-				missionService.acceptMission(mission);
-				logger.info(String.format("Executing mission %s and sleeping %s secondes...", mission.getId(),
-						mission.getDuree()));
-				try {
-					Thread.sleep(mission.getDuree() * 1000L + 1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			} else {
-				try {
-					logger.info(String.format("No mission available for now, sleeping 10 minutes..."));
-					// on dort 10 minutes
-					Thread.sleep(10 * 1000L * 60);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-			missions = missionService.getMissions();
-		}
-
-		logger.info("Batch doMissions end");
-	}
-
-	private boolean allFinished(List<Mission> missions) {
-		return missions.stream().allMatch(mission -> StatutMission.TERMINEE.equals(mission.getStatut()));
+		missionService.doAllMissions(true);
 	}
 
 	/**
@@ -128,7 +90,7 @@ public class TaskExecutor {
 			logger.info("Batch doBoss login");
 			gameService.setCookie(gameService.login(login, password));
 		}
-		
+
 		logger.info(String.format("Batch doBoss Start (boss id = %s)", bossId));
 		bossService.destroy(bossId, true);
 	}

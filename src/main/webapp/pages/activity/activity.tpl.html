@@ -1,0 +1,22 @@
+<table class="table table-striped" datatable="ng" dt-options="vm.dtOptions" dt-column-defs="vm.dtColumnDefs" id="table-mission">
+	<thead>
+		<tr>
+			<th>Mission</th>
+			<th>Exp.</th>
+			<th>Durée</th>
+			<th>Statut</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="mission in vm.missions">
+			<td>{{ mission.titre }}</td>
+			<td>{{ mission.experience }}</td>
+			<td>{{ mission.duree | secondsToDateTime | date: 'mm:ss' }}</td>
+			<td>{{ mission.statut }}</td>
+		</tr>
+	</tbody>
+</table>
+
+<button class="btn btn-primary" ng-click="vm.start()" ng-show="vm.missions.length" ng-disabled="vm.disabled">Lancer les missions</button>
+<p class="text-danger">Ne pas lancer plusieurs fois. Vous pouvez vérifier que ça fonctionne en rechargeant la page et constater les changements de 
+statut des missions</p>
