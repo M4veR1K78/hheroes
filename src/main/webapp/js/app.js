@@ -190,7 +190,7 @@ function secondsToDateTime() {
     };
 }
 
-IndexController.$inject = ['$uibModal', 'EntityService', 'conf'];
+IndexController.$inject = ['$q', '$uibModal', 'EntityService', 'conf'];
 
 /**
  * Controller de la liste des filles.
@@ -199,7 +199,7 @@ IndexController.$inject = ['$uibModal', 'EntityService', 'conf'];
  * @param conf
  * @returns
  */
-function IndexController($uibModal, EntityService, conf) {
+function IndexController($q, $uibModal, EntityService, conf) {
 	var vm = this;
 
 	var Status = {
@@ -222,6 +222,7 @@ function IndexController($uibModal, EntityService, conf) {
 	vm.getWeakestGirl = getWeakestGirl;
 	vm.collectSalary = collectSalary;
 	vm.destroyBoss = destroyBoss;
+	vm.getMissions = getMissions;
 
 	activate();
 	
@@ -250,9 +251,18 @@ function IndexController($uibModal, EntityService, conf) {
 		EntityService.bossSrv.getAll().then(function(response) {
 			vm.bosses = response.data;
 		});
+		
+	}
+	
+	function getMissions() {
+		var deferred = $q.defer();
+		
 		EntityService.activitySrv.getAll().then(function(response) {
 			vm.missions = response.data;
+			deferred.resolve(vm.missions);
 		});
+		
+		return deferred.promise;
 	}
 	
 	function login() {
