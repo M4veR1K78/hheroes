@@ -6,34 +6,76 @@
 		controller: ListeMissionController,
 		controllerAs: 'vm',
 		bindings: {
-			missions: '<'
+			getMissions: '&'
 		}
 	});
 	
-	ListeMissionController.$inject = ['$uibModal', 'DTOptionsBuilder', 'DTColumnDefBuilder', 'EntityService'];
+	ListeMissionController.$inject = ['$scope', '$compile', '$uibModal', 'DTOptionsBuilder', 'DTColumnBuilder', 'EntityService'];
 	
-	function ListeMissionController($uibModal, DTOptionsBuilder, DTColumnDefBuilder, EntityService) { 
+	function ListeMissionController($scope, $compile, $uibModal, DTOptionsBuilder, DTColumnBuilder, EntityService) { 
 		var vm = this;
+		vm.missions = {};
+		vm.dtInstance = {};
 		
 		vm.start = start;
+		vm.showButton = showButton;
 		
 		function activate() {
-			vm.dtOptions = DTOptionsBuilder.newOptions()
+			vm.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+					return vm.getMissions();
+				})
+				.withOption('createdRow', createdRow)
 				.withOption('order', [])
 				.withOption('language', EntityService.utilSrv.getDTTLangues())
 				.withDisplayLength(5)
 				.withOption('searching', false)
 				.withOption('info', false)
-				.withOption('lengthChange', false)
-				.withBootstrap();
+				.withOption('lengthChange', false);
+			
+			vm.dtColumns = [
+		        DTColumnBuilder.newColumn('titre').withTitle('Mission'),
+		        DTColumnBuilder.newColumn('experience').withTitle('Exp.'),
+		        DTColumnBuilder.newColumn('duree').withTitle('Durée').renderWith(function(data, type, mission) {
+		        	return '{{ vm.missions[' + mission.id + '].duree | secondsToDateTime | date: \'mm:ss\' }}';
+		        }),
+		        DTColumnBuilder.newColumn('statut').withTitle('Statut').renderWith(function(data, type, mission) {
+		        	mission.statut.replace('_', ' ');
+		        	return '<span ng-class="{ \'bg-blue\': vm.missions[' + mission.id + '].statut === \'TERMINEE\', ' +
+		        		'\'bg-red\': vm.missions[' + mission.id + '].statut === \'EN_COURS\', ' +
+		        		'\'bg-yellow\': vm.missions[' + mission.id + '].statut === \'EN_ATTENTE\', ' +
+		        		'\'bg-green\': vm.missions[' + mission.id + '].statut === \'PRETE\', badge: true }" style="text-transform: capitalize">{{ vm.missions[' + mission.id + '].statut | lowercase }}</span>';
+		        }),
+		    ];
 		}
 		
 		function start() {
 			EntityService.activitySrv.start().then(function() {
 				vm.disabled = true;
+				vm.dtInstance.reloadData();
 			}, function() {
 				alert('Echec du lancement de script automatique des missions');
 			});
+		}
+		
+		function createdRow(row, data, dataIndex) {
+			vm.missions[data.id] = data;
+		    $compile(angular.element(row).contents())($scope);
+		}
+		
+		function showButton() {
+			if (angular.equals({}, vm.missions)) {
+				return false;
+			}
+			else {
+				var allOver = true;
+				Object.keys(vm.missions).forEach(function(key) {
+				    if (vm.missions[key].statut !== 'TERMINEE') {
+				    	allOver = false;
+				    }
+				});				
+			}
+			
+			return !allOver;
 		}
 		
 		activate();
