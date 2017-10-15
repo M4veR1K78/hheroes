@@ -7,6 +7,11 @@
 	<nav class="navbar navbar-static-top">
 		<div class="navbar-custom-menu">
 			<ul class="nav navbar-nav">
+				<li class="dropdown messages-menu">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> 
+						<img src="img/money.png" width="20px" /><span class="label label-danger">{{ vm.hero.money.toLocaleString() }} $</span>
+					</a>
+				</li>
 				<!-- Messages: style can be found in dropdown.less-->
 				<li class="dropdown messages-menu">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> 
