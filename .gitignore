@@ -63,3 +63,5 @@ tmp/
 # Maven
 log/
 target/
+
+src/main/resources/application-dev.properties

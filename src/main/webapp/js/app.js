@@ -356,8 +356,16 @@ function IndexController($q, $uibModal, EntityService, conf) {
 		return girl;
 	}
 	
-	function collectSalary() {
-		return EntityService.filleSrv.collectSalary();
+	function collectSalary(collectedSalary) {
+		var deferred = $q.defer();
+		EntityService.filleSrv.collectSalary().then(function() {
+			vm.hero.money += collectedSalary;
+			deferred.resolve();
+		}, function() {
+			deferred.reject();
+		});
+		
+		return deferred.promise;
 	}
 	
 	function destroyBoss() {
@@ -492,7 +500,7 @@ function GirlSalaryWidgetController() {
 	
 	function collect() {
 		vm.disabled = true;
-		vm.onCollect().then(function(response) {
+		vm.onCollect({ collectedSalary: vm.collectableSalary }).then(function(response) {
 			vm.collectableSalary = 0;				
 		}, function(response) {
 			console.debug(response);

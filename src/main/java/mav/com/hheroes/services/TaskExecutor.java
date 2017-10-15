@@ -33,6 +33,9 @@ public class TaskExecutor {
 
 	@Value("${hheroes.boss}")
 	private String bossId;
+	
+	@Value("${hheroes.cronCollectSalary}")
+	private String cronCollectSalary;
 
 	/**
 	 * Cette méthode de collecte des salaires des filles est appelée toutes les 20
@@ -41,7 +44,7 @@ public class TaskExecutor {
 	 * @throws IOException
 	 * @throws AuthenticationException
 	 */
-	@Scheduled(cron = "0 */20 * * * *")
+	@Scheduled(cron = "${hheroes.cronCollectSalary}")
 	public void collectSalary() throws IOException, AuthenticationException {
 		if (gameService.getCookie() == null) {
 			logger.info("Batch collectSalary login");
@@ -68,7 +71,7 @@ public class TaskExecutor {
 	 * @throws AuthenticationException
 	 */
 	@Async
-	@Scheduled(cron = "0 15 06 * * *")
+	@Scheduled(cron = "${hheroes.cronDoMissions}")
 	public void doMissions() throws IOException, AuthenticationException {
 		if (gameService.getCookie() == null) {
 			logger.info("Batch doMissions login");
@@ -84,7 +87,7 @@ public class TaskExecutor {
 	 * @throws AuthenticationException
 	 * @throws ObjectNotFoundException
 	 */
-	@Scheduled(cron = "0 0 * * * *")
+	@Scheduled(cron = "${hheroes.cronDoBoss}")
 	public void doBoss() throws IOException, AuthenticationException, ObjectNotFoundException {
 		if (gameService.getCookie() == null) {
 			logger.info("Batch doBoss login");
