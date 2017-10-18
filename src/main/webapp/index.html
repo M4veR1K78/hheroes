@@ -93,7 +93,7 @@
 								</div>
 							</div>
 							<div class="box-body" style="min-height: 300px">
-								<activity-list get-missions="vm.getMissions()"></activity-list>
+								<activity-list ng-if="vm.hero" get-missions="vm.getMissions()"></activity-list>
 							</div>
 						</div>
 					</div>

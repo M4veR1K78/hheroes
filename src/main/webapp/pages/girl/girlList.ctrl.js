@@ -80,12 +80,12 @@
 		function getFloatValue(expLeft) {
 			var value = expLeft;
 			
+			if (value === StatusLevel.MAX) value = 99999.9;
+			if (value === StatusLevel.UPGRADE) value = 0.0;
+			
 			if (angular.isString(value)) {
 				var value = value.replace(/\s+/g, '');
 			}
-			
-			if (value === StatusLevel.MAX) value = 99999.9;
-			if (value === StatusLevel.UPGRADE) value = 0.0;
 			
 			return parseFloat(value);
 		}
