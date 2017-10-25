@@ -1,6 +1,6 @@
 'use strict';
 
-var heroesApp = angular.module('heroesApp', ['ui.bootstrap', 'datatables', 'datatables.bootstrap']);
+var heroesApp = angular.module('heroesApp', ['ui.bootstrap', 'datatables', 'datatables.bootstrap', 'ui-notification']);
 
 // services
 heroesApp.service('FilleService', FilleService)
@@ -190,7 +190,7 @@ function secondsToDateTime() {
     };
 }
 
-IndexController.$inject = ['$q', '$uibModal', 'EntityService', 'conf'];
+IndexController.$inject = ['$q', '$uibModal', 'EntityService', 'conf', 'Notification'];
 
 /**
  * Controller de la liste des filles.
@@ -199,7 +199,7 @@ IndexController.$inject = ['$q', '$uibModal', 'EntityService', 'conf'];
  * @param conf
  * @returns
  */
-function IndexController($q, $uibModal, EntityService, conf) {
+function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	var vm = this;
 
 	var Status = {
@@ -370,8 +370,13 @@ function IndexController($q, $uibModal, EntityService, conf) {
 	
 	function destroyBoss() {
 		if (vm.bossSelected) {
-			EntityService.bossSrv.destroy(vm.bossSelected).then(function() {
-				vm.hero.eneryFight = 0;
+			EntityService.bossSrv.destroy(vm.bossSelected).then(function(response) {
+				vm.hero.eneryFight = vm.hero.eneryFight % 2;
+				console.log(response)
+				var rewards = response.data;
+				if (rewards.length) {
+					Notification.success({ message: '<b>Butin collecté</b> :<br><ul><li> ' + rewards.join('</li><li>') + '</li></ul>' });
+				}
 			}, function(response) {
 				console.debug(response.data);
 			});

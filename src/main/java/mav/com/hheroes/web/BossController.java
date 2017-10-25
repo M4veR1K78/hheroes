@@ -32,7 +32,7 @@ public class BossController {
 	}
 
 	@RequestMapping(value = "/{id}/destroy", method = RequestMethod.POST)
-	public void destroyBoss(@PathVariable("id") String bossId) throws IOException, ObjectNotFoundException {
-		bossService.destroy(bossId);
+	public List<String> destroyBoss(@PathVariable("id") String bossId) throws IOException, ObjectNotFoundException {
+		return bossService.destroy(bossId);
 	}
 }
