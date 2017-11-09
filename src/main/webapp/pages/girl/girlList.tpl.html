@@ -2,24 +2,22 @@
 	<thead>
 		<th></th>
 		<th>Nom</th>
-		<th>Spécialité</th>
+		<th class="text-center">Spécialité</th>
 		<th class="text-center">Grade</th>
-		<th class="text-center">Salaire par heure <!-- sort-widget sort-item="vm.sortSalary"></sort-widget--></th>
+		<th class="text-center">Salaire par heure</th>
 		<th class="text-center">Exp. restante</th>
-		<th class="text-center">Aff. restante <!--sort-widget sort-item="vm.sortAffRest"></sort-widget--></th>
+		<th class="text-center">Aff. restante</th>
 		<th>Position favorite</th>
-		<th class="text-center">Hardcore <!--sort-widget sort-item="vm.sortHardcore"></sort-widget--></th>
-		<th class="text-center">Charme <!--sort-widget sort-item="vm.sortCharme"></sort-widget--></th>
-		<th class="text-center">Savoir-faire <!--sort-widget sort-item="vm.sortSavoirFaire"></sort-widget--></th>
+		<th class="text-center">Hardcore</th>
+		<th class="text-center">Charme</th>
+		<th class="text-center">Savoir-faire</th>
 	</thead>
 	<tbody class="align-middle">
 		<tr ng-repeat="fille in vm.filles | filter:vm.search track by fille.id">
 			<td class="text-center"><img ng-src="{{ ::'data:image/png;base64,' + fille.avatar }}" width="60px" height="60px" /></td>
 			<td class="align-middle">{{ ::fille.name }} <span class="badge badge-secondary" title="Niveau">{{ ::fille.level }}</span></td>
 			<td class="text-center align-middle">
-				<span ng-class="{ 'label-dark': fille.typeId === 1, 'label-danger': fille.typeId === 2, 'label-success': fille.typeId === 3, 'label': true}">
-					{{ ::fille.type }}
-				</span>
+				<img ng-src="img/carac{{ fille.typeId }}.png" width="20px" /> {{ ::fille.type }}
 			</td>
 			<td class="text-center align-middle"><a href class="btn btn-link" ng-click="vm.openModalAvatar(fille)">{{ ::fille.grade }}</a></td>
 			<td class="text-center align-middle">{{ ::fille.salaryPerHour }}</td>
@@ -32,3 +30,9 @@
 		</tr>
 	</tbody>
 </table>
+<div>
+	<b>Nombre de fille par domaine d'expertise :</b> 
+	<span><img src="img/carac1.png" width="20px" /> {{ vm.nbHardcore }}</span>
+	<span><img src="img/carac2.png" width="20px" /> {{ vm.nbCharme }}</span>
+	<span><img src="img/carac3.png" width="20px" /> {{ vm.nbSavoirFaire }}</span>
+</div>

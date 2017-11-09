@@ -10,18 +10,31 @@
 		}
 	});
 	
-	ListeFilleController.$inject = ['$uibModal', 'DTOptionsBuilder', 'DTColumnDefBuilder', 'UtilService'];
+	ListeFilleController.$inject = ['$scope', '$uibModal', 'DTOptionsBuilder', 'DTColumnDefBuilder', 'UtilService'];
 	
-	function ListeFilleController($uibModal, DTOptionsBuilder, DTColumnDefBuilder, UtilService) { 
+	function ListeFilleController($scope, $uibModal, DTOptionsBuilder, DTColumnDefBuilder, UtilService) { 
 		var vm = this;
 		vm.search = {};
 		vm.dtColumnDefs = [];
 		vm.dtOptions = [];
+		vm.nbHardcore = 0;
+		vm.nbCharme = 0;
+		vm.nbSavoirFaire = 0;
 		
 		var StatusLevel = {
 			MAX: 'Max.',
 			UPGRADE: 'En upgrade'
 		}
+		
+		$scope.$watchCollection('vm.filles', function(filles) {
+			if (filles.length > 0) {
+				angular.forEach(filles, function(fille) {
+					if (fille.typeId === 1) vm.nbHardcore++;
+					else if (fille.typeId === 2) vm.nbCharme++;
+					else if (fille.typeId === 3) vm.nbSavoirFaire++;
+				});
+			}
+		});
 		
 		vm.openModalAvatar = openModalAvatar;
 		

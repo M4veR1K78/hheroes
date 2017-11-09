@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,6 +21,8 @@ import mav.com.hheroes.services.dtos.SalaryDTO;
 
 @Service
 public class FilleService {
+	private final Logger logger = Logger.getLogger(getClass());
+	
 	@Resource
 	private GameService gameService;
 
@@ -53,7 +56,7 @@ public class FilleService {
 			try {
 				fille.setAvatar(Base64.encodeBase64String(gameService.getGirlImage(avatarUrl)));
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.warn(String.format("Wasn't able to retrieve %s avatar. Url is : %s", fille.getName(), avatarUrl));
 			}
 
 			// retour à la liste de droite
