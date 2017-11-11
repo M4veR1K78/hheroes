@@ -98,7 +98,7 @@ public class GameService {
 	}
 
 	public byte[] getGirlImage(String url) throws IOException {
-		Response resultImageResponse = Jsoup.connect(URL_HHEROES + url)
+		Response resultImageResponse = Jsoup.connect(url.startsWith("http") ? url : URL_HHEROES + url)
 				.cookie(COOKIE_NAME, getCookie())
 				.ignoreContentType(true).execute();
 
