@@ -1,6 +1,7 @@
 package mav.com.hheroes.services;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 import org.jsoup.Connection.Method;
@@ -28,26 +29,31 @@ import mav.com.hheroes.services.exceptions.AuthenticationException;
  */
 @Service
 public class GameService {
+	
 	private static final String URL_HHEROES = "https://www.hentaiheroes.com";
 	private static final String URL_HOME = URL_HHEROES + "/home.html";
-	private static final String URL_HAREM = URL_HHEROES + "/harem/1";
+	private static final String URL_HAREM = URL_HHEROES + "/harem.html";
 	private static final String URL_SHOP = URL_HHEROES + "/shop.html";
 	private static final String URL_MISSIONS = URL_HHEROES + "/activities.html?tab=missions";
 	private static final String URL_LOGIN = URL_HHEROES + "/phoenix-ajax.php";
 	private static final String URL_ACTION = URL_HHEROES + "/ajax.php";
-	public static final String COOKIE_NAME = "stay_online";
-	public static final String LANGUAGE = "lang";
-	public static final String DEFAULT_LOCALE = "fr-FR";
-
-	private String cookie;
-	private String locale;
 	
+	public static final String COOKIES = "cookies";
+	public static final String LANGUAGE = "lang";
+	private static final String STAY_ONLINE = "stay_online";
+	private static final String HAPBK = "HAPBK";
+	private static final String HH_SESS_7 = "HH_SESS_7";
+	private static final String DEFAULT_LOCALE = "fr-FR";
+
+	private String locale;
+	private Map<String, String> cookies;
+
 	public GameService() {
 		// français par défaut
 		locale = DEFAULT_LOCALE;
 	}
 
-	public String login(String mail, String password) throws AuthenticationException {
+	public Map<String, String> login(String mail, String password) throws AuthenticationException {
 		Response res;
 		try {
 			res = Jsoup.connect(URL_LOGIN)
@@ -65,12 +71,12 @@ public class GameService {
 			throw new AuthenticationException("L'authentification a échoué", e);
 		}
 
-		if (StringUtils.isEmpty(res.cookie(COOKIE_NAME))) {
+		if (StringUtils.isEmpty(res.cookie(STAY_ONLINE))) {
 			throw new AuthenticationException("Les identifiants n'ont pas réussi à authentifier l'utilisateur");
 		}
 		
-		setCookie(res.cookie(COOKIE_NAME));
-		return res.cookie(COOKIE_NAME);
+		setCookies(res.cookies());
+		return cookies;
 	}
 
 	public Document getHarem() throws IOException {
@@ -91,7 +97,9 @@ public class GameService {
 
 	private Document getPage(String url) throws IOException {
 		return Jsoup.connect(url)
-				.cookie(COOKIE_NAME, getCookie())
+				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
+				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
+				.cookie(HAPBK, cookies.get(HAPBK))
 				.header("Accept-Language", getLocale())
 				.parser(Parser.htmlParser())
 				.get();
@@ -99,20 +107,24 @@ public class GameService {
 
 	public byte[] getGirlImage(String url) throws IOException {
 		Response resultImageResponse = Jsoup.connect(url.startsWith("http") ? url : URL_HHEROES + url)
-				.cookie(COOKIE_NAME, getCookie())
+				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
+				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
+				.cookie(HAPBK, cookies.get(HAPBK))
 				.ignoreContentType(true).execute();
 
 		return resultImageResponse.bodyAsBytes();
 	}
 
-	public String getCookie() {
-		return cookie;
+	public Map<String, String> getCookies() {
+		return cookies;
 	}
 
 	public byte[] getAvatar(Integer girlId, Integer grade) throws IOException {
 		Response resultImageResponse = Jsoup
 				.connect(String.format("%s/img/girls/%s/ava%s.png", URL_HHEROES, girlId, grade))
-				.cookie(COOKIE_NAME, getCookie())
+				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
+				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
+				.cookie(HAPBK, cookies.get(HAPBK))
 				.ignoreContentType(true)
 				.execute();
 
@@ -122,7 +134,9 @@ public class GameService {
 	public byte[] getImage(String urlImage) throws IOException {
 		Response resultImageResponse = Jsoup
 				.connect(urlImage)
-				.cookie(COOKIE_NAME, getCookie())
+				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
+				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
+				.cookie(HAPBK, cookies.get(HAPBK))
 				.ignoreContentType(true)
 				.execute();
 
@@ -138,7 +152,9 @@ public class GameService {
 	 */
 	public SalaryDTO getSalary(Integer girlId) throws IOException {
 		Response result = Jsoup.connect(URL_ACTION)
-				.cookie(COOKIE_NAME, getCookie())
+				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
+				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
+				.cookie(HAPBK, cookies.get(HAPBK))				
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data("class", "Girl")
 				.data("action", "get_salary")
@@ -155,16 +171,18 @@ public class GameService {
 	}
 
 	public boolean isConnected() {
-		return cookie != null;
+		return cookies != null;
 	}
 
-	public void setCookie(String cookie) {
-		this.cookie = cookie;
+	public void setCookies(Map<String, String> cookies) {
+		this.cookies = cookies;
 	}
 
 	public void acceptMission(Mission mission) throws IOException {
 		Jsoup.connect(URL_ACTION)
-				.cookie(COOKIE_NAME, getCookie())
+				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
+				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
+				.cookie(HAPBK, cookies.get(HAPBK))				
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data("class", "Missions")
 				.data("action", "start_mission")
@@ -179,7 +197,9 @@ public class GameService {
 		Objects.requireNonNull(boss, "Le boss ne doit pas être null");
 		
 		Response res = Jsoup.connect(URL_ACTION)
-				.cookie(COOKIE_NAME, getCookie())
+				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
+				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
+				.cookie(HAPBK, cookies.get(HAPBK))
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data("class", "Battle")
 				.data("action", "fight")

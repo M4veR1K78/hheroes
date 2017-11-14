@@ -46,9 +46,9 @@ public class TaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronCollectSalary}")
 	public void collectSalary() throws IOException, AuthenticationException {
-		if (gameService.getCookie() == null) {
+		if (gameService.getCookies() == null) {
 			logger.info("Batch collectSalary login");
-			gameService.setCookie(gameService.login(login, password));
+			gameService.setCookies(gameService.login(login, password));
 		}
 		Double salaire = 0.0;
 
@@ -73,9 +73,9 @@ public class TaskExecutor {
 	@Async
 	@Scheduled(cron = "${hheroes.cronDoMissions}")
 	public void doMissions() throws IOException, AuthenticationException {
-		if (gameService.getCookie() == null) {
+		if (gameService.getCookies() == null) {
 			logger.info("Batch doMissions login");
-			gameService.setCookie(gameService.login(login, password));
+			gameService.setCookies(gameService.login(login, password));
 		}
 		missionService.doAllMissions(true);
 	}
@@ -89,9 +89,9 @@ public class TaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronDoBoss}")
 	public void doBoss() throws IOException, AuthenticationException, ObjectNotFoundException {
-		if (gameService.getCookie() == null) {
+		if (gameService.getCookies() == null) {
 			logger.info("Batch doBoss login");
-			gameService.setCookie(gameService.login(login, password));
+			gameService.setCookies(gameService.login(login, password));
 		}
 
 		logger.info(String.format("Batch doBoss Start (boss id = %s)", bossId));

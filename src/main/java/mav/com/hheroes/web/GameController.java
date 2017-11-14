@@ -36,13 +36,13 @@ public class GameController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public void login(@RequestBody UserDTO user, @RequestHeader(value="Accept-Language") String locale) throws AuthenticationException {
 		gameService.setLocale(locale);
-		httpSession.setAttribute(GameService.COOKIE_NAME, gameService.login(user.getLogin(), user.getPassword()));
+		httpSession.setAttribute(GameService.COOKIES, gameService.login(user.getLogin(), user.getPassword()));
 		httpSession.setAttribute(GameService.LANGUAGE, locale);
 	}
 
 	@RequestMapping(value = "/auth", method = RequestMethod.GET)
 	public Boolean isAuthenticated() {
-		return httpSession.getAttribute(GameService.COOKIE_NAME) != null;
+		return httpSession.getAttribute(GameService.COOKIES) != null;
 	}
 
 	@RequestMapping(value = "/image", method = RequestMethod.GET)

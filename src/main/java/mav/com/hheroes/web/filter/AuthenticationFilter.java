@@ -1,6 +1,7 @@
 package mav.com.hheroes.web.filter;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -29,12 +30,13 @@ public class AuthenticationFilter implements Filter {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
-		if (httpSession.getAttribute(GameService.COOKIE_NAME) != null) {
-			if (gameService.getCookie() == null) {
-				gameService.setCookie(httpSession.getAttribute(GameService.COOKIE_NAME).toString());
+		if (httpSession.getAttribute(GameService.COOKIES) != null) {
+			if (gameService.getCookies() == null) {
+				gameService.setCookies((Map<String, String>) httpSession.getAttribute(GameService.COOKIES));
 			}
 			filterChain.doFilter(request, response);
 		} else {
