@@ -241,6 +241,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	function getFilles() {
 		EntityService.filleSrv.getAll().then(function(response) {
 			vm.filles = response.data;
+			vm.nextGirlToEvolve = vm.getCloseEvolveGirl();
 		});
 		EntityService.shopSrv.getAvailableGifts().then(function(response) {
 			vm.cadeaux = response.data;
@@ -314,7 +315,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	 * Récupère la fille la plus simple à évoluer.
 	 */
 	function getCloseEvolveGirl() {
-		var girl = { affLeftNextLevel: 99999 };
+		var girl = { name: 'Aucune', affLeftNextLevel: 99999, affProgress: 0 };
 		
 		angular.forEach(vm.filles, function(fille) {
 			if (getFloatValue(fille.affLeftNextLevel) < getFloatValue(girl.affLeftNextLevel)) {
