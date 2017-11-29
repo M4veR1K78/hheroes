@@ -40,6 +40,10 @@ public class Fille {
 	private Double salary;
 
 	private Boolean collectable;
+	
+	private Double expertiseBaseValue;
+	
+	private Integer expertiseRanking;
 
 	public String getName() {
 		return name;
@@ -209,5 +213,21 @@ public class Fille {
 
 	public void setCollectable(Boolean canCollect) {
 		this.collectable = canCollect;
+	}
+
+	public Integer getExpertiseRanking() {
+		return expertiseRanking;
+	}
+
+	public void setExpertiseRanking(Integer expertiseRanking) {
+		this.expertiseRanking = expertiseRanking;
+	}
+
+	public Double getExpertiseBaseValue() {
+		return expertiseBaseValue;
+	}
+
+	public void setExpertiseBaseValue(Double expertiseBaseValue) {
+		this.expertiseBaseValue = expertiseBaseValue;
 	}
 }

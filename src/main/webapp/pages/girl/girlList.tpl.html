@@ -11,6 +11,9 @@
 		<th class="text-center">Hardcore</th>
 		<th class="text-center">Charme</th>
 		<th class="text-center">Savoir-faire</th>
+		<th class="text-center">Classement <span class="fa fa-question-circle" 
+			title="Classement de la fille dans son domaine d'expertise.&#10;Mettez le curseur sur le rang pour voir la valeur d'attaque initiale."></span>
+		</th>
 	</thead>
 	<tbody class="align-middle">
 		<tr ng-repeat="fille in vm.filles | filter:vm.search track by fille.id">
@@ -27,6 +30,7 @@
 			<td class="text-center align-middle">{{ ::fille.hardcore }}</td>
 			<td class="text-center align-middle">{{ ::fille.charme }}</td>
 			<td class="text-center align-middle">{{ ::fille.savoirFaire }}</td>
+			<td class="text-center align-middle"><span class="label bg-red" title="{{ ::fille.expertiseBaseValue }}">{{ ::fille.expertiseRanking | ordinal }}</span></td>
 		</tr>
 	</tbody>
 </table>

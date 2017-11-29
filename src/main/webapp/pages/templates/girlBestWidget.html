@@ -1,6 +1,6 @@
 <div class="box box-widget widget-user">
 	<div class="widget-user-header bg-aqua-active">
-		<h3 class="widget-user-username">Meilleure en {{ ::vm.fille.type }} <img ng-src="img/carac{{ ::vm.fille.typeId }}.png" width="25px" /></h3>
+		<h3 class="widget-user-username">Meilleure en {{ ::vm.type.libelle }} <img ng-src="img/carac{{ ::vm.type.id }}.png" width="25px" /></h3>
 		<h5 class="widget-user-desc">{{ ::vm.fille.name }}</h5>
 	</div>
 	<div class="widget-user-image">
@@ -10,7 +10,7 @@
 		<div class="row">
 			<div class="col-sm-4 border-right">
 				<div class="description-block">
-					<h5 class="description-header">{{ ::vm.fille[vm.type] }}</h5>
+					<h5 class="description-header">{{ ::vm.fille[vm.type.field] }}</h5>
 					<small class="description-text">ATTAQUE</small>
 				</div>
 			</div>

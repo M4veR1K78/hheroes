@@ -18,7 +18,8 @@ heroesApp.controller('IndexController', IndexController)
 	.controller('ModalAvatarController', ModalAvatarController);
 
 // filters
-heroesApp.filter('secondsToDateTime', secondsToDateTime);
+heroesApp.filter('secondsToDateTime', secondsToDateTime)
+	.filter('ordinal', ordinal);
 
 // constants
 heroesApp.constant('conf', {
@@ -190,6 +191,14 @@ function secondsToDateTime() {
     };
 }
 
+function ordinal() {
+	return function(input) {
+		var s = ['ème', 'ère', 'ème', 'ème'],
+		v = input % 100;
+		return input + (s[(v-20) % 10] || s[v] || s[0]);
+	}
+};
+
 IndexController.$inject = ['$q', '$uibModal', 'EntityService', 'conf', 'Notification'];
 
 /**
@@ -216,6 +225,13 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	vm.bosses = [];
 	vm.bossSelected = "1";
 	vm.hhUrl = conf.HHEROES_URL;
+	vm.types = {
+		hardcore: { libelle: 'Hardcore', field: 'hardcore', id: 1},
+		charme: { libelle: 'Charme', field: 'charme', id: 2},
+		savoirFaire: { libelle: 'Savoir-faire', field: 'savoirFaire', id: 3}
+	}
+	
+	// méthodes
 	vm.openModalAvatar = openModalAvatar;
 	vm.getBestOnTypeGirl = getBestOnTypeGirl;
 	vm.getCloseEvolveGirl = getCloseEvolveGirl;

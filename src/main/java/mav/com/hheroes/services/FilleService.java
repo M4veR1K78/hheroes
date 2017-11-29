@@ -1,9 +1,12 @@
 package mav.com.hheroes.services;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -22,7 +25,13 @@ import mav.com.hheroes.services.dtos.SalaryDTO;
 @Service
 public class FilleService {
 	private final Logger logger = Logger.getLogger(getClass());
-	
+
+	private static final Double COEFF_1_STAR = 1.3;
+	private static final Double COEFF_2_STAR = 1.6;
+	private static final Double COEFF_3_STAR = 1.9;
+	private static final Double COEFF_4_STAR = 2.2;
+	private static final Double COEFF_5_STAR = 2.5;
+
 	@Resource
 	private GameService gameService;
 
@@ -56,7 +65,8 @@ public class FilleService {
 			try {
 				fille.setAvatar(Base64.encodeBase64String(gameService.getGirlImage(avatarUrl)));
 			} catch (IOException e) {
-				logger.warn(String.format("Wasn't able to retrieve %s avatar. Url is : %s", fille.getName(), avatarUrl));
+				logger.warn(
+						String.format("Wasn't able to retrieve %s avatar. Url is : %s", fille.getName(), avatarUrl));
 			}
 
 			// retour à la liste de droite
@@ -92,10 +102,11 @@ public class FilleService {
 			fille.setHardcore(Double.valueOf(assets.get(0).text().replace(",", ".")));
 			fille.setCharme(Double.valueOf(assets.get(1).text().replace(",", ".")));
 			fille.setSavoirFaire(Double.valueOf(assets.get(2).text().replace(",", ".")));
+			fille.setExpertiseBaseValue(getInitialExpertiseValue(fille));
 
 			filles.add(fille);
 		});
-
+		rankGirls(filles);
 		return filles;
 	}
 
@@ -121,5 +132,67 @@ public class FilleService {
 	 */
 	private String cleanDoubleString(String value) {
 		return value.replace("\u00a0", "").replace(",", "");
+	}
+
+	private void rankGirls(List<Fille> filles) {
+		filles.stream().collect(Collectors.groupingBy(Fille::getTypeId))
+				.entrySet().stream()
+				.forEach(entry -> {
+					entry.getValue().sort((a, b) -> b.getExpertiseBaseValue().compareTo(a.getExpertiseBaseValue()));
+					Fille previousEntry = null;
+					for (int i = entry.getValue().size() - 1; i >= 0; i--) {
+						Fille current = entry.getValue().get(i);
+						current.setExpertiseRanking(i + 1);
+
+						if (previousEntry != null && previousEntry.getExpertiseBaseValue().equals(current.getExpertiseBaseValue())) {
+							current.setExpertiseRanking(previousEntry.getExpertiseRanking());
+						}
+
+						previousEntry = current;
+					}
+				});
+	}
+
+	/**
+	 * Récupère la valeur initiale dans le domaine d'expertise de la fille.
+	 * 
+	 * @param fille
+	 * @return
+	 */
+	private Double getInitialExpertiseValue(Fille fille) {
+		Double value = 0.0;
+		switch (fille.getTypeId()) {
+		case 1:
+			value = fille.getHardcore();
+			break;
+		case 2:
+			value = fille.getCharme();
+			break;
+		case 3:
+			value = fille.getSavoirFaire();
+			break;
+		}
+		value = value / fille.getLevel();
+
+		switch (fille.getGrade()) {
+		case 1:
+			value = value / COEFF_1_STAR;
+			break;
+		case 2:
+			value = value / COEFF_2_STAR;
+			break;
+		case 3:
+			value = value / COEFF_3_STAR;
+			break;
+		case 4:
+			value = value / COEFF_4_STAR;
+			break;
+		case 5:
+			value = value / COEFF_5_STAR;
+			break;
+		}
+		return new BigDecimal(value)
+				.setScale(2, RoundingMode.HALF_UP)
+				.doubleValue();
 	}
 }
