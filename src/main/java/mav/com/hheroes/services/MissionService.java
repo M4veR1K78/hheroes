@@ -39,7 +39,7 @@ public class MissionService {
 			Mission mission = new Mission();
 			mission.setTitre(block.select(".mission_details h1").text().trim());
 			Elements exp = block.select(".slot_xp h3");
-			mission.setExperience(Integer.valueOf(exp.isEmpty() ? "0" : exp.text()));
+			mission.setExperience(Integer.valueOf(exp.isEmpty() ? "0" : cleanIntegerString(exp.text())));
 			Elements buttons = block.select(".mission_button");
 			mission.setDuree(Integer.valueOf(buttons.select(".duration").text()));
 
@@ -131,5 +131,15 @@ public class MissionService {
 
 	private boolean allFinished(List<Mission> missions) {
 		return missions.stream().allMatch(mission -> StatutMission.TERMINEE.equals(mission.getStatut()));
+	}
+	
+	/**
+	 * Pour les string destiné à être transformé en double.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String cleanIntegerString(String value) {
+		return value.replace("\u00a0", "").replace(",", "").replaceAll(" ", "");
 	}
 }
