@@ -40,6 +40,8 @@
 		
 		$.fn.dataTableExt.oSort['exp-left-asc'] = sortExp(true); 
 		$.fn.dataTableExt.oSort['exp-left-desc'] = sortExp(false);
+		$.fn.dataTableExt.oSort['classement-asc'] = sortClassement(true);
+		$.fn.dataTableExt.oSort['classement-desc'] = sortClassement(false);
 		
 		function activate() {
 			vm.dtOptions = DTOptionsBuilder.newOptions()
@@ -53,7 +55,8 @@
 			vm.dtColumnDefs = [
 		        DTColumnDefBuilder.newColumnDef(0).notSortable().withOption('width', '60px'),
 		        DTColumnDefBuilder.newColumnDef(5).withOption('type', 'exp-left'),
-		        DTColumnDefBuilder.newColumnDef(6).withOption('type', 'exp-left')
+		        DTColumnDefBuilder.newColumnDef(6).withOption('type', 'exp-left'),
+		        DTColumnDefBuilder.newColumnDef(11).withOption('type', 'classement')
 		    ];
 		}
 		
@@ -88,6 +91,31 @@
 			}
 			
 			return sortArray;
+		}
+		
+		/**
+		 * Fonction de tri du classement.
+		 * 
+		 * @param asc true si tri ascendant.
+		 */
+		function sortClassement(asc) {
+			function sortArray(a, b) {
+				a = removeText(a);
+				b = removeText(b);
+				var value1 = getFloatValue((asc) ? a : b);
+				var value2 = getFloatValue((asc) ? b : a);
+				
+				return (value1 > value2) ? 1 : (value1 < value2) ? -1 : 0;
+			}
+			
+			return sortArray;
+		}
+		
+		/**
+		 * Retire les éléments superflue du classement pour pouvoir le trier correctemetn.
+		 */
+		function removeText(value) {
+			return angular.element(value).text().replace(/(ère)|(ème)/g, '');
 		}
 		
 		function getFloatValue(expLeft) {

@@ -95,7 +95,7 @@ public class FilleService {
 			fille.setCumulAff(cumulAff.replaceAll("\u00a0", " ").replace(",", " "));
 
 			fille.setSalaryPerHour(Double
-					.valueOf(girl.select(".girl_line .square .salary").text().replace("/h", "").replace(",", ".")));
+					.valueOf(cleanDoubleString(girl.select(".girl_line .square .salary").text().replace("/h", ""))));
 			fille.setFavoritePosition(girl.select(".girl_pos span").text());
 
 			Elements assets = girl.select(".square div[carac]");
@@ -125,7 +125,7 @@ public class FilleService {
 	}
 
 	/**
-	 * Pour les string destiné à être transformé en double.
+	 * Pour les string destinés à être transformés en double.
 	 * 
 	 * @param value
 	 * @return
