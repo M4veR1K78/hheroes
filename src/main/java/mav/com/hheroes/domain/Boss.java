@@ -8,6 +8,7 @@ public class Boss {
 	public static final String DONATIEN = "5";
 	public static final String SILVANUS = "6";
 	public static final String BREMEN = "7";
+	public static final String FINALMECIA = "8";
 	
 	private String id;
 	
