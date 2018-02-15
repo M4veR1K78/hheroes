@@ -10,6 +10,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Fille;
+import mav.com.hheroes.services.dtos.JoueurDTO;
+import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 
@@ -24,6 +26,8 @@ public class TaskExecutor {
 	private MissionService missionService = new MissionService(gameService);
 
 	private BossService bossService = new BossService(gameService);
+	
+	private ArenaService arenaService = new ArenaService(gameService);
 
 	@Value("${hheroes.login}")
 	private String login;
@@ -81,7 +85,7 @@ public class TaskExecutor {
 	}
 
 	/**
-	 * On fait le boss toutes heures.
+	 * On fait le boss toutes les 2 heures.
 	 * 
 	 * @throws IOException
 	 * @throws AuthenticationException
@@ -96,6 +100,34 @@ public class TaskExecutor {
 
 		logger.info(String.format("Batch doBoss Start (boss id = %s)", bossId));
 		bossService.destroy(bossId, true);
+	}
+	
+	/**
+	 * On fait les combats d'arènes toutes les 30 minutes.
+	 * 
+	 * @throws IOException
+	 * @throws AuthenticationException
+	 * @throws ObjectNotFoundException
+	 */
+	@Scheduled(cron = "${hheroes.cronDoArena}")
+	public void doArena() throws IOException, AuthenticationException, ObjectNotFoundException {
+		if (gameService.getCookies() == null) {
+			logger.info("Batch doArene login");
+			gameService.setCookies(gameService.login(login, password));
+		}
+
+		logger.info("Batch doArene Start");
+		List<JoueurDTO> joueurs = arenaService.getAllJoueurs();
+		for (JoueurDTO joueur : joueurs) {
+			logger.info(String.format("\tPlayer %s attacked...", joueur.getId()));
+			ResponseDTO response = arenaService.fight(joueur);
+			if (response.getSuccess()) {
+				logger.info(String.format("\tResults = %s", response.getReward().getWinner().equals(1) ? "Win" : "Loss"));
+			}
+		}
+		if (joueurs.isEmpty()) {
+			logger.info("\tNo fight to do...");
+		}
 	}
 
 }

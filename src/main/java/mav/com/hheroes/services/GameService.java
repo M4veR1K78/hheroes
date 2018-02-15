@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mav.com.hheroes.domain.Mission;
 import mav.com.hheroes.services.dtos.BossDTO;
+import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
@@ -34,6 +35,7 @@ public class GameService {
 	private static final String URL_HOME = URL_HHEROES + "/home.html";
 	private static final String URL_HAREM = URL_HHEROES + "/harem.html";
 	private static final String URL_SHOP = URL_HHEROES + "/shop.html";
+	private static final String URL_BATTLE = URL_HHEROES + "/battle.html";
 	private static final String URL_MISSIONS = URL_HHEROES + "/activities.html?tab=missions";
 	private static final String URL_LOGIN = URL_HHEROES + "/phoenix-ajax.php";
 	private static final String URL_ACTION = URL_HHEROES + "/ajax.php";
@@ -233,5 +235,38 @@ public class GameService {
 		else {
 			this.locale = language;			
 		}
+	}
+	
+	public Document getBattle(int arena) throws IOException {
+		return getPage(URL_BATTLE + "?id_arena=" + arena);
+	}
+	
+	public ResponseDTO fightJoueur(JoueurDTO joueur) throws IOException {
+		Objects.requireNonNull(joueur, "Le joueur ne doit pas être null");
+		
+		Response res = Jsoup.connect(URL_ACTION)
+				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
+				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
+				.cookie(HAPBK, cookies.get(HAPBK))
+				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.data("class", "Battle")
+				.data("action", "fight")
+				.data("who[id_member]", joueur.getId())
+				.data("who[orgasm]", String.valueOf(joueur.getOrgasm()))
+				.data("who[ego]", String.valueOf(joueur.getEgo()))
+				.data("who[x]", String.valueOf(joueur.getX().intValue()))
+				.data("who[d]", String.valueOf(joueur.getD()))
+				.data("who[nb_org]", String.valueOf(joueur.getNbOrg()))
+				.data("who[figure]", String.valueOf(joueur.getFigure()))
+				.data("who[id_arena]", joueur.getArena())
+				.method(Method.POST)
+				.ignoreContentType(true)
+				.execute();
+
+		ResponseDTO response = new ObjectMapper().readValue(res.body(), ResponseDTO.class);
+		if (response.getSuccess()) {
+			response.getReward().setDrops(Jsoup.parse(response.getReward().getDrops()).text());
+		}
+		return response;
 	}
 }
