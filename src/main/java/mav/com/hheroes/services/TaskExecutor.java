@@ -119,11 +119,12 @@ public class TaskExecutor {
 		logger.info("Batch doArene Start");
 		List<JoueurDTO> joueurs = arenaService.getAllJoueurs();
 		for (JoueurDTO joueur : joueurs) {
-			logger.info(String.format("\tPlayer %s attacked...", joueur.getId()));
+			String log = String.format("\tPlayer %s attacked.", joueur.getId());
 			ResponseDTO response = arenaService.fight(joueur);
 			if (response.getSuccess()) {
-				logger.info(String.format("\tResults = %s", response.getReward().getWinner().equals(1) ? "Win" : "Loss"));
+				log += String.format(" Results = %s", response.getReward().getWinner().equals(1) ? "Win" : "Loss");
 			}
+			logger.info(log);
 		}
 		if (joueurs.isEmpty()) {
 			logger.info("\tNo fight to do...");

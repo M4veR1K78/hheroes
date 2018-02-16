@@ -32,6 +32,7 @@ import mav.com.hheroes.services.exceptions.AuthenticationException;
 public class GameService {
 	
 	private static final String URL_HHEROES = "https://www.hentaiheroes.com";
+	private static final String URL_HHEROES_CONTENT = "https://content.hentaiheroes.com";
 	private static final String URL_HOME = URL_HHEROES + "/home.html";
 	private static final String URL_HAREM = URL_HHEROES + "/harem.html";
 	private static final String URL_SHOP = URL_HHEROES + "/shop.html";
@@ -123,7 +124,7 @@ public class GameService {
 
 	public byte[] getAvatar(Integer girlId, Integer grade) throws IOException {
 		Response resultImageResponse = Jsoup
-				.connect(String.format("%s/img/girls/%s/ava%s.png", URL_HHEROES, girlId, grade))
+				.connect(String.format("%s/pictures/girls/%s/ava%s.png", URL_HHEROES_CONTENT, girlId, grade))
 				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
 				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
 				.cookie(HAPBK, cookies.get(HAPBK))

@@ -112,7 +112,7 @@
 		}
 		
 		/**
-		 * Retire les éléments superflue du classement pour pouvoir le trier correctemetn.
+		 * Retire les éléments superflue du classement pour pouvoir le trier correctement.
 		 */
 		function removeText(value) {
 			return angular.element(value).text().replace(/(ère)|(ème)/g, '');

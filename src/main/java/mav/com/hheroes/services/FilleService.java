@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,7 +89,6 @@ public class FilleService {
 				} else {
 					affLeft = cumulAff = Fille.LEVEL_MAX;
 				}
-			} else {
 			}
 
 			fille.setAffLeftNextLevel(affLeft);
@@ -138,14 +138,14 @@ public class FilleService {
 		filles.stream().collect(Collectors.groupingBy(Fille::getTypeId))
 				.entrySet().stream()
 				.forEach(entry -> {
-					entry.getValue().sort((a, b) -> b.getExpertiseBaseValue().compareTo(a.getExpertiseBaseValue()));
+					entry.getValue().sort(Comparator.comparing(Fille::getExpertiseBaseValue, Comparator.reverseOrder()));
 					Fille previousEntry = null;
 					for (int i = entry.getValue().size() - 1; i >= 0; i--) {
 						Fille current = entry.getValue().get(i);
 						current.setExpertiseRanking(i + 1);
 
 						if (previousEntry != null && previousEntry.getExpertiseBaseValue().equals(current.getExpertiseBaseValue())) {
-							current.setExpertiseRanking(previousEntry.getExpertiseRanking());
+							previousEntry.setExpertiseRanking(current.getExpertiseRanking());
 						}
 
 						previousEntry = current;
