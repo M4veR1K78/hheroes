@@ -6,8 +6,13 @@ import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
@@ -136,21 +141,45 @@ public class FilleService {
 
 	private void rankGirls(List<Fille> filles) {
 		filles.stream().collect(Collectors.groupingBy(Fille::getTypeId))
-				.entrySet().stream()
+				.entrySet()
 				.forEach(entry -> {
-					entry.getValue().sort(Comparator.comparing(Fille::getExpertiseBaseValue, Comparator.reverseOrder()));
-					Fille previousEntry = null;
-					for (int i = entry.getValue().size() - 1; i >= 0; i--) {
-						Fille current = entry.getValue().get(i);
-						current.setExpertiseRanking(i + 1);
-
-						if (previousEntry != null && previousEntry.getExpertiseBaseValue().equals(current.getExpertiseBaseValue())) {
-							previousEntry.setExpertiseRanking(current.getExpertiseRanking());
-						}
-
-						previousEntry = current;
-					}
+					rank(entry.getValue().stream(), Fille::getExpertiseBaseValue, Comparator.reverseOrder())
+							.entrySet().forEach(e -> {
+								e.getValue().forEach(fille -> fille.setExpertiseRanking(e.getKey()));
+							});
 				});
+
+	}
+
+	static <T, V> SortedMap<Integer, List<T>> rank(Stream<T> stream, Function<T, V> propertyExtractor,
+			Comparator<V> propertyComparator) {
+		return stream.sorted(Comparator.comparing(propertyExtractor, propertyComparator))
+				.collect(TreeMap::new,
+						(rank, item) -> {
+							V property = propertyExtractor.apply(item);
+							if (rank.isEmpty()) {
+								rank.put(new Integer(1), new LinkedList<T>());
+							} else {
+								Integer r = rank.lastKey();
+								List<T> items = rank.get(r);
+								if (!property.equals(propertyExtractor.apply(items.get(0)))) {
+									rank.put(r + items.size(), new LinkedList<T>());
+								}
+							}
+							rank.get(rank.lastKey()).add(item);
+						},
+						(rank1, rank2) -> {
+							int lastRanking = rank1.lastKey();
+							int offset = lastRanking + rank1.get(lastRanking).size() - 1;
+							if (propertyExtractor.apply(rank1.get(lastRanking).get(0)) == propertyExtractor
+									.apply(rank2.get(rank2.firstKey()).get(0))) {
+								rank1.get(lastRanking).addAll(rank2.get(rank2.firstKey()));
+								rank2.remove(rank2.firstKey());
+							}
+							rank2.forEach((r, items) -> {
+								rank1.put(offset + r, items);
+							});
+						});
 	}
 
 	/**
