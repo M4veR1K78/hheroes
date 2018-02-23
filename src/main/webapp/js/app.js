@@ -388,7 +388,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	function destroyBoss() {
 		if (vm.bossSelected) {
 			EntityService.bossSrv.destroy(vm.bossSelected).then(function(response) {
-				vm.hero.eneryFight = vm.hero.eneryFight % 2;
+				vm.hero.eneryFight = 0;
 				var rewards = response.data;
 				if (rewards.length) {
 					Notification.success({ message: '<b>Butin collecté</b> :<br><ul><li> ' + rewards.join('</li><li>') + '</li></ul>' });

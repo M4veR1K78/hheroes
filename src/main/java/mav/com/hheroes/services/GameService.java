@@ -44,8 +44,6 @@ public class GameService {
 	public static final String COOKIES = "cookies";
 	public static final String LANGUAGE = "lang";
 	private static final String STAY_ONLINE = "stay_online";
-	private static final String HAPBK = "HAPBK";
-	private static final String HH_SESS_7 = "HH_SESS_7";
 	private static final String DEFAULT_LOCALE = "fr-FR";
 
 	private String locale;
@@ -100,9 +98,7 @@ public class GameService {
 
 	private Document getPage(String url) throws IOException {
 		return Jsoup.connect(url)
-				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
-				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
-				.cookie(HAPBK, cookies.get(HAPBK))
+				.cookies(getCookies())
 				.header("Accept-Language", getLocale())
 				.parser(Parser.htmlParser())
 				.get();
@@ -110,9 +106,7 @@ public class GameService {
 
 	public byte[] getGirlImage(String url) throws IOException {
 		Response resultImageResponse = Jsoup.connect(url.startsWith("http") ? url : URL_HHEROES + url)
-				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
-				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
-				.cookie(HAPBK, cookies.get(HAPBK))
+				.cookies(getCookies())
 				.ignoreContentType(true).execute();
 
 		return resultImageResponse.bodyAsBytes();
@@ -125,9 +119,7 @@ public class GameService {
 	public byte[] getAvatar(Integer girlId, Integer grade) throws IOException {
 		Response resultImageResponse = Jsoup
 				.connect(String.format("%s/pictures/girls/%s/ava%s.png", URL_HHEROES_CONTENT, girlId, grade))
-				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
-				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
-				.cookie(HAPBK, cookies.get(HAPBK))
+				.cookies(getCookies())
 				.ignoreContentType(true)
 				.execute();
 
@@ -137,9 +129,7 @@ public class GameService {
 	public byte[] getImage(String urlImage) throws IOException {
 		Response resultImageResponse = Jsoup
 				.connect(urlImage)
-				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
-				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
-				.cookie(HAPBK, cookies.get(HAPBK))
+				.cookies(getCookies())
 				.ignoreContentType(true)
 				.execute();
 
@@ -155,9 +145,7 @@ public class GameService {
 	 */
 	public SalaryDTO getSalary(Integer girlId) throws IOException {
 		Response result = Jsoup.connect(URL_ACTION)
-				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
-				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
-				.cookie(HAPBK, cookies.get(HAPBK))				
+				.cookies(getCookies())			
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data("class", "Girl")
 				.data("action", "get_salary")
@@ -183,9 +171,7 @@ public class GameService {
 
 	public void acceptMission(Mission mission) throws IOException {
 		Jsoup.connect(URL_ACTION)
-				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
-				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
-				.cookie(HAPBK, cookies.get(HAPBK))				
+				.cookies(getCookies())			
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data("class", "Missions")
 				.data("action", "start_mission")
@@ -200,9 +186,7 @@ public class GameService {
 		Objects.requireNonNull(boss, "Le boss ne doit pas être null");
 		
 		Response res = Jsoup.connect(URL_ACTION)
-				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
-				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
-				.cookie(HAPBK, cookies.get(HAPBK))
+				.cookies(getCookies())
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data("class", "Battle")
 				.data("action", "fight")
@@ -246,9 +230,7 @@ public class GameService {
 		Objects.requireNonNull(joueur, "Le joueur ne doit pas être null");
 		
 		Response res = Jsoup.connect(URL_ACTION)
-				.cookie(STAY_ONLINE, cookies.get(STAY_ONLINE))
-				.cookie(HH_SESS_7, cookies.get(HH_SESS_7))
-				.cookie(HAPBK, cookies.get(HAPBK))
+				.cookies(getCookies())
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data("class", "Battle")
 				.data("action", "fight")
