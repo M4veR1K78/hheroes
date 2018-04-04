@@ -47,4 +47,9 @@ public class FilleController
 			}
 		}
 	}
+	
+	@RequestMapping(value = "/doCollectAll", method = RequestMethod.POST)
+	public void doCollectSalaries() throws IOException {
+		filleService.doCollectAllSalaries();
+	}
 }

@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
@@ -54,15 +53,8 @@ public class TaskExecutor {
 			logger.info("Batch collectSalary login");
 			gameService.setCookies(gameService.login(login, password));
 		}
-		Double salaire = 0.0;
-
-		List<Fille> filles = filleService.getFilles();
-		for (Fille fille : filles) {
-			if (fille.isCollectable()) {
-				filleService.collectSalary(fille.getId());
-				salaire += fille.getSalary();
-			}
-		}
+		
+		Double salaire = filleService.collectAllSalaries();
 
 		logger.info(String.format("Batch collectSalary has been executed, %s $ collected", salaire));
 	}
@@ -130,5 +122,4 @@ public class TaskExecutor {
 			logger.info("\tNo fight to do...");
 		}
 	}
-
 }

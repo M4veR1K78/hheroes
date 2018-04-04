@@ -26,7 +26,7 @@ public class HeroService {
 		
 		Elements select = home.select("script");
 		for (Element script : select) {
-			if (script.html().contains("Hero[\"infos\"]")) {
+			if (script.html().contains("Hero.infos")) {
 				heroJson = script.html().replaceAll("(?s).*?(\\{.*?\\});.+", "$1");
 			}
 		}

@@ -34,6 +34,7 @@ function FilleService($http) {
 	
 	service.getAll = getAll;
 	service.collectSalary = collectSalary;
+	service.doCollectSalaries = doCollectSalaries;
 	
 	function getAll() {
 		return $http.get(api);
@@ -41,6 +42,10 @@ function FilleService($http) {
 	
 	function collectSalary() {
 		return $http.post(api + "/collectAll");
+	}
+	
+	function doCollectSalaries() {
+		return $http.post(api + '/doCollectAll');
 	}
 	
 	return service;
@@ -239,6 +244,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	vm.collectSalary = collectSalary;
 	vm.destroyBoss = destroyBoss;
 	vm.getMissions = getMissions;
+	vm.doCollectSalaries = doCollectSalaries;
 
 	activate();
 	
@@ -398,6 +404,14 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 			});
 		}
 	}
+	
+	function doCollectSalaries() {
+		EntityService.filleSrv.doCollectSalaries(function() {
+			// nothing to do
+		}, function(response) {
+			console.debug(response.data);
+		});
+	}
 }
 
 ModalLoginController.$inject = ['$uibModalInstance', 'GameService'];
@@ -499,7 +513,8 @@ heroesApp.component('girlSalaryWidget', {
 	controllerAs: 'vm',
 	bindings: {
 		filles: '<',
-		onCollect: '&'
+		onCollect: '&',
+		onDoCollect: '&'
 	}
 });
 
@@ -510,6 +525,7 @@ function GirlSalaryWidgetController() {
 	vm.totalSalaryPerHour = 0;
 	vm.collectableSalary = 0;
 	vm.collect = collect;
+	vm.doCollect = doCollect;
 	
 	vm.$onInit = function() {
 		angular.forEach(vm.filles, function(fille) {
@@ -526,6 +542,10 @@ function GirlSalaryWidgetController() {
 		}, function(response) {
 			console.debug(response);
 		});
+	}
+	
+	function doCollect() {
+		vm.onDoCollect();
 	}
 }
 
