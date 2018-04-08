@@ -12,11 +12,13 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 @EnableScheduling
 public class JobExecutorConfig {
+	private static final Integer nbThread = 6;
+	
 	@Bean
 	public Executor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(2);
-		executor.setMaxPoolSize(2);
+		executor.setCorePoolSize(nbThread);
+		executor.setMaxPoolSize(nbThread);
 		executor.setQueueCapacity(500);
 		executor.setThreadNamePrefix("TaskExecutor-");
 		executor.initialize();
