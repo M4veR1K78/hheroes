@@ -238,7 +238,7 @@ public class GameService {
 				.data("who[orgasm]", String.valueOf(joueur.getOrgasm()))
 				.data("who[ego]", String.valueOf(joueur.getEgo()))
 				.data("who[x]", String.valueOf(joueur.getX().intValue()))
-				.data("who[d]", String.valueOf(joueur.getD()))
+				.data("who[d]", String.valueOf(joueur.getCurrentEgo()))
 				.data("who[nb_org]", String.valueOf(joueur.getNbOrg()))
 				.data("who[figure]", String.valueOf(joueur.getFigure()))
 				.data("who[id_arena]", joueur.getArena())

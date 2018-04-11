@@ -53,9 +53,7 @@ public class ArenaService {
 	public List<JoueurDTO> getAllJoueurs() throws IOException {
 		List<JoueurDTO> joueurs = new ArrayList<>();
 		for (int i = 0; i < NB_ARENA; i++) {
-			getJoueur(i).ifPresent(joueur -> {
-				joueurs.add(joueur);
-			});
+			getJoueur(i).ifPresent(joueurs::add);
 		}
 		return joueurs;
 	}

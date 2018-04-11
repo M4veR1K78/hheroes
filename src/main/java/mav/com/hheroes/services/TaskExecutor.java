@@ -108,10 +108,10 @@ public class TaskExecutor {
 			gameService.setCookies(gameService.login(login, password));
 		}
 
-		logger.info("Batch doArene Start");
 		List<JoueurDTO> joueurs = arenaService.getAllJoueurs();
+		logger.info(String.format("Batch doArene Start (%s players)", joueurs.size()));
 		for (JoueurDTO joueur : joueurs) {
-			String log = String.format("\tPlayer %s attacked.", joueur.getId());
+			String log = String.format("\tPlayer arena %s attacked.", joueur.getArena());
 			ResponseDTO response = arenaService.fight(joueur);
 			if (response.getSuccess()) {
 				log += String.format(" Results = %s", response.getReward().getWinner().equals(1) ? "Win" : "Loss");

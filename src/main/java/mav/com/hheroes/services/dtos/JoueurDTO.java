@@ -12,7 +12,8 @@ public class JoueurDTO {
 	
 	private Double x;
 	
-	private Double d;
+	@JsonProperty("curr_ego")
+	private Double currentEgo;
 	
 	@JsonProperty("nb_org")
 	private Integer nbOrg;
@@ -54,12 +55,12 @@ public class JoueurDTO {
 		this.x = x;
 	}
 
-	public Double getD() {
-		return d;
+	public Double getCurrentEgo() {
+		return currentEgo;
 	}
 
-	public void setD(Double d) {
-		this.d = d;
+	public void setCurrentEgo(Double d) {
+		this.currentEgo = d;
 	}
 
 	public Integer getNbOrg() {
