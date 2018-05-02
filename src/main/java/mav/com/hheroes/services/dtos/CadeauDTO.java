@@ -1,14 +1,23 @@
-package mav.com.hheroes.domain;
+package mav.com.hheroes.services.dtos;
 
-public class Cadeau {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CadeauDTO {
+	@JsonProperty("id_item")
 	private Integer id;
 	
+	@JsonProperty("name")
 	private String nom;
 	
+	@JsonProperty("value")
 	private Integer affectation;
 	
+	@JsonProperty("price")
 	private Integer prix;
 	
+	@JsonProperty("ico")
 	private String urlImage;
 
 	public String getNom() {
