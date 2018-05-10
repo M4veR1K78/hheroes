@@ -37,6 +37,7 @@ public class BossService {
 			bosses.add(create(Boss.SILVANUS, "Silvanus", 14641, 5972.48, Double.valueOf(0), 5972.48, 0, 11, "7"));
 			bosses.add(create(Boss.BREMEN, "Bremen", 16361, 6195.28, Double.valueOf(0), 6195.28, 0, 1, "8"));
 			bosses.add(create(Boss.FINALMECIA, "Finalmecia", 13395, 6394.56, Double.valueOf(0), 6394.56, 0, 12, "9"));
+			bosses.add(create(Boss.ROKO_SEISEI, "Roko Seiseï", 34003, 15704.8, Double.valueOf(0), 15704.8, 0, 7, "10"));
 		}
 		return bosses;
 	}
