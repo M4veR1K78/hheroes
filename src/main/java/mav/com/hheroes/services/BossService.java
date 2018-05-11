@@ -73,4 +73,8 @@ public class BossService {
 	public List<String> destroy(Integer id) throws IOException, ObjectNotFoundException {
 		return destroy(id, false);
 	}
+	
+	public void setGameService(GameService gameService) {
+		this.gameService = gameService;
+	}
 }

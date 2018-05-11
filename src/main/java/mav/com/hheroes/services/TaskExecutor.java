@@ -20,20 +20,19 @@ import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 public class TaskExecutor {
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@Resource
-	private GameService gameService;
+	/**
+	 * On a notre propre GameService ici pour ne pas qu'il interfere avec celui de l'application web
+	 */
+	private GameService gameService = new GameService();
 
-	@Resource
-	private FilleService filleService;
+	private FilleService filleService = new FilleService(gameService);
 
-	@Resource
-	private MissionService missionService;
+	private MissionService missionService = new MissionService(gameService);
 
-	@Resource
-	private BossService bossService;
+	private ArenaService arenaService = new ArenaService(gameService);
 	
 	@Resource
-	private ArenaService arenaService;
+	private BossService bossService;	
 	
 	@Resource
 	private UserService userService;
@@ -96,6 +95,8 @@ public class TaskExecutor {
 			logger.info("Batch doBoss login");
 			gameService.setCookies(gameService.login(login, password));
 		}
+		bossService.setGameService(gameService);
+		
 		Integer id = userService.getByEmail(login)
 				.map(user -> user.getBoss().getId())
 				.orElse(bossId);
