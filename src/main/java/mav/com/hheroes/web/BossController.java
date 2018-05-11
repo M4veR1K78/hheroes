@@ -27,12 +27,12 @@ public class BossController {
 	}
 
 	@RequestMapping(value = "/{id}/fight", method = RequestMethod.POST)
-	public ResponseDTO fight(@PathVariable String bossId) throws IOException, ObjectNotFoundException {
+	public ResponseDTO fight(@PathVariable Integer bossId) throws IOException, ObjectNotFoundException {
 		return bossService.fight(bossId);
 	}
 
 	@RequestMapping(value = "/{id}/destroy", method = RequestMethod.POST)
-	public List<String> destroyBoss(@PathVariable("id") String bossId) throws IOException, ObjectNotFoundException {
+	public List<String> destroyBoss(@PathVariable("id") Integer bossId) throws IOException, ObjectNotFoundException {
 		return bossService.destroy(bossId);
 	}
 }

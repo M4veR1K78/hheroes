@@ -9,15 +9,17 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mav.com.hheroes.services.BossService;
+import mav.com.hheroes.domain.User;
 import mav.com.hheroes.services.GameService;
+import mav.com.hheroes.services.UserService;
 import mav.com.hheroes.services.dtos.UserDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 
@@ -26,26 +28,32 @@ import mav.com.hheroes.services.exceptions.AuthenticationException;
 public class GameController {
 	@Resource
 	private GameService gameService;
+	
+	@Resource
+	private UserService userService;
 
 	@Resource
 	private HttpSession httpSession;
 
-	@Resource
-	private BossService bossService;
-
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@PostMapping(value = "/login")
 	public void login(@RequestBody UserDTO user, @RequestHeader(value="Accept-Language") String locale) throws AuthenticationException {
 		gameService.setLocale(locale);
 		httpSession.setAttribute(GameService.COOKIES, gameService.login(user.getLogin(), user.getPassword()));
 		httpSession.setAttribute(GameService.LANGUAGE, locale);
+		
+		if (!userService.getByEmail(user.getLogin()).isPresent()) {
+			userService.create(new User(user.getLogin()));
+		}
+			
+		httpSession.setAttribute(GameService.LOGIN, user.getLogin());
 	}
 
-	@RequestMapping(value = "/auth", method = RequestMethod.GET)
+	@GetMapping(value = "/auth")
 	public Boolean isAuthenticated() {
 		return httpSession.getAttribute(GameService.COOKIES) != null;
 	}
 
-	@RequestMapping(value = "/image", method = RequestMethod.GET)
+	@GetMapping(value = "/image")
 	public ResponseEntity<byte[]> getImage(@RequestParam("urlImage") String urlImage) throws IOException {
 		byte[] image = gameService.getImage(urlImage);
 

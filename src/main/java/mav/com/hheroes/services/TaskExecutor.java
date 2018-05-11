@@ -3,6 +3,8 @@ package mav.com.hheroes.services;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -18,15 +20,23 @@ import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 public class TaskExecutor {
 	private final Logger logger = Logger.getLogger(getClass());
 
-	private GameService gameService = new GameService();
+	@Resource
+	private GameService gameService;
 
-	private FilleService filleService = new FilleService(gameService);
+	@Resource
+	private FilleService filleService;
 
-	private MissionService missionService = new MissionService(gameService);
+	@Resource
+	private MissionService missionService;
 
-	private BossService bossService = new BossService(gameService);
+	@Resource
+	private BossService bossService;
 	
-	private ArenaService arenaService = new ArenaService(gameService);
+	@Resource
+	private ArenaService arenaService;
+	
+	@Resource
+	private UserService userService;
 
 	@Value("${hheroes.login}")
 	private String login;
@@ -35,10 +45,7 @@ public class TaskExecutor {
 	private String password;
 
 	@Value("${hheroes.boss}")
-	private String bossId;
-	
-	@Value("${hheroes.cronCollectSalary}")
-	private String cronCollectSalary;
+	private Integer bossId;
 
 	/**
 	 * Cette méthode de collecte des salaires des filles est appelée toutes les 20
@@ -89,9 +96,12 @@ public class TaskExecutor {
 			logger.info("Batch doBoss login");
 			gameService.setCookies(gameService.login(login, password));
 		}
+		Integer id = userService.getByEmail(login)
+				.map(user -> user.getBoss().getId())
+				.orElse(bossId);
 
-		logger.info(String.format("Batch doBoss Start (boss id = %s)", bossId));
-		bossService.destroy(bossId, true);
+		logger.info(String.format("Batch doBoss Start (boss id = %s)", id));
+		bossService.destroy(id, true);
 	}
 	
 	/**

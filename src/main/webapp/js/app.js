@@ -9,6 +9,7 @@ heroesApp.service('FilleService', FilleService)
 	.service('HeroService', HeroService)
 	.service('BossService', BossService)
 	.service('ActivityService', ActivityService)
+	.service('UserService', UserService)
 	.service('UtilService', UtilService)
 	.service('EntityService', EntityService);
 
@@ -136,6 +137,25 @@ function ActivityService($http) {
 	return service;
 }
 
+UserService.$inject = ['$http'];
+
+function UserService($http) {
+	var service = {};
+	
+	service.getMe = getMe;
+	service.update = update;
+	
+	function getMe() {
+		return $http.get('user/me');
+	}
+	
+	function update(user) {
+		return $http.put('user', user);
+	}
+	
+	return service;
+}
+
 function UtilService() {
 	var service = {};
 	
@@ -171,9 +191,9 @@ function UtilService() {
 	return service;
 }
 
-EntityService.$inject = ['GameService', 'FilleService', 'BossService', 'ShopService', 'HeroService', 'ActivityService', 'UtilService'];
+EntityService.$inject = ['GameService', 'FilleService', 'BossService', 'ShopService', 'HeroService', 'ActivityService', 'UtilService', 'UserService'];
 
-function EntityService(GameService, FilleService, BossService, ShopService, HeroService, ActivityService, UtilService) {
+function EntityService(GameService, FilleService, BossService, ShopService, HeroService, ActivityService, UtilService, UserService) {
 	var service = {
 		gameSrv: GameService,
 		filleSrv: FilleService,
@@ -181,7 +201,8 @@ function EntityService(GameService, FilleService, BossService, ShopService, Hero
 		shopSrv: ShopService,
 		heroSrv: HeroService,
 		activitySrv: ActivityService,
-		utilSrv: UtilService
+		utilSrv: UtilService,
+		userSrv: UserService
 	}
 	
 	return service;
@@ -245,6 +266,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	vm.destroyBoss = destroyBoss;
 	vm.getMissions = getMissions;
 	vm.doCollectSalaries = doCollectSalaries;
+	vm.updateUser = updateUser;
 
 	activate();
 	
@@ -273,8 +295,13 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		});
 		EntityService.bossSrv.getAll().then(function(response) {
 			vm.bosses = response.data;
+			if (vm.bosses.length) {
+				vm.bossSelected = vm.bosses[0].id;
+			}
 		});
-		
+		EntityService.userSrv.getMe().then(function(response) {
+			vm.user = response.data;
+		});
 	}
 	
 	function getMissions() {
@@ -394,7 +421,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	function destroyBoss() {
 		if (vm.bossSelected) {
 			EntityService.bossSrv.destroy(vm.bossSelected).then(function(response) {
-				vm.hero.eneryFight = 0;
+				vm.hero.energyFight = 0;
 				var rewards = response.data;
 				if (rewards.length) {
 					Notification.success({ message: '<b>Butin collecté</b> :<br><ul><li> ' + rewards.join('</li><li>') + '</li></ul>' });
@@ -407,6 +434,14 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	
 	function doCollectSalaries() {
 		EntityService.filleSrv.doCollectSalaries(function() {
+			// nothing to do
+		}, function(response) {
+			console.debug(response.data);
+		});
+	}
+	
+	function updateUser() {
+		EntityService.userSrv.update(vm.user).then(function() {
 			// nothing to do
 		}, function(response) {
 			console.debug(response.data);

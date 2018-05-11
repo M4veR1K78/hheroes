@@ -44,7 +44,7 @@ public class DomainMapper {
 		
 		if (boss != null) {
 			dto = new BossDTO();
-			dto.setId(boss.getId());
+			dto.setId(String.valueOf(boss.getId()));
 			dto.setEgo(boss.getEgo());
 			dto.setFigure(boss.getFigure());
 			dto.setD(boss.getD());

@@ -1,17 +1,14 @@
 package mav.com.hheroes.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(schema = "hheroes")
 public class Boss {
-	public static final String DARK_LORD = "1";
-	public static final String ESPION_NINJA = "2";
-	public static final String GRUNTT = "3";
-	public static final String EDWARDA = "4";
-	public static final String DONATIEN = "5";
-	public static final String SILVANUS = "6";
-	public static final String BREMEN = "7";
-	public static final String FINALMECIA = "8";
-	public static final String ROKO_SEISEI = "9";
-	
-	private String id;
+	@Id
+	private Integer id;
 	
 	private Integer orgasm;
 	
@@ -37,11 +34,11 @@ public class Boss {
 		this.world = world;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	

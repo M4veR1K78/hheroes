@@ -45,6 +45,7 @@ public class GameService {
 	public static final String LANGUAGE = "lang";
 	private static final String STAY_ONLINE = "stay_online";
 	private static final String DEFAULT_LOCALE = "fr-FR";
+	public static final String LOGIN = "login";
 
 	private String locale;
 	private Map<String, String> cookies;
