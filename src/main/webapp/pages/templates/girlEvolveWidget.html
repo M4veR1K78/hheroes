@@ -1,6 +1,6 @@
 <div class="info-box bg-aqua">
 	<span class="info-box-icon" style="line-height:normal;">
-		<img ng-if="vm.fille.avatar" ng-src="{{ ::'data:image/png;base64,' + vm.fille.avatar }}" style="object-fit: contain;"/>
+		<img ng-if="vm.fille.avatar" ng-src="image?urlImage={{ ::vm.fille.avatar }}" style="object-fit: contain;"/>
 	</span>
 	
 	<div class="info-box-content">

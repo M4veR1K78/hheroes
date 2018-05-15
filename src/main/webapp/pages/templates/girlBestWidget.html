@@ -4,7 +4,7 @@
 		<h5 class="widget-user-desc">{{ ::vm.fille.name }}</h5>
 	</div>
 	<div class="widget-user-image">
-		<img class="img-circle" ng-src="{{ ::'data:image/png;base64,' + vm.fille.avatar }}" alt="{{ ::vm.fille.name }}">
+		<img class="img-circle" ng-src="image?urlImage={{ ::vm.fille.avatar }}" alt="{{ ::vm.fille.name }}">
 	</div>
 	<div class="box-footer">
 		<div class="row">

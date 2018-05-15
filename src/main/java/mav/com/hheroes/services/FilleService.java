@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
@@ -71,12 +70,8 @@ public class FilleService {
 			fille.setCollectable(leftListInfo.select(".salary.loads>button").text().trim().isEmpty());
 			String avatarUrl = leftListInfo.select(".left img").attr("src");
 
-			try {
-				fille.setAvatar(Base64.encodeBase64String(gameService.getGirlImage(avatarUrl)));
-			} catch (IOException e) {
-				logger.warn(
-						String.format("Wasn't able to retrieve %s avatar. Url is : %s", fille.getName(), avatarUrl));
-			}
+			fille.setAvatar(avatarUrl);
+			
 
 			// retour à la liste de droite
 			Element typeElement = girl.select("h3 span[carac]").get(0);

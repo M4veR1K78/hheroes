@@ -621,5 +621,6 @@ heroesApp.component('headerWidget', {
 	controllerAs: 'vm',
 	bindings: {
 		hero: '<',
+		nbFilles: '<'
 	}
 });

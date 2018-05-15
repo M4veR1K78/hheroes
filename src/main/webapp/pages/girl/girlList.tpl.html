@@ -5,6 +5,7 @@
 		<th class="text-center">Spécialité</th>
 		<th class="text-center">Grade</th>
 		<th class="text-center">Salaire par heure</th>
+		<th class="text-center">Salaire</th>
 		<th class="text-center">Exp. restante</th>
 		<th class="text-center">Aff. restante</th>
 		<th>Position favorite</th>
@@ -17,13 +18,14 @@
 	</thead>
 	<tbody class="align-middle">
 		<tr ng-repeat="fille in vm.filles | filter:vm.search track by fille.id">
-			<td class="text-center"><img ng-src="{{ ::'data:image/png;base64,' + fille.avatar }}" width="60px" height="60px" /></td>
+			<td class="text-center"><img ng-src="image?urlImage={{fille.avatar}}" width="60px" height="60px" /></td>
 			<td class="align-middle">{{ ::fille.name }} <span class="badge badge-secondary" title="Niveau">{{ ::fille.level }}</span></td>
 			<td class="text-center align-middle">
 				<img ng-src="img/carac{{ fille.typeId }}.png" width="20px" /> {{ ::fille.type }}
 			</td>
 			<td class="text-center align-middle"><a href class="btn btn-link" ng-click="vm.openModalAvatar(fille)">{{ ::fille.grade }}</a></td>
 			<td class="text-center align-middle">{{ ::fille.salaryPerHour }}</td>
+			<td class="text-center align-middle">{{ ::fille.salary }}</td>
 			<td class="text-center align-middle">{{ ::fille.expLeftNextLevel }}</td>
 			<td class="text-center align-middle">{{ ::fille.affLeftNextLevel }}</td>
 			<td class="align-middle">{{ ::fille.favoritePosition }}</td>

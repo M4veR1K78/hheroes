@@ -118,13 +118,7 @@ public class GameService {
 	}
 
 	public byte[] getAvatar(Integer girlId, Integer grade) throws IOException {
-		Response resultImageResponse = Jsoup
-				.connect(String.format("%s/pictures/girls/%s/ava%s.png", URL_HHEROES_CONTENT, girlId, grade))
-				.cookies(getCookies())
-				.ignoreContentType(true)
-				.execute();
-
-		return resultImageResponse.bodyAsBytes();
+		return getImage(String.format("%s/pictures/girls/%s/ava%s.png", URL_HHEROES_CONTENT, girlId, grade));
 	}
 
 	public byte[] getImage(String urlImage) throws IOException {
