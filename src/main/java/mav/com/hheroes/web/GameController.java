@@ -41,9 +41,9 @@ public class GameController {
 		httpSession.setAttribute(GameService.COOKIES, gameService.login(user.getLogin(), user.getPassword()));
 		httpSession.setAttribute(GameService.LANGUAGE, locale);
 		
-		/*if (!userService.getByEmail(user.getLogin()).isPresent()) {
+		if (!userService.getByEmail(user.getLogin()).isPresent()) {
 			userService.create(new User(user.getLogin()));
-		}*/
+		}
 			
 		httpSession.setAttribute(GameService.LOGIN, user.getLogin());
 	}
