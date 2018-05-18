@@ -20,8 +20,8 @@ public class HeroService {
 	@Resource
 	private GameService gameService;
 		
-	public Hero getHero() throws IOException {
-		Document home = gameService.getHome();
+	public Hero getHero(String login) throws IOException {
+		Document home = gameService.getHome(login);
 		String heroJson = "";
 		
 		Elements select = home.select("script");

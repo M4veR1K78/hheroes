@@ -47,8 +47,8 @@ public class FilleService {
 		this.gameService = gameService;
 	}
 
-	public List<Fille> getFilles() throws IOException {
-		Document harem = gameService.getHarem();
+	public List<Fille> getFilles(String login) throws IOException {
+		Document harem = gameService.getHarem(login);
 
 		harem.outputSettings().escapeMode(EscapeMode.base);
 		harem.outputSettings().charset(Charset.defaultCharset());
@@ -113,20 +113,20 @@ public class FilleService {
 		return filles;
 	}
 
-	public SalaryDTO collectSalary(Integer filleId) throws IOException {
-		return gameService.getSalary(filleId);
+	public SalaryDTO collectSalary(Integer filleId, String login) throws IOException {
+		return gameService.getSalary(filleId, login);
 	}
 
-	public byte[] getAvatarImage(Integer filleId, Integer grade) throws IOException {
-		return gameService.getAvatar(filleId, grade);
+	public byte[] getAvatarImage(Integer filleId, Integer grade, String login) throws IOException {
+		return gameService.getAvatar(filleId, grade, login);
 	}
 	
-	public double collectAllSalaries() throws IOException {
-		return getFilles().stream()
+	public double collectAllSalaries(String login) throws IOException {
+		return getFilles(login).stream()
 				.filter(Fille::isCollectable)
 				.peek(fille -> {
 					try {
-						collectSalary(fille.getId());
+						collectSalary(fille.getId(), login);
 					} catch (IOException e) {
 						logger.error(e);
 					}
@@ -243,12 +243,12 @@ public class FilleService {
 	 * @throws IOException
 	 */
 	@Async
-	public void doCollectAllSalaries() throws IOException {	
+	public void doCollectAllSalaries(String login) throws IOException {	
 		if (!autoCollect) {
 			autoCollect = true;
 			
 			while (autoCollect) {
-				collectAllSalaries();
+				collectAllSalaries(login);
 				try {
 					// toutes les 15 minutes
 					Thread.sleep(15  * 60 * 1000L);

@@ -7,6 +7,7 @@ import java.net.URLConnection;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ import mav.com.hheroes.services.exceptions.AuthenticationException;
 public class GameController {
 	@Resource
 	private GameService gameService;
-	
+
 	@Resource
 	private UserService userService;
 
@@ -36,15 +37,16 @@ public class GameController {
 	private HttpSession httpSession;
 
 	@PostMapping(value = "/login")
-	public void login(@RequestBody UserDTO user, @RequestHeader(value="Accept-Language") String locale) throws AuthenticationException {
+	public void login(@RequestBody UserDTO user, @RequestHeader(value = "Accept-Language") String locale)
+			throws AuthenticationException {
 		gameService.setLocale(locale);
 		httpSession.setAttribute(GameService.COOKIES, gameService.login(user.getLogin(), user.getPassword()));
 		httpSession.setAttribute(GameService.LANGUAGE, locale);
-		
+
 		if (!userService.getByEmail(user.getLogin()).isPresent()) {
 			userService.create(new User(user.getLogin()));
 		}
-			
+
 		httpSession.setAttribute(GameService.LOGIN, user.getLogin());
 	}
 
@@ -55,10 +57,13 @@ public class GameController {
 
 	@GetMapping(value = "/image")
 	public ResponseEntity<byte[]> getImage(@RequestParam("urlImage") String urlImage) throws IOException {
-		byte[] image = gameService.getImage(urlImage);
+		byte[] image = gameService.getImage(urlImage, httpSession.getAttribute(GameService.LOGIN).toString());
 
-		String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(image));
-
-		return ResponseEntity.ok().contentType(MediaType.valueOf(contentType)).body(image);
+		if (image != null) {
+			String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(image));
+			return ResponseEntity.ok().contentType(MediaType.valueOf(contentType)).body(image);
+		} else {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+		}
 	}
 }

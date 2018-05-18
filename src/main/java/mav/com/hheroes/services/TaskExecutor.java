@@ -55,12 +55,12 @@ public class TaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronCollectSalary}")
 	public void collectSalary() throws IOException, AuthenticationException {
-		if (gameService.getCookies() == null) {
+		if (gameService.getCookies(login) == null) {
 			logger.info("Batch collectSalary login");
-			gameService.setCookies(gameService.login(login, password));
+			gameService.login(login, password);
 		}
 		
-		Double salaire = filleService.collectAllSalaries();
+		Double salaire = filleService.collectAllSalaries(login);
 
 		logger.info(String.format("Batch collectSalary has been executed, %s $ collected", salaire));
 	}
@@ -75,11 +75,11 @@ public class TaskExecutor {
 	@Async
 	@Scheduled(cron = "${hheroes.cronDoMissions}")
 	public void doMissions() throws IOException, AuthenticationException {
-		if (gameService.getCookies() == null) {
+		if (gameService.getCookies(login) == null) {
 			logger.info("Batch doMissions login");
-			gameService.setCookies(gameService.login(login, password));
+			gameService.login(login, password);
 		}
-		missionService.doAllMissions(true);
+		missionService.doAllMissions(login, true);
 	}
 
 	/**
@@ -91,9 +91,9 @@ public class TaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronDoBoss}")
 	public void doBoss() throws IOException, AuthenticationException, ObjectNotFoundException {
-		if (gameService.getCookies() == null) {
+		if (gameService.getCookies(login) == null) {
 			logger.info("Batch doBoss login");
-			gameService.setCookies(gameService.login(login, password));
+			gameService.login(login, password);
 		}
 		bossService.setGameService(gameService);
 		
@@ -102,7 +102,7 @@ public class TaskExecutor {
 				.orElse(bossId);
 
 		logger.info(String.format("Batch doBoss Start (boss id = %s)", id));
-		bossService.destroy(id, true);
+		bossService.destroy(id, login, true);
 	}
 	
 	/**
@@ -114,16 +114,16 @@ public class TaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronDoArena}")
 	public void doArena() throws IOException, AuthenticationException, ObjectNotFoundException {
-		if (gameService.getCookies() == null) {
+		if (gameService.getCookies(login) == null) {
 			logger.info("Batch doArene login");
-			gameService.setCookies(gameService.login(login, password));
+			gameService.login(login, password);
 		}
 
-		List<JoueurDTO> joueurs = arenaService.getAllJoueurs();
+		List<JoueurDTO> joueurs = arenaService.getAllJoueurs(login);
 		logger.info(String.format("Batch doArene Start (%s players)", joueurs.size()));
 		for (JoueurDTO joueur : joueurs) {
 			String log = String.format("\tPlayer arena %s attacked.", joueur.getArena());
-			ResponseDTO response = arenaService.fight(joueur);
+			ResponseDTO response = arenaService.fight(joueur, login);
 			if (response.getSuccess()) {
 				log += String.format(" Results = %s", response.getReward().getWinner().equals(1) ? "Win" : "Loss");
 			}

@@ -28,8 +28,8 @@ public class ArenaService {
 		this.gameService = gameService;
 	}
 	
-	public Optional<JoueurDTO> getJoueur(int numArena) throws IOException {
-		Document arena = gameService.getBattle(numArena);
+	public Optional<JoueurDTO> getJoueur(int numArena, String login) throws IOException {
+		Document arena = gameService.getBattle(numArena, login);
 		String joueurJson = "";
 		List<JoueurDTO> joueurs = new ArrayList<>();
 		
@@ -46,14 +46,14 @@ public class ArenaService {
 		return (joueurs.size() > 1) ? Optional.of(joueurs.get(1)) : Optional.empty();	
 	}
 	
-	public ResponseDTO fight(JoueurDTO joueur) throws IOException {
-		return gameService.fightJoueur(joueur);
+	public ResponseDTO fight(JoueurDTO joueur, String login) throws IOException {
+		return gameService.fightJoueur(joueur, login);
 	}
 	
-	public List<JoueurDTO> getAllJoueurs() throws IOException {
+	public List<JoueurDTO> getAllJoueurs(String login) throws IOException {
 		List<JoueurDTO> joueurs = new ArrayList<>();
 		for (int i = 0; i < NB_ARENA; i++) {
-			getJoueur(i).ifPresent(joueurs::add);
+			getJoueur(i, login).ifPresent(joueurs::add);
 		}
 		return joueurs;
 	}

@@ -30,8 +30,8 @@ public class MissionService {
 		this.gameService = gameService;
 	}
 
-	public List<Mission> getMissions() throws IOException {
-		Document activiteMission = gameService.getMissions();
+	public List<Mission> getMissions(String login) throws IOException {
+		Document activiteMission = gameService.getMissions(login);
 		List<Mission> missions = new ArrayList<>();
 
 		Elements select = activiteMission.select(".missions_wrap .mission_object");
@@ -67,8 +67,8 @@ public class MissionService {
 		return missions;
 	}
 
-	public void acceptMission(Mission mission) throws IOException {
-		gameService.acceptMission(mission);
+	public void acceptMission(Mission mission, String login) throws IOException {
+		gameService.acceptMission(mission, login);
 	}
 
 	/**
@@ -78,12 +78,12 @@ public class MissionService {
 	 * @throws IOException
 	 */
 	@Async
-	public void doAllMissions(boolean log) throws IOException {
+	public void doAllMissions(String login, boolean log) throws IOException {
 		UUID uuid = UUID.randomUUID();
 
 		logger.info(String.format("Batch doMissions Start (id: %s)", uuid));
 
-		List<Mission> missions = getMissions();
+		List<Mission> missions = getMissions(login);
 		while (!missions.isEmpty() && !allFinished(missions)) {
 			Optional<Mission> findAny = missions.stream()
 					.filter(mission -> StatutMission.PRETE.equals(mission.getStatut()))
@@ -91,7 +91,7 @@ public class MissionService {
 
 			if (findAny.isPresent()) {
 				Mission mission = findAny.get();
-				acceptMission(mission);
+				acceptMission(mission, login);
 				if (log) {
 					logger.info(String.format("Executing mission %s and sleeping %s secondes...", mission.getId(),
 							mission.getDuree()));
@@ -113,7 +113,7 @@ public class MissionService {
 				}
 			}
 
-			missions = getMissions();
+			missions = getMissions(login);
 		}
 
 		logger.info(String.format("Batch doMissions end  (id: %s)", uuid));
@@ -125,8 +125,8 @@ public class MissionService {
 	 * @throws IOException
 	 */
 	@Async
-	public void doAllMissions() throws IOException {
-		doAllMissions(false);
+	public void doAllMissions(String login) throws IOException {
+		doAllMissions(login, false);
 	}
 
 	private boolean allFinished(List<Mission> missions) {

@@ -38,42 +38,42 @@ public class BossService {
 
 	public Boss getBoss(Integer id) throws ObjectNotFoundException {
 		Optional<Boss> boss = bossRepository.findById(id);
-		
+
 		if (!boss.isPresent()) {
 			throw new ObjectNotFoundException(String.format("Le boss d'ID %s n'existe pas", id));
 		}
-		
+
 		return boss.get();
 	}
 
-	public ResponseDTO fight(Boss boss) throws IOException {
-		return gameService.fightBoss(DomainMapper.asBossDTO(boss));
+	public ResponseDTO fight(Boss boss, String login) throws IOException {
+		return gameService.fightBoss(DomainMapper.asBossDTO(boss), login);
 	}
 
-	public ResponseDTO fight(Integer id) throws IOException, ObjectNotFoundException {
-		return fight(getBoss(id));
+	public ResponseDTO fight(Integer id, String login) throws IOException, ObjectNotFoundException {
+		return fight(getBoss(id), login);
 	}
 
-	public List<String> destroy(Integer id, boolean log) throws IOException, ObjectNotFoundException {
+	public List<String> destroy(Integer id, String login, boolean log) throws IOException, ObjectNotFoundException {
 		List<String> rewards = new ArrayList<>();
 		Boss boss = getBoss(id);
 
-		ResponseDTO response = fight(boss);
+		ResponseDTO response = fight(boss, login);
 		while (response.getSuccess()) {
 			rewards.add(response.getReward().getDrops());
 			if (log) {
 				logger.info(String.format("\tCollected from %s : %s", boss.getLibelle(), response.getReward()));
 			}
-			response = fight(boss);
+			response = fight(boss, login);
 		}
 
 		return rewards;
 	}
 
-	public List<String> destroy(Integer id) throws IOException, ObjectNotFoundException {
-		return destroy(id, false);
+	public List<String> destroy(Integer id, String login) throws IOException, ObjectNotFoundException {
+		return destroy(id, login, false);
 	}
-	
+
 	public void setGameService(GameService gameService) {
 		this.gameService = gameService;
 	}

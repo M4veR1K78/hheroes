@@ -35,8 +35,8 @@ public class AuthenticationFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
 		if (httpSession.getAttribute(GameService.COOKIES) != null) {
-			if (gameService.getCookies() == null) {
-				gameService.setCookies((Map<String, String>) httpSession.getAttribute(GameService.COOKIES));
+			if (gameService.getCookies(httpSession.getAttribute(GameService.LOGIN).toString()) == null) {
+				gameService.setCookies(httpSession.getAttribute(GameService.LOGIN).toString(), (Map<String, String>) httpSession.getAttribute(GameService.COOKIES));
 			}
 			filterChain.doFilter(request, response);
 		} else {

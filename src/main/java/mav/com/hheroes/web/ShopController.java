@@ -3,6 +3,9 @@ package mav.com.hheroes.web;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +26,18 @@ public class ShopController {
 
 	@Autowired
 	private GameService gameService;
+	
+	@Resource
+	private HttpSession httpSession;
 
 	@RequestMapping(value = "/gifts", method = RequestMethod.GET)
 	public List<Cadeau> getCadeaux() throws IOException {
-		return shopService.getCadeauAvailable(gameService.getShop());
+		return shopService.getCadeauAvailable(gameService.getShop(httpSession.getAttribute(GameService.LOGIN).toString()));
 	}
 	
 	@RequestMapping(value = "/gifts/image", method = RequestMethod.GET, produces = "image/png")
 	public ResponseEntity<byte[]> getAvatar(@RequestParam("urlImage") String urlImage) throws IOException {
-		byte[] image = gameService.getImage(urlImage);
+		byte[] image = gameService.getImage(urlImage, httpSession.getAttribute(GameService.LOGIN).toString());
 		return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
 	}
 }

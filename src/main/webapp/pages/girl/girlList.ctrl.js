@@ -16,6 +16,7 @@
 		var vm = this;
 		vm.search = {};
 		vm.dtColumnDefs = [];
+		vm.dtInstance = {};
 		vm.dtOptions = [];
 		vm.nbHardcore = 0;
 		vm.nbCharme = 0;
@@ -44,12 +45,23 @@
 		$.fn.dataTableExt.oSort['classement-desc'] = sortClassement(false);
 		
 		function activate() {
+			vm.currentPage = 0;
+			
 			vm.dtOptions = DTOptionsBuilder.newOptions()
 				.withPaginationType('full_numbers')
 				.withOption('order', [])
 				.withOption('language', UtilService.getDTTLangues())
 				.withDisplayLength(10)
 				.withOption('deferRender', true)
+				.withOption('initComplete', function() {
+					if(vm.dtInstance.DataTable) {
+						vm.dtInstance.DataTable.on('page.dt', function () {
+				            $scope.$apply(function() {
+				            	vm.currentPage = vm.dtInstance.DataTable.page();
+				            });
+				        });
+					}
+				})
 				.withBootstrap();
 			
 			vm.dtColumnDefs = [
@@ -61,6 +73,7 @@
 		}
 		
 		function openModalAvatar(fille) {
+			console.log(vm.dtInstance.DataTable.rows(), vm.dtInstance.DataTable.page());
 			var modalInstance = $uibModal.open({
 				animation : true,
 				ariaLabelledBy : 'modal-title',
