@@ -44,6 +44,10 @@ public class Fille {
 	private Double expertiseBaseValue;
 	
 	private Integer expertiseRanking;
+	
+	private Integer payTime;
+	
+	private Integer payIn;
 
 	public String getName() {
 		return name;
@@ -229,5 +233,21 @@ public class Fille {
 
 	public void setExpertiseBaseValue(Double expertiseBaseValue) {
 		this.expertiseBaseValue = expertiseBaseValue;
+	}
+
+	public Integer getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Integer payTime) {
+		this.payTime = payTime;
+	}
+
+	public Integer getPayIn() {
+		return payIn;
+	}
+
+	public void setPayIn(Integer payIn) {
+		this.payIn = payIn;
 	}
 }

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,8 +25,11 @@ import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.domain.Skill;
+import mav.com.hheroes.services.dtos.FilleDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 
 @Service
@@ -40,7 +44,7 @@ public class FilleService {
 
 	@Resource
 	private GameService gameService;
-	
+
 	public static boolean autoCollect;
 
 	public FilleService(GameService gameService) {
@@ -71,7 +75,6 @@ public class FilleService {
 			String avatarUrl = leftListInfo.select(".left img").attr("src");
 
 			fille.setAvatar(avatarUrl);
-			
 
 			// retour à la liste de droite
 			Element typeElement = girl.select("h3 span[carac]").get(0);
@@ -109,6 +112,35 @@ public class FilleService {
 
 			filles.add(fille);
 		});
+
+		Elements select = harem.select("script");
+		List<FilleDTO> dtos = new ArrayList<>();
+		for (Element script : select) {
+			if (script.html().contains("var girls = {};")) {
+				String girls = script.html()
+						.substring(script.html().indexOf("var girls = {};"),
+								script.html().indexOf("// the selected girl //"));
+				
+				Arrays.asList(girls.split("\\n")).stream()
+						.filter(line -> line.contains("new Girl"))
+						.forEach(line -> {
+							String filleJson = line.replaceAll("(?s).*new Girl\\((.+?)\\);.*", "$1");
+							try {
+								dtos.add(new ObjectMapper().readValue(filleJson, FilleDTO.class));
+							} catch (IOException e) {
+								// nothing to do
+							}
+						});
+			}
+		}
+		
+		filles.stream().forEach(fille -> {
+			dtos.stream().filter(dto -> dto.getIdGirl().equals(fille.getId())).findFirst().ifPresent(dto -> {
+				fille.setPayTime(dto.getPayTime());
+				fille.setPayIn(dto.getPayIn());
+			});
+		});
+
 		rankGirls(filles);
 		return filles;
 	}
@@ -120,7 +152,7 @@ public class FilleService {
 	public byte[] getAvatarImage(Integer filleId, Integer grade, String login) throws IOException {
 		return gameService.getAvatar(filleId, grade, login);
 	}
-	
+
 	public double collectAllSalaries(String login) throws IOException {
 		return getFilles(login).stream()
 				.filter(Fille::isCollectable)
@@ -236,26 +268,30 @@ public class FilleService {
 				.setScale(2, RoundingMode.HALF_UP)
 				.doubleValue();
 	}
-	
+
 	/**
 	 * Collecte les salaires à l'infini.
 	 * 
 	 * @throws IOException
 	 */
 	@Async
-	public void doCollectAllSalaries(String login) throws IOException {	
+	public void doCollectAllSalaries(String login) throws IOException {
 		if (!autoCollect) {
 			autoCollect = true;
-			
+
 			while (autoCollect) {
 				collectAllSalaries(login);
 				try {
 					// toutes les 15 minutes
-					Thread.sleep(15  * 60 * 1000L);
+					Thread.sleep(15 * 60 * 1000L);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
+	}
+	
+	public GameService getGameService() {
+		return gameService;
 	}
 }

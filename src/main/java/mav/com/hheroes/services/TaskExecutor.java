@@ -1,8 +1,13 @@
 package mav.com.hheroes.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -11,8 +16,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
+import mav.com.hheroes.services.dtos.UserDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 
@@ -45,6 +52,8 @@ public class TaskExecutor {
 
 	@Value("${hheroes.boss}")
 	private Integer bossId;
+	
+	List<ScheduledExecutorService> threads = new ArrayList<>();
 
 	/**
 	 * Cette méthode de collecte des salaires des filles est appelée toutes les 20
@@ -53,7 +62,7 @@ public class TaskExecutor {
 	 * @throws IOException
 	 * @throws AuthenticationException
 	 */
-	@Scheduled(cron = "${hheroes.cronCollectSalary}")
+	/*@Scheduled(cron = "${hheroes.cronCollectSalary}")
 	public void collectSalary() throws IOException, AuthenticationException {
 		if (gameService.getCookies(login) == null) {
 			logger.info("Batch collectSalary login");
@@ -63,6 +72,23 @@ public class TaskExecutor {
 		Double salaire = filleService.collectAllSalaries(login);
 
 		logger.info(String.format("Batch collectSalary has been executed, %s $ collected", salaire));
+	}*/
+	
+	@Scheduled(cron = "${hheroes.cronCollectSalary}")
+	public void collectSalary() throws IOException, AuthenticationException {
+		if (gameService.getCookies(login) == null) {
+			logger.info("Batch collectSalary login");
+			gameService.login(login, password);
+		}
+		
+		filleService.getFilles(login).stream()
+			.filter(Fille::isCollectable)
+			.map(fille -> {
+				logger.info(String.format("Starting thread for %s. Collect every %ss", fille.getName(), fille.getPayTime()));
+				ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+				scheduler.scheduleAtFixedRate(new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)), fille.getPayIn(), fille.getPayTime(), TimeUnit.SECONDS);
+				return scheduler;
+			}).forEach(threads::add);
 	}
 
 	/**
@@ -132,5 +158,10 @@ public class TaskExecutor {
 		if (joueurs.isEmpty()) {
 			logger.info("\tNo fight to do...");
 		}
+	}
+	
+	@PreDestroy
+	public void close() {
+		threads.stream().forEach(ScheduledExecutorService::shutdownNow);
 	}
 }
