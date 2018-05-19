@@ -1,8 +1,11 @@
 package mav.com.hheroes.services;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +19,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.dtos.UserDTO;
@@ -53,27 +55,15 @@ public class TaskExecutor {
 	@Value("${hheroes.boss}")
 	private Integer bossId;
 	
-	List<ScheduledExecutorService> threads = new ArrayList<>();
+	private Map<Integer, ScheduledExecutorService> threads = new HashMap<>();
+
 
 	/**
-	 * Cette méthode de collecte des salaires des filles est appelée toutes les 20
-	 * minutes.
+	 * Collecte des salaires.
 	 * 
 	 * @throws IOException
 	 * @throws AuthenticationException
 	 */
-	/*@Scheduled(cron = "${hheroes.cronCollectSalary}")
-	public void collectSalary() throws IOException, AuthenticationException {
-		if (gameService.getCookies(login) == null) {
-			logger.info("Batch collectSalary login");
-			gameService.login(login, password);
-		}
-		
-		Double salaire = filleService.collectAllSalaries(login);
-
-		logger.info(String.format("Batch collectSalary has been executed, %s $ collected", salaire));
-	}*/
-	
 	@Scheduled(cron = "${hheroes.cronCollectSalary}")
 	public void collectSalary() throws IOException, AuthenticationException {
 		if (gameService.getCookies(login) == null) {
@@ -82,13 +72,13 @@ public class TaskExecutor {
 		}
 		
 		filleService.getFilles(login).stream()
-			.filter(Fille::isCollectable)
-			.map(fille -> {
-				logger.info(String.format("Starting thread for %s. Collect every %ss", fille.getName(), fille.getPayTime()));
+			.filter(fille -> !threads.containsKey(fille.getId()))
+			.forEach(fille -> {
+				logger.info(String.format("Starting thread for %s. Collect every %s", fille.getName(), LocalTime.MIN.plusSeconds(fille.getPayTime()).toString()));
 				ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-				scheduler.scheduleAtFixedRate(new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)), fille.getPayIn(), fille.getPayTime(), TimeUnit.SECONDS);
-				return scheduler;
-			}).forEach(threads::add);
+				scheduler.scheduleAtFixedRate(new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)), fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS);
+				threads.put(fille.getId(), scheduler);
+			});
 	}
 
 	/**
@@ -162,6 +152,6 @@ public class TaskExecutor {
 	
 	@PreDestroy
 	public void close() {
-		threads.stream().forEach(ScheduledExecutorService::shutdownNow);
+		threads.entrySet().stream().map(Entry::getValue).forEach(ScheduledExecutorService::shutdownNow);
 	}
 }
