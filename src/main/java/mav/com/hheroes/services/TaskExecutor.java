@@ -1,14 +1,11 @@
 package mav.com.hheroes.services;
 
 import java.io.IOException;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
-import mav.com.hheroes.services.dtos.UserDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 
@@ -59,7 +55,8 @@ public class TaskExecutor {
 
 
 	/**
-	 * Collecte des salaires.
+	 * Cette méthode de collecte des salaires des filles est appelée toutes les X
+	 * minutes.
 	 * 
 	 * @throws IOException
 	 * @throws AuthenticationException
@@ -71,14 +68,9 @@ public class TaskExecutor {
 			gameService.login(login, password);
 		}
 		
-		filleService.getFilles(login).stream()
-			.filter(fille -> !threads.containsKey(fille.getId()))
-			.forEach(fille -> {
-				logger.info(String.format("Starting thread for %s. Collect every %s", fille.getName(), LocalTime.MIN.plusSeconds(fille.getPayTime()).toString()));
-				ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-				scheduler.scheduleAtFixedRate(new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)), fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS);
-				threads.put(fille.getId(), scheduler);
-			});
+		Double salaire = filleService.collectAllSalaries(login);
+
+		logger.info(String.format("Batch collectSalary has been executed, %s $ collected", salaire));
 	}
 
 	/**
