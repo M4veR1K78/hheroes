@@ -66,9 +66,9 @@
 			
 			vm.dtColumnDefs = [
 		        DTColumnDefBuilder.newColumnDef(0).notSortable().withOption('width', '60px'),
-		        DTColumnDefBuilder.newColumnDef(5).withOption('type', 'exp-left'),
 		        DTColumnDefBuilder.newColumnDef(6).withOption('type', 'exp-left'),
-		        DTColumnDefBuilder.newColumnDef(11).withOption('type', 'classement')
+		        DTColumnDefBuilder.newColumnDef(7).withOption('type', 'exp-left'),
+		        DTColumnDefBuilder.newColumnDef(12).withOption('type', 'classement')
 		    ];
 		}
 		
