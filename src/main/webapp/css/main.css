@@ -28,3 +28,7 @@ body {
 .img-circle {
 	background-color: wheat;
 }
+
+.img-display {
+	line-height: normal;
+}

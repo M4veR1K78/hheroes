@@ -1,4 +1,4 @@
-package mav.com.hheroes.services;
+package mav.com.hheroes.services.tasks;
 
 import java.io.IOException;
 import java.time.LocalTime;
@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
@@ -19,6 +20,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import mav.com.hheroes.domain.Fille;
+import mav.com.hheroes.services.ArenaService;
+import mav.com.hheroes.services.BossService;
+import mav.com.hheroes.services.FilleService;
+import mav.com.hheroes.services.GameService;
+import mav.com.hheroes.services.MissionService;
+import mav.com.hheroes.services.SalaryTask;
+import mav.com.hheroes.services.UserService;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.dtos.UserDTO;
@@ -30,7 +39,8 @@ public class TaskExecutor {
 	private final Logger logger = Logger.getLogger(getClass());
 
 	/**
-	 * On a notre propre GameService ici pour ne pas qu'il interfere avec celui de l'application web
+	 * On a notre propre GameService ici pour ne pas qu'il interfere avec celui de
+	 * l'application web
 	 */
 	private GameService gameService = new GameService();
 
@@ -39,10 +49,10 @@ public class TaskExecutor {
 	private MissionService missionService = new MissionService(gameService);
 
 	private ArenaService arenaService = new ArenaService(gameService);
-	
+
 	@Resource
-	private BossService bossService;	
-	
+	private BossService bossService;
+
 	@Resource
 	private UserService userService;
 
@@ -54,8 +64,8 @@ public class TaskExecutor {
 
 	@Value("${hheroes.boss}")
 	private Integer bossId;
-	
-	private Map<Integer, ScheduledExecutorService> threads = new HashMap<>();
+
+	private Map<Integer, SchedulerInfo> threads = new HashMap<>();
 
 	/**
 	 * Collecte des salaires.
@@ -69,14 +79,36 @@ public class TaskExecutor {
 			logger.info("Batch collectSalary login");
 			gameService.login(login, password);
 		}
-		
-		filleService.getFilles(login).stream()
-			.filter(fille -> !threads.containsKey(fille.getId()))
-			.forEach(fille -> {
-				logger.info(String.format("Starting thread for %s. Collect every %s", fille.getName(), LocalTime.MIN.plusSeconds(fille.getPayTime()).toString()));
-				ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-				scheduler.scheduleWithFixedDelay(new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)), fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS);
-				threads.put(fille.getId(), scheduler);
+
+		List<Fille> filles = filleService.getFilles(login);
+		filles.stream()
+				.filter(fille -> !threads.containsKey(fille.getId()))
+				.forEach(fille -> {
+					logger.info(String.format("Starting thread for %s. Collect every %s", fille.getName(),
+							LocalTime.MIN.plusSeconds(fille.getPayTime()).toString()));
+					
+					ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+					ScheduledFuture<?> response = scheduler.scheduleWithFixedDelay(
+							new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
+							fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS);
+					
+					threads.put(fille.getId(), new SchedulerInfo(scheduler, fille, response));
+				});
+
+		// on regarde parmis les threads existants si une fille a monté en grade et donc son timer a changé
+		threads.entrySet().stream()
+			.map(entry -> entry.getValue())
+			.forEach(info -> {
+				Fille fille = filles.get(filles.indexOf(info.getFille())); 
+				
+				if (!fille.getPayTime().equals(info.getFille().getPayTime())) {
+					// timer différent: on remplace la tâche existante par une nouvelle avec le nouveau délai
+					logger.info(String.format("Changing delay for %s", fille.getName()));
+					info.getResponse().cancel(false);
+					info.setResponse(info.getScheduler().scheduleWithFixedDelay(
+							new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
+							fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS));
+				}
 			});
 	}
 
@@ -111,7 +143,7 @@ public class TaskExecutor {
 			gameService.login(login, password);
 		}
 		bossService.setGameService(gameService);
-		
+
 		Integer id = userService.getByEmail(login)
 				.map(user -> user.getBoss().getId())
 				.orElse(bossId);
@@ -119,7 +151,7 @@ public class TaskExecutor {
 		logger.info(String.format("Batch doBoss Start (boss id = %s)", id));
 		bossService.destroy(id, login, true);
 	}
-	
+
 	/**
 	 * On fait les combats d'arènes toutes les 30 minutes.
 	 * 
@@ -137,20 +169,22 @@ public class TaskExecutor {
 		List<JoueurDTO> joueurs = arenaService.getAllJoueurs(login);
 		logger.info(String.format("Batch doArene Start (%s players)", joueurs.size()));
 		for (JoueurDTO joueur : joueurs) {
-			String log = String.format("\tPlayer arena %s attacked.", joueur.getArena());
 			ResponseDTO response = arenaService.fight(joueur, login);
-			if (response.getSuccess()) {
-				log += String.format(" Results = %s", response.getReward().getWinner().equals(1) ? "Win" : "Loss");
+			if (!response.getSuccess()) {
+				logger.info("\tErreur lors du combat d'arène. Success = false");
 			}
-			logger.info(log);
+			
 		}
 		if (joueurs.isEmpty()) {
 			logger.info("\tNo fight to do...");
 		}
 	}
-	
+
 	@PreDestroy
 	public void close() {
-		threads.entrySet().stream().map(Entry::getValue).forEach(ScheduledExecutorService::shutdownNow);
+		threads.entrySet().stream()
+				.map(Entry::getValue)
+				.map(SchedulerInfo::getScheduler)
+				.forEach(ScheduledExecutorService::shutdownNow);
 	}
 }

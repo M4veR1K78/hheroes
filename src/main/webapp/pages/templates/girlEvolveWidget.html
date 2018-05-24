@@ -1,6 +1,7 @@
-<div class="info-box bg-aqua">
-	<span class="info-box-icon" style="line-height:normal;">
+<div class="info-box">
+	<span class="info-box-icon bg-aqua" ng-class="{ 'img-display': vm.fille.avatar }">
 		<img ng-if="vm.fille.avatar" ng-src="image?urlImage={{ ::vm.fille.avatar }}" style="object-fit: contain;"/>
+		<i ng-if="!vm.fille.avatar" class="fa fa-trophy"></i>
 	</span>
 	
 	<div class="info-box-content">
@@ -11,7 +12,7 @@
 			<div class="progress-bar" style="width: {{ ::vm.fille.affProgress * 100 }}%"></div>
 		</div>
 		<span class="progress-description">
-			Affection restante : <b>{{ ::vm.fille.affLeftNextLevel }}</b>
+			Affection restante : <b>{{ (vm.fille.affLeftNextLevel != 99999) ? vm.fille.affLeftNextLevel : 'Aucune' }}</b>
 		</span>
 	</div>
 </div>

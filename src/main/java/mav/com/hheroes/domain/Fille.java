@@ -2,6 +2,7 @@ package mav.com.hheroes.domain;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 public class Fille {
 	public static final String LEVEL_UPGRADE = "En upgrade";
@@ -40,13 +41,13 @@ public class Fille {
 	private Double salary;
 
 	private Boolean collectable;
-	
+
 	private Double expertiseBaseValue;
-	
+
 	private Integer expertiseRanking;
-	
+
 	private Integer payTime;
-	
+
 	private Integer payIn;
 
 	public String getName() {
@@ -178,7 +179,7 @@ public class Fille {
 		if (LEVEL_MAX.equals(cumulAff) || LEVEL_UPGRADE.equals(cumulAff)) {
 			return 1.0;
 		}
-		
+
 		Double cumul = getDoubleValue(cumulAff);
 		return new BigDecimal(cumul / (cumul + getDoubleValue(affLeftNextLevel)))
 				.setScale(2, RoundingMode.HALF_UP)
@@ -250,4 +251,27 @@ public class Fille {
 	public void setPayIn(Integer payIn) {
 		this.payIn = payIn;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Fille other = (Fille) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
 }
