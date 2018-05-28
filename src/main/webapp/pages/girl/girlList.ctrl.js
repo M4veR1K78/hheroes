@@ -73,7 +73,6 @@
 		}
 		
 		function openModalAvatar(fille) {
-			console.log(vm.dtInstance.DataTable.rows(), vm.dtInstance.DataTable.page());
 			var modalInstance = $uibModal.open({
 				animation : true,
 				ariaLabelledBy : 'modal-title',

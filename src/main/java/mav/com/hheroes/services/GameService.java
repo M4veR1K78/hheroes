@@ -263,7 +263,7 @@ public class GameService {
 				.method(Method.POST)
 				.ignoreContentType(true)
 				.execute();
-		setCookies(login, data);
+		setCookies(login, res.cookies());
 		return res;
 	}
 }

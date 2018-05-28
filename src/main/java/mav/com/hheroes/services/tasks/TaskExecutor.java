@@ -108,6 +108,7 @@ public class TaskExecutor {
 					info.setResponse(info.getScheduler().scheduleWithFixedDelay(
 							new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
 							fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS));
+					info.setFille(fille);
 				}
 			});
 	}

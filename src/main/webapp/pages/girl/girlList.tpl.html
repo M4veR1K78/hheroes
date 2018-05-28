@@ -18,7 +18,7 @@
 	</thead>
 	<tbody class="align-middle">
 		<tr ng-repeat="fille in vm.filles | filter:vm.search track by fille.id">
-			<td class="text-center"><img ng-if="$index >= vm.currentPage * 10 && $index <= (vm.currentPage + 1) * 10" class="girl-avatar" ng-src="image?urlImage={{fille.avatar}}" width="60px" height="60px" /></td>
+			<td class="text-center"><img class="girl-avatar" ng-src="image?urlImage={{fille.avatar}}" width="60px" height="60px" /></td>
 			<td class="align-middle">{{ ::fille.name }} <span class="badge badge-secondary" title="Niveau">{{ ::fille.level }}</span></td>
 			<td class="text-center align-middle">
 				<img ng-src="img/carac{{ fille.typeId }}.png" width="20px" /> {{ ::fille.type }}
