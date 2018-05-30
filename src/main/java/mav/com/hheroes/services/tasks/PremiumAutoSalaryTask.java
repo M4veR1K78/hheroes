@@ -1,13 +1,14 @@
-package mav.com.hheroes.services;
+package mav.com.hheroes.services.tasks;
 
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import mav.com.hheroes.services.FilleService;
 import mav.com.hheroes.services.dtos.UserDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 
-public class SalaryTask implements Runnable {
+public class PremiumAutoSalaryTask implements Runnable {
 	private final Logger logger = Logger.getLogger(getClass());
 	
 	private FilleService filleService;
@@ -16,10 +17,10 @@ public class SalaryTask implements Runnable {
 	
 	private UserDTO user;
 	
-	public SalaryTask() {
+	public PremiumAutoSalaryTask() {
 	}
 
-	public SalaryTask(FilleService filleService, Integer girlId, UserDTO user) {
+	public PremiumAutoSalaryTask(FilleService filleService, Integer girlId, UserDTO user) {
 		this.filleService = filleService;
 		this.filleId = girlId;
 		this.user = user;

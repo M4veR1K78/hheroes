@@ -16,7 +16,11 @@ public class User {
 
 	private String email;
 	
+	private String password;
+	
 	private boolean admin;
+	
+	private boolean autoSalary;
 
 	@ManyToOne
 	private Boss boss;
@@ -25,8 +29,9 @@ public class User {
 		
 	}
 
-	public User(String email) {
+	public User(String email, String password) {
 		this.email = email;
+		this.password = password;
 	}
 
 	public Integer getId() {
@@ -59,5 +64,21 @@ public class User {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public boolean isAutoSalary() {
+		return autoSalary;
+	}
+
+	public void setAutoSalary(boolean autoSalary) {
+		this.autoSalary = autoSalary;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

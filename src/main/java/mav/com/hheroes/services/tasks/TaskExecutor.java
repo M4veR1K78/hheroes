@@ -26,7 +26,6 @@ import mav.com.hheroes.services.BossService;
 import mav.com.hheroes.services.FilleService;
 import mav.com.hheroes.services.GameService;
 import mav.com.hheroes.services.MissionService;
-import mav.com.hheroes.services.SalaryTask;
 import mav.com.hheroes.services.UserService;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
@@ -89,7 +88,7 @@ public class TaskExecutor {
 					
 					ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 					ScheduledFuture<?> response = scheduler.scheduleWithFixedDelay(
-							new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
+							new PremiumAutoSalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
 							fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS);
 					
 					threads.put(fille.getId(), new SchedulerInfo(scheduler, fille, response));
@@ -106,7 +105,7 @@ public class TaskExecutor {
 					logger.info(String.format("Changing delay for %s", fille.getName()));
 					info.getResponse().cancel(false);
 					info.setResponse(info.getScheduler().scheduleWithFixedDelay(
-							new SalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
+							new PremiumAutoSalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
 							fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS));
 					info.setFille(fille);
 				}

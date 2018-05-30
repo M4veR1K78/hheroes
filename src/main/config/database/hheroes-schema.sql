@@ -16,6 +16,7 @@ CREATE TABLE hheroes.user (
  id serial PRIMARY KEY,
  email text NOT NULL UNIQUE,
  boss_id INTEGER,
- admin boolean not null,
+ admin boolean NOT NULL,
+ auto_salary boolean NOT NULL DEFAULT false,
  FOREIGN KEY (boss_id) REFERENCES hheroes.boss (id) 
 );

@@ -14,7 +14,10 @@ public class UserDTO {
 	}
 
 	public String getLogin() {
-		return login;
+		if (login == null) {
+			return null;
+		}
+		return login.toLowerCase();
 	}
 
 	public void setLogin(String login) {

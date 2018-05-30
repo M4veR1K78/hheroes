@@ -16,7 +16,8 @@ heroesApp.service('FilleService', FilleService)
 // controllers
 heroesApp.controller('IndexController', IndexController)
 	.controller('ModalLoginController', ModalLoginController)
-	.controller('ModalAvatarController', ModalAvatarController);
+	.controller('ModalAvatarController', ModalAvatarController)
+	.controller('ModalUserController', ModalUserController);
 
 // filters
 heroesApp.filter('secondsToDateTime', secondsToDateTime)
@@ -144,6 +145,7 @@ function UserService($http) {
 	
 	service.getMe = getMe;
 	service.update = update;
+	service.toggleAutoSalary = toggleAutoSalary;
 	
 	function getMe() {
 		return $http.get('user/me');
@@ -151,6 +153,10 @@ function UserService($http) {
 	
 	function update(user) {
 		return $http.put('user', user);
+	}
+	
+	function toggleAutoSalary(user) {
+		return $http.post('user/toggleAutoSalary', user);
 	}
 	
 	return service;
@@ -617,10 +623,71 @@ heroesApp.component('heroWidget', {
 
 heroesApp.component('headerWidget', {
 	templateUrl: 'pages/templates/header.tpl.html',
-	controller: function HeaderWidgetController() { var vm = this; },
+	controller: HeaderWidgetController,
 	controllerAs: 'vm',
 	bindings: {
 		hero: '<',
 		nbFilles: '<'
 	}
 });
+
+HeaderWidgetController.$inject = ['$uibModal'];
+
+function HeaderWidgetController($uibModal) { 
+	var vm = this; 
+	vm.updateUser = updateUser;
+	
+	function updateUser() {
+		var modalInstance = $uibModal.open({
+			animation : true,
+			templateUrl : 'pages/templates/user.html',
+			controller : 'ModalUserController',
+			controllerAs : 'vm',
+			resolve : {
+				hero : function() {
+					return vm.hero;
+				}
+			}
+		});
+		
+		modalInstance.result.then(function() {
+			//
+	    });
+	}
+}
+
+ModalUserController.$inject = ['$uibModalInstance', 'UserService', 'Notification', 'hero'];
+
+function ModalUserController($uibModalInstance, UserService, Notification, hero) {
+	var vm = this; 
+	vm.hero = hero;
+	
+	vm.valider = valider;
+	vm.close = close;
+	vm.toggleAutoSalary = toggleAutoSalary;
+	
+	activate();
+	
+	function activate() {
+		UserService.getMe().then(function(response) {
+			vm.user = response.data;
+		});
+	}
+	
+	function toggleAutoSalary() {
+		UserService.toggleAutoSalary(vm.user);
+	}
+	
+	function valider() {
+		UserService.update(vm.user).then(function() {
+			$uibModalInstance.close();
+		}, function(response) {
+			Notification.error({ message: 'Erreur lors de la mise à jour de l\'utilisateur : ' + response.data.message });
+		});
+	}
+	
+	function close() {
+		$uibModalInstance.dismiss('cancel');
+	}
+	
+}
