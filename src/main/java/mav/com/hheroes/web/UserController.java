@@ -4,7 +4,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,17 +31,13 @@ public class UserController {
 		return userService.getByEmail(httpSession.getAttribute(GameService.LOGIN).toString()).orElse(null);
 	}
 	
-	@PostMapping("/toggleAutoSalary")
-	public void toggleAutoSalary(@RequestBody User user) {
+	@PutMapping
+	public void updateUser(@RequestBody User user) {
+		userService.update(user);
 		if (user.isAutoSalary()) {
 			taskManager.addTask(user);
 		} else {
 			taskManager.removeTask(user.getEmail());
 		}
-	}
-	
-	@PutMapping
-	public void updateUser(@RequestBody User user) {
-		userService.update(user);
 	}
 }

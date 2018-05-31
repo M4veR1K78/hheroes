@@ -256,8 +256,13 @@ public class GameService {
 	 * @throws IOException
 	 */
 	private Response doPost(String url, String login, Map<String, String> data) throws IOException {
+		Map<String, String> userCookies = getCookies(login);
+		if (userCookies == null) {
+			userCookies = new HashMap<>();
+		}
+		
 		Response res = Jsoup.connect(url)
-				.cookies(getCookies(login))
+				.cookies(userCookies)
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data(data)
 				.method(Method.POST)

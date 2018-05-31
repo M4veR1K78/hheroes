@@ -145,7 +145,6 @@ function UserService($http) {
 	
 	service.getMe = getMe;
 	service.update = update;
-	service.toggleAutoSalary = toggleAutoSalary;
 	
 	function getMe() {
 		return $http.get('user/me');
@@ -153,10 +152,6 @@ function UserService($http) {
 	
 	function update(user) {
 		return $http.put('user', user);
-	}
-	
-	function toggleAutoSalary(user) {
-		return $http.post('user/toggleAutoSalary', user);
 	}
 	
 	return service;
@@ -272,7 +267,6 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	vm.destroyBoss = destroyBoss;
 	vm.getMissions = getMissions;
 	vm.doCollectSalaries = doCollectSalaries;
-	vm.updateUser = updateUser;
 
 	activate();
 	
@@ -440,14 +434,6 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	
 	function doCollectSalaries() {
 		EntityService.filleSrv.doCollectSalaries(function() {
-			// nothing to do
-		}, function(response) {
-			console.debug(response.data);
-		});
-	}
-	
-	function updateUser() {
-		EntityService.userSrv.update(vm.user).then(function() {
 			// nothing to do
 		}, function(response) {
 			console.debug(response.data);
@@ -656,30 +642,28 @@ function HeaderWidgetController($uibModal) {
 	}
 }
 
-ModalUserController.$inject = ['$uibModalInstance', 'UserService', 'Notification', 'hero'];
+ModalUserController.$inject = ['$uibModalInstance', 'EntityService', 'Notification', 'hero'];
 
-function ModalUserController($uibModalInstance, UserService, Notification, hero) {
+function ModalUserController($uibModalInstance, EntityService, Notification, hero) {
 	var vm = this; 
 	vm.hero = hero;
 	
 	vm.valider = valider;
 	vm.close = close;
-	vm.toggleAutoSalary = toggleAutoSalary;
 	
 	activate();
 	
 	function activate() {
-		UserService.getMe().then(function(response) {
+		EntityService.userSrv.getMe().then(function(response) {
 			vm.user = response.data;
+		});
+		EntityService.bossSrv.getAll().then(function(response) {
+			vm.bosses = response.data;
 		});
 	}
 	
-	function toggleAutoSalary() {
-		UserService.toggleAutoSalary(vm.user);
-	}
-	
 	function valider() {
-		UserService.update(vm.user).then(function() {
+		EntityService.userSrv.update(vm.user).then(function() {
 			$uibModalInstance.close();
 		}, function(response) {
 			Notification.error({ message: 'Erreur lors de la mise à jour de l\'utilisateur : ' + response.data.message });

@@ -32,7 +32,6 @@ public class TaskManager {
 	private Map<String, ScheduledExecutorService> tasks = new HashMap<>();
 
 	public void addTask(User user) {
-		System.out.println(user.getEmail() + " - " + user.getPassword());
 		if (tasks.get(user.getEmail()) == null) {
 			addNewAutoCollectSalary(user);
 		} else if (tasks.get(user.getEmail()).isShutdown()) {
