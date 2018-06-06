@@ -179,6 +179,17 @@ public class TaskExecutor {
 			logger.info("\tNo fight to do...");
 		}
 	}
+	
+	@Scheduled(cron = "${hheroes.cronDoPachinko}")
+	public void doPachinko() throws AuthenticationException, IOException {
+		if (gameService.getCookies(login) == null) {
+			logger.info("Batch doPachinko login");
+			gameService.login(login, password);
+		}
+		
+		logger.info("Doing pachinko...");
+		gameService.playPachinko(login);
+	}
 
 	@PreDestroy
 	public void close() {

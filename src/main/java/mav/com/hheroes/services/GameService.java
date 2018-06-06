@@ -242,6 +242,16 @@ public class GameService {
 		}
 		return response;
 	}
+	
+	public void playPachinko(String login) throws IOException {
+		Map<String, String> data = new HashMap<>();
+		data.put("class", "Pachinko");
+		data.put("action", "play");
+		data.put("what", "pachinko0");
+		data.put("how_many", "1");
+		
+		doPost(URL_ACTION, login, data);
+	}
 
 	/**
 	 * Fait une requête POST.
