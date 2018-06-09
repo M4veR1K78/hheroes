@@ -7,8 +7,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import mav.com.hheroes.domain.Mission;
@@ -25,13 +26,18 @@ public class ActivityController {
 	@Resource
 	private HttpSession httpSession;
 	
-	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	@GetMapping("/all")
 	public List<Mission> getMissions() throws IOException {
 		return missionService.getMissions(httpSession.getAttribute(GameService.LOGIN).toString());
 	}
 	
-	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	@PostMapping("/start")
 	public void startMissions() throws IOException, AuthenticationException {
 		missionService.doAllMissions(httpSession.getAttribute(GameService.LOGIN).toString());
+	}
+	
+	@PostMapping("/claimRewards")
+	public void claimRewards() throws IOException {
+		missionService.claimAllRewards(httpSession.getAttribute(GameService.LOGIN).toString());
 	}
 }

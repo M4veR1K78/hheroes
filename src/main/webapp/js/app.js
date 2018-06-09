@@ -126,6 +126,7 @@ function ActivityService($http) {
 	
 	service.getAll = getAll;
 	service.start = start;
+	service.claimRewards = claimRewards;
 	
 	function getAll() {
 		return $http.get('activity/all');
@@ -133,6 +134,10 @@ function ActivityService($http) {
 	
 	function start() {
 		return $http.post('activity/start');
+	}
+	
+	function claimRewards() {
+		return $http.post('activity/claimRewards');
 	}
 	
 	return service;
@@ -308,8 +313,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		var deferred = $q.defer();
 		
 		EntityService.activitySrv.getAll().then(function(response) {
-			vm.missions = response.data;
-			deferred.resolve(vm.missions);
+			deferred.resolve(response.data);
 		});
 		
 		return deferred.promise;

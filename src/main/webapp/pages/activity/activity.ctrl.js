@@ -6,23 +6,24 @@
 		controller: ListeMissionController,
 		controllerAs: 'vm',
 		bindings: {
-			getMissions: '&'
+			hero: '<'
 		}
 	});
 	
-	ListeMissionController.$inject = ['$scope', '$compile', '$uibModal', 'DTOptionsBuilder', 'DTColumnBuilder', 'EntityService'];
+	ListeMissionController.$inject = ['$scope', '$compile', '$q', '$uibModal', 'DTOptionsBuilder', 'DTColumnBuilder', 'EntityService'];
 	
-	function ListeMissionController($scope, $compile, $uibModal, DTOptionsBuilder, DTColumnBuilder, EntityService) { 
+	function ListeMissionController($scope, $compile, $q, $uibModal, DTOptionsBuilder, DTColumnBuilder, EntityService) { 
 		var vm = this;
-		vm.missions = {};
+		vm.missions = [];
 		vm.dtInstance = {};
 		
 		vm.start = start;
 		vm.showButton = showButton;
+		vm.claimRewards = claimRewards;
 		
 		function activate() {
 			vm.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
-					return vm.getMissions();
+					return getMissions();
 				})
 				.withOption('createdRow', createdRow)
 				.withOption('order', [])
@@ -57,13 +58,31 @@
 			});
 		}
 		
+		function getMissions() {
+			var deferred = $q.defer();
+			
+			EntityService.activitySrv.getAll().then(function(response) {
+				var missions = response.data;
+				var exp = 0;
+				missions.forEach(function(mission) {
+					if (mission.statut === 'TERMINEE') {
+						exp += mission.experience;
+					}
+				});
+				vm.levelWarning = exp >= vm.hero.experience.left && (vm.hero.level + '').match(/\d*9/);
+				deferred.resolve(missions);
+			});
+			
+			return deferred.promise;
+		}
+		
 		function createdRow(row, data, dataIndex) {
 			vm.missions[data.id] = data;
 		    $compile(angular.element(row).contents())($scope);
 		}
 		
 		function showButton() {
-			if (angular.equals({}, vm.missions)) {
+			if (angular.equals([], vm.missions)) {
 				return false;
 			}
 			else {
@@ -76,6 +95,15 @@
 			}
 			
 			return !allOver;
+		}
+		
+		function claimRewards() {
+			EntityService.activitySrv.claimRewards().then(function() {
+				vm.missions = [];
+				vm.dtInstance.reloadData();
+			}, function() {
+				alert('Echec du lancement de script automatique des missions');
+			})
 		}
 		
 		activate();

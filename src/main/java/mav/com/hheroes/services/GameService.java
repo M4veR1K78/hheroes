@@ -252,6 +252,24 @@ public class GameService {
 		
 		doPost(URL_ACTION, login, data);
 	}
+	
+	public void claimMissionReward(Mission mission, String login) throws IOException {
+		Map<String, String> data = new HashMap<>();
+		data.put("class", "Missions");
+		data.put("action", "claim_reward");
+		data.put("id_mission", mission.getId());
+		data.put("id_member_mission", mission.getIdMember());
+
+		doPost(URL_ACTION, login, data);
+	}
+	
+	public void giveGift(String login) throws IOException {
+		Map<String, String> data = new HashMap<>();
+		data.put("class", "Missions");
+		data.put("action", "give_gift");
+		
+		doPost(URL_ACTION, login, data);
+	}
 
 	/**
 	 * Fait une requête POST.

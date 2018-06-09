@@ -129,10 +129,28 @@ public class MissionService {
 		doAllMissions(login, false);
 	}
 
+	public void claimAllRewards(String login) throws IOException {
+		getMissions(login).stream()
+				.filter(mission -> StatutMission.TERMINEE.equals(mission.getStatut()))
+				.forEach(mission -> {
+					try {
+						gameService.claimMissionReward(mission, login);
+					} catch (IOException e) {
+						logger.error(String.format("Fail claiming mission %s reward", mission.getId()));
+					}
+				});
+
+		if (getMissions(login).isEmpty()) {
+			// toutes les missions sont terminées et les récompenses ont été récupérés,
+			// on récupère alors les kobans
+			gameService.giveGift(login);
+		}
+	}
+
 	private boolean allFinished(List<Mission> missions) {
 		return missions.stream().allMatch(mission -> StatutMission.TERMINEE.equals(mission.getStatut()));
 	}
-	
+
 	/**
 	 * Pour les string destiné à être transformé en double.
 	 * 
