@@ -180,7 +180,7 @@ public class TaskExecutor {
 		}
 	}
 	
-	@Scheduled(cron = "${hheroes.cronDoPachinko}")
+	@Scheduled(fixedDelayString = "${hheroes.cronDoPachinko}")
 	public void doPachinko() throws AuthenticationException, IOException {
 		if (gameService.getCookies(login) == null) {
 			logger.info("Batch doPachinko login");
