@@ -11,6 +11,8 @@ public class Fille {
 	private Integer id;
 
 	private String name;
+	
+	private String pseudo;
 
 	private Integer level;
 
@@ -272,6 +274,14 @@ public class Fille {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public String getPseudo() {
+		return pseudo;
+	}
+
+	public void setPseudo(String pseudo) {
+		this.pseudo = pseudo;
 	}
 
 }

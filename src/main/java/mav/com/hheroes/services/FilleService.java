@@ -66,11 +66,14 @@ public class FilleService {
 			Fille fille = new Fille();
 			fille.setId(Integer.valueOf(girl.select("div[girl]").attr("girl")));
 			fille.setName(girl.select("h3").text());
+			if (fille.getName().isEmpty()) {
+				return;
+			}
 
 			// récupération de données de la liste de gauche
 			Elements leftListInfo = leftPanel.select("[girl=" + fille.getId() + "]");
 			fille.setSalary(
-					Double.valueOf(cleanDoubleString(leftListInfo.select(".blue_text_button .s_value").text())));
+					Double.valueOf(cleanDoubleString(leftListInfo.select(".collect_money .s_value").text())));
 			fille.setCollectable(leftListInfo.select(".salary.loads>button").text().trim().isEmpty());
 			String avatarUrl = leftListInfo.select(".left img").attr("src");
 
@@ -101,10 +104,10 @@ public class FilleService {
 			fille.setCumulAff(cumulAff.replaceAll("\u00a0", " ").replace(",", " "));
 
 			fille.setSalaryPerHour(Double
-					.valueOf(cleanDoubleString(girl.select(".girl_line .square .salary").text().replace("/h", ""))));
-			fille.setFavoritePosition(girl.select(".girl_pos span").text());
+					.valueOf(cleanDoubleString(girl.select(".girl_line .revenue-title .salary").text().replace("/h", ""))));
+			fille.setFavoritePosition(girl.select(".girl_pos img").attr("src"));
 
-			Elements assets = girl.select(".square div[carac]");
+			Elements assets = girl.select(".carac_girl div[carac]");
 			fille.setHardcore(Double.valueOf(assets.get(0).text().replace(",", ".")));
 			fille.setCharme(Double.valueOf(assets.get(1).text().replace(",", ".")));
 			fille.setSavoirFaire(Double.valueOf(assets.get(2).text().replace(",", ".")));
@@ -116,15 +119,15 @@ public class FilleService {
 		Elements select = harem.select("script");
 		List<FilleDTO> dtos = new ArrayList<>();
 		for (Element script : select) {
-			if (script.html().contains("var girls = {};")) {
+			if (script.html().contains("var girlsDataList = {}")) {
 				String girls = script.html()
-						.substring(script.html().indexOf("var girls = {};"),
-								script.html().indexOf("// the selected girl //"));
+						.substring(script.html().indexOf("var girlsDataList = {}"),
+								script.html().indexOf("var girls = {};"));
 				
 				Arrays.asList(girls.split("\\n")).stream()
-						.filter(line -> line.contains("new Girl"))
+						.filter(line -> line.contains("girlsDataList"))
 						.forEach(line -> {
-							String filleJson = line.replaceAll("(?s).*new Girl\\((.+?)\\);.*", "$1");
+							String filleJson = line.replaceAll("(?s).*girlsDataList\\['\\d+'\\] = (.+?);.*", "$1");
 							try {
 								dtos.add(new ObjectMapper().readValue(filleJson, FilleDTO.class));
 							} catch (IOException e) {
@@ -138,6 +141,7 @@ public class FilleService {
 			dtos.stream().filter(dto -> dto.getIdGirl().equals(fille.getId())).findFirst().ifPresent(dto -> {
 				fille.setPayTime(dto.getPayTime());
 				fille.setPayIn(dto.getPayIn());
+				fille.setPseudo(dto.getName());
 			});
 		});
 
