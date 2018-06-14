@@ -83,7 +83,7 @@ public class TaskExecutor {
 		filles.stream()
 				.filter(fille -> !threads.containsKey(fille.getId()))
 				.forEach(fille -> {
-					logger.info(String.format("Starting thread for %s. Collect every %s", fille.getName(),
+					logger.info(String.format("Starting thread for %s. Collect every %s", fille.getPseudo(),
 							LocalTime.MIN.plusSeconds(fille.getPayTime()).toString()));
 					
 					ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -102,7 +102,7 @@ public class TaskExecutor {
 				
 				if (!fille.getPayTime().equals(info.getFille().getPayTime())) {
 					// timer différent: on remplace la tâche existante par une nouvelle avec le nouveau délai
-					logger.info(String.format("Changing delay for %s", fille.getName()));
+					logger.info(String.format("Changing delay for %s", fille.getPseudo()));
 					info.getResponse().cancel(false);
 					info.setResponse(info.getScheduler().scheduleWithFixedDelay(
 							new PremiumAutoSalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
