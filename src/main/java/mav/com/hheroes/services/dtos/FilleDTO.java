@@ -1,7 +1,9 @@
 package mav.com.hheroes.services.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FilleDTO {
 	@JsonProperty("id_girl")
 	private Integer idGirl;
@@ -20,6 +22,8 @@ public class FilleDTO {
 	
 	@JsonProperty("pay_in")
 	private Integer payIn;
+	
+	private Boolean own;
 
 	public Integer getIdGirl() {
 		return idGirl;
@@ -80,5 +84,13 @@ public class FilleDTO {
 	@Override
 	public String toString() {
 		return "FilleDTO [idGirl=" + idGirl + ", name=" + name + ", salary=" + salary + ", payTime=" + payTime + "]";
+	}
+
+	public Boolean isOwn() {
+		return own;
+	}
+
+	public void setOwn(Boolean own) {
+		this.own = own;
 	}
 }

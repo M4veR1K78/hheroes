@@ -104,7 +104,8 @@ public class FilleService {
 			fille.setCumulAff(cumulAff.replaceAll("\u00a0", " ").replace(",", " "));
 
 			fille.setSalaryPerHour(Double
-					.valueOf(cleanDoubleString(girl.select(".girl_line .revenue-title .salary").text().replace("/h", ""))));
+					.valueOf(cleanDoubleString(
+							girl.select(".girl_line .revenue-title .salary").text().replace("/h", ""))));
 			fille.setFavoritePosition(girl.select(".girl_pos img").attr("src"));
 
 			Elements assets = girl.select(".carac_girl div[carac]");
@@ -123,20 +124,23 @@ public class FilleService {
 				String girls = script.html()
 						.substring(script.html().indexOf("var girlsDataList = {}"),
 								script.html().indexOf("var girls = {};"));
-				
+
 				Arrays.asList(girls.split("\\n")).stream()
-						.filter(line -> line.contains("girlsDataList"))
+						.filter(line -> line.contains("girlsDataList["))
 						.forEach(line -> {
 							String filleJson = line.replaceAll("(?s).*girlsDataList\\['\\d+'\\] = (.+?);.*", "$1");
 							try {
-								dtos.add(new ObjectMapper().readValue(filleJson, FilleDTO.class));
+								FilleDTO fille = new ObjectMapper().readValue(filleJson, FilleDTO.class);
+								if (fille.isOwn()) {
+									dtos.add(fille);
+								}
 							} catch (IOException e) {
-								// nothing to do
+								logger.error("Failed getting girl JSON", e);
 							}
 						});
 			}
 		}
-		
+
 		filles.stream().forEach(fille -> {
 			dtos.stream().filter(dto -> dto.getIdGirl().equals(fille.getId())).findFirst().ifPresent(dto -> {
 				fille.setPayTime(dto.getPayTime());
@@ -294,7 +298,7 @@ public class FilleService {
 			}
 		}
 	}
-	
+
 	public GameService getGameService() {
 		return gameService;
 	}
