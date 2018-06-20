@@ -50,8 +50,10 @@ public class TaskManager {
 	}
 
 	public void removeTask(String login) {
-		logger.info(String.format("Remove salary auto collect to %s", login));
-		Optional.ofNullable(tasks.get(login)).ifPresent(ScheduledExecutorService::shutdownNow);
+		Optional.ofNullable(tasks.get(login)).ifPresent(executor -> {
+			logger.info(String.format("Remove salary auto collect to %s", login));
+			executor.shutdownNow();
+		});
 	}
 
 	@PreDestroy

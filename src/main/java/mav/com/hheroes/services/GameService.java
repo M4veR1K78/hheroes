@@ -205,12 +205,13 @@ public class GameService {
 		data.put("who[nb_org]", String.valueOf(boss.getNbOrg()));
 		data.put("who[figure]", String.valueOf(boss.getFigure()));
 		data.put("who[id_world]", boss.getWorld());
+		data.put("autoFight", "0");
 
 		Response res = doPost(URL_ACTION, login, data);
 
 		ResponseDTO response = new ObjectMapper().readValue(res.body(), ResponseDTO.class);
 		if (response.getSuccess()) {
-			response.getReward().setDrops(Jsoup.parse(response.getReward().getDrops()).text());
+			response.getEnd().setDrops(Jsoup.parse(response.getEnd().getReward().getHtml()).text());
 		}
 		return response;
 	}
@@ -233,12 +234,13 @@ public class GameService {
 		data.put("who[nb_org]", String.valueOf(joueur.getNbOrg()));
 		data.put("who[figure]", String.valueOf(joueur.getFigure()));
 		data.put("who[id_arena]", joueur.getArena());
+		data.put("autoFight", "0");
 
 		Response res = doPost(URL_ACTION, login, data);
 
 		ResponseDTO response = new ObjectMapper().readValue(res.body(), ResponseDTO.class);
 		if (response.getSuccess()) {
-			response.getReward().setDrops(Jsoup.parse(response.getReward().getDrops()).text());
+			response.getEnd().setDrops(Jsoup.parse(response.getEnd().getReward().getHtml()).text());
 		}
 		return response;
 	}

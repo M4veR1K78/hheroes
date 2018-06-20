@@ -22,7 +22,8 @@ public class AppConfig {
 	    		"/shop/*", 
 	    		"/activity/*", 
 	    		"/boss/*", 
-	    		"/hero/*");
+	    		"/hero/*",
+	    		"/arena/*");
 	    registration.setName("authFilter");
 	    return registration;
 	} 

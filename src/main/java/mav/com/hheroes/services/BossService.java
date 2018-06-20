@@ -60,9 +60,9 @@ public class BossService {
 
 		ResponseDTO response = fight(boss, login);
 		while (response.getSuccess()) {
-			rewards.add(response.getReward().getDrops());
+			rewards.add(response.getEnd().getDrops());
 			if (log) {
-				logger.info(String.format("\tCollected from %s : %s", boss.getLibelle(), response.getReward()));
+				logger.info(String.format("\tCollected from %s : %s", boss.getLibelle(), response.getEnd()));
 			}
 			response = fight(boss, login);
 		}

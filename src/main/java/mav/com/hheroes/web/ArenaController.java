@@ -24,25 +24,27 @@ import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 public class ArenaController {
 	@Resource
 	private ArenaService arenaService;
-	
+
 	@Resource
 	private HttpSession httpSession;
-	
+
 	@GetMapping("/{id}")
 	public JoueurDTO getArena(@PathVariable Integer id) throws IOException {
 		return arenaService.getJoueur(id, httpSession.getAttribute(GameService.LOGIN).toString()).orElse(null);
 	}
-	
+
 	@PostMapping("/{id}/fight")
 	public ResponseDTO fight(@PathVariable Integer id) throws IOException, ObjectNotFoundException {
-		return arenaService.fight(arenaService.getJoueur(id, httpSession.getAttribute(GameService.LOGIN).toString()).orElse(null), httpSession.getAttribute(GameService.LOGIN).toString());
+		return arenaService.fight(
+				arenaService.getJoueur(id, httpSession.getAttribute(GameService.LOGIN).toString()).orElse(null),
+				httpSession.getAttribute(GameService.LOGIN).toString());
 	}
-	
+
 	@GetMapping("/all")
 	public List<JoueurDTO> getAllJoueurs() throws IOException {
 		return arenaService.getAllJoueurs(httpSession.getAttribute(GameService.LOGIN).toString());
 	}
-	
+
 	@PostMapping("/all/fight")
 	public List<ResponseDTO> fightAll() throws IOException, ObjectNotFoundException {
 		List<ResponseDTO> fights = new ArrayList<>();
@@ -53,7 +55,7 @@ public class ArenaController {
 			ResponseDTO response = arenaService.fight(joueur, httpSession.getAttribute(GameService.LOGIN).toString());
 			fights.add(response);
 			if (response.getSuccess()) {
-				log += String.format(" Results = %s", response.getReward().getWinner().equals(1) ? "Win" : "Loss");
+				log += String.format(" Results = %s", response.getEnd().getWinner().equals(1) ? "Win" : "Loss");
 			}
 			System.out.println(log);
 		}

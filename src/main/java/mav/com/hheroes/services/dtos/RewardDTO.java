@@ -4,28 +4,28 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RewardDTO {
-	private Integer winner;
+	private String html;
 	
-	private String drops;
+	private boolean lose;
 
-	public Integer getWinner() {
-		return winner;
+	public String getHtml() {
+		return html;
 	}
 
-	public void setWinner(Integer winner) {
-		this.winner = winner;
+	public void setHtml(String html) {
+		this.html = html;
 	}
 
-	public String getDrops() {
-		return drops;
+	public boolean isLose() {
+		return lose;
 	}
 
-	public void setDrops(String drops) {
-		this.drops = drops;
+	public void setLose(boolean lose) {
+		this.lose = lose;
 	}
 	
 	@Override
 	public String toString() {
-		return drops;
+		return html;
 	}
 }

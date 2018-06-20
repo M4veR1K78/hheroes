@@ -81,7 +81,7 @@ public class FilleService {
 
 			// retour à la liste de droite
 			Element typeElement = girl.select("h3 span[carac]").get(0);
-			Skill typeFille = Skill.valueOf(Integer.valueOf(typeElement.attr("carac")));
+			Skill typeFille = Skill.valueOfClass(typeElement.attr("carac"));
 			fille.setType(typeFille.getType());
 			fille.setTypeId(typeFille.getCode());
 			fille.setLevel(Integer.parseInt(girl.select("span[rel='level']").text()));
