@@ -51,6 +51,8 @@ public class Fille {
 	private Integer payTime;
 
 	private Integer payIn;
+	
+	private Rarity rarity;
 
 	public String getName() {
 		return name;
@@ -285,6 +287,14 @@ public class Fille {
 
 	public void setPseudo(String pseudo) {
 		this.pseudo = pseudo;
+	}
+
+	public Rarity getRarity() {
+		return rarity;
+	}
+
+	public void setRarity(Rarity rarity) {
+		this.rarity = rarity;
 	}
 
 }

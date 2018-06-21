@@ -94,3 +94,29 @@ input:checked+.slider:before {
 .slider.round:before {
 	border-radius: 50%;
 }
+
+.girl-avatar {
+	border: 1px solid grey;
+	border-radius: 2px;
+}
+
+.starting {
+	background-image: linear-gradient(to bottom, #eee, #ccc);
+}
+
+.common {
+	background-image: linear-gradient(to bottom, #eee, #ccc);
+}
+
+.rare {
+	background-image: linear-gradient(to bottom, #adb, #7b9);
+}
+
+.epic {
+	background-image: linear-gradient(to bottom, #fd7, #b83);
+}
+
+.legendary {
+	background-image: url("../img/legendary.jpg");
+	background-size: cover;
+}

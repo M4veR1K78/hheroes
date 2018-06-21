@@ -10,9 +10,9 @@
 		}
 	});
 	
-	ListeFilleController.$inject = ['$scope', '$uibModal', 'DTOptionsBuilder', 'DTColumnDefBuilder', 'UtilService'];
+	ListeFilleController.$inject = ['$scope', '$uibModal', 'DTOptionsBuilder', 'DTColumnDefBuilder', 'EntityService'];
 	
-	function ListeFilleController($scope, $uibModal, DTOptionsBuilder, DTColumnDefBuilder, UtilService) { 
+	function ListeFilleController($scope, $uibModal, DTOptionsBuilder, DTColumnDefBuilder, EntityService) { 
 		var vm = this;
 		vm.search = {};
 		vm.dtColumnDefs = [];
@@ -21,6 +21,10 @@
 		vm.nbHardcore = 0;
 		vm.nbCharme = 0;
 		vm.nbSavoirFaire = 0;
+		vm.nbCommon = 0;
+		vm.nbRare = 0;
+		vm.nbEpic = 0;
+		vm.nbLegendary = 0;
 		
 		var StatusLevel = {
 			MAX: 'Max.',
@@ -33,11 +37,23 @@
 					if (fille.typeId === 1) vm.nbHardcore++;
 					else if (fille.typeId === 2) vm.nbCharme++;
 					else if (fille.typeId === 3) vm.nbSavoirFaire++;
+					
+					if (fille.rarity === 'COMMUN') {
+						vm.nbCommon++;
+					} else if (fille.rarity === 'RARE') {
+						vm.nbRare++;
+					} else if (fille.rarity === 'EPIQUE') {
+						vm.nbEpic++;
+					} else if (fille.rarity === 'LEGENDAIRE') {
+						vm.nbLegendary++;
+					}
 				});
 			}
 		});
 		
 		vm.openModalAvatar = openModalAvatar;
+		vm.getRarityClass = getRarityClass;
+		vm.getRarityLibelle = getRarityLibelle;
 		
 		$.fn.dataTableExt.oSort['exp-left-asc'] = sortExp(true); 
 		$.fn.dataTableExt.oSort['exp-left-desc'] = sortExp(false);
@@ -50,7 +66,7 @@
 			vm.dtOptions = DTOptionsBuilder.newOptions()
 				.withPaginationType('full_numbers')
 				.withOption('order', [])
-				.withOption('language', UtilService.getDTTLangues())
+				.withOption('language', EntityService.utilSrv.getDTTLangues())
 				.withDisplayLength(10)
 				.withOption('deferRender', true)
 				.withOption('initComplete', function() {
@@ -66,9 +82,10 @@
 			
 			vm.dtColumnDefs = [
 		        DTColumnDefBuilder.newColumnDef(0).notSortable().withOption('width', '60px'),
-		        DTColumnDefBuilder.newColumnDef(6).withOption('type', 'exp-left'),
 		        DTColumnDefBuilder.newColumnDef(7).withOption('type', 'exp-left'),
-		        DTColumnDefBuilder.newColumnDef(12).withOption('type', 'classement')
+		        DTColumnDefBuilder.newColumnDef(8).withOption('type', 'exp-left'),
+		        DTColumnDefBuilder.newColumnDef(13).withOption('type', 'classement'),
+		        DTColumnDefBuilder.newColumnDef(14).notVisible()
 		    ];
 		}
 		
@@ -141,6 +158,20 @@
 			}
 
 			return parseFloat(value);
+		}
+		
+		/**
+		 * Récupère la classe d'une fille en fonction de sa rareté.
+		 */
+		function getRarityClass(filleRarity) {
+			return EntityService.filleSrv.getRarityClass(filleRarity);
+		}
+		
+		/**
+		 * Récupère le libellé de la rareté d'une fille (pour pouvoir les filtrer sur cet élément).
+		 */
+		function getRarityLibelle(filleRarity) {
+			return EntityService.filleSrv.getRarityLibelle(filleRarity);
 		}
 		
 		activate();

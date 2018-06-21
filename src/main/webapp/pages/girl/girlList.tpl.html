@@ -2,25 +2,28 @@
 	<thead>
 		<th></th>
 		<th>Nom</th>
-		<th class="text-center">Spécialité</th>
+		<th class="text-center">Niveau</th>
+		<th>Spécialité</th>
 		<th class="text-center">Grade</th>
 		<th class="text-center">Salaire par heure</th>
 		<th class="text-center">Salaire</th>
 		<th class="text-center">Exp. restante</th>
 		<th class="text-center">Aff. restante</th>
-		<th>Position favorite</th>
+		<th class="text-center">Position fav.</th>
 		<th class="text-center">Hardcore</th>
 		<th class="text-center">Charme</th>
 		<th class="text-center">Savoir-faire</th>
-		<th class="text-center">Classement <span class="fa fa-question-circle" 
+		<th class="text-center">Rang <span class="fa fa-question-circle" 
 			title="Classement de la fille dans son domaine d'expertise.&#10;Mettez le curseur sur le rang pour voir la valeur d'attaque initiale."></span>
 		</th>
+		<th ng-hide="true">Rareté</th>
 	</thead>
 	<tbody class="align-middle">
 		<tr ng-repeat="fille in vm.filles | filter:vm.search track by fille.id">
-			<td class="text-center"><img class="girl-avatar" ng-src="image?urlImage={{fille.avatar}}" width="60px" height="60px" /></td>
-			<td class="align-middle"><span uib-tooltip="{{ ::fille.name }}">{{ ::fille.pseudo }}</span> <span class="badge badge-secondary" title="Niveau">{{ ::fille.level }}</span></td>
-			<td class="text-center align-middle">
+			<td class="text-center"><img class="girl-avatar" ng-class="vm.getRarityClass(fille.rarity)" ng-src="image?urlImage={{fille.avatar}}" width="60px" height="60px" /></td>
+			<td class="align-middle"><span uib-tooltip="{{ ::fille.name }}">{{ ::fille.pseudo }}</span></td>
+			<td class="text-center align-middle"><span class="badge badge-secondary" title="Niveau">{{ ::fille.level }}</span></td>
+			<td class="align-middle">
 				<img ng-src="img/carac{{ fille.typeId }}.png" width="20px" /> {{ ::fille.type }}
 			</td>
 			<td class="text-center align-middle"><a href class="btn btn-link" ng-click="vm.openModalAvatar(fille)">{{ ::fille.grade }}</a></td>
@@ -33,6 +36,7 @@
 			<td class="text-center align-middle">{{ ::fille.charme }}</td>
 			<td class="text-center align-middle">{{ ::fille.savoirFaire }}</td>
 			<td class="text-center align-middle"><span class="label bg-red" title="{{ ::fille.expertiseBaseValue }}">{{ ::fille.expertiseRanking | ordinal }}</span></td>
+			<td ng-hide="true">{{ ::vm.getRarityLibelle(fille.rarity) }}</td>
 		</tr>
 	</tbody>
 </table>
@@ -41,4 +45,10 @@
 	<span><img src="img/carac1.png" width="20px" /> {{ vm.nbHardcore }}</span>
 	<span><img src="img/carac2.png" width="20px" /> {{ vm.nbCharme }}</span>
 	<span><img src="img/carac3.png" width="20px" /> {{ vm.nbSavoirFaire }}</span>
+</div>
+<div ng-if="vm.nbCommon > 0">
+	<b>Communes: </b> {{ vm.nbCommon }} |
+	<b>Rares: </b> {{ vm.nbRare }} |
+	<b>Épiques: </b> {{ vm.nbEpic }} |
+	<b>Légendaires: </b> {{ vm.nbLegendary }}
 </div>

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mav.com.hheroes.domain.Fille;
+import mav.com.hheroes.domain.Rarity;
 import mav.com.hheroes.domain.Skill;
 import mav.com.hheroes.services.dtos.FilleDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
@@ -76,6 +77,8 @@ public class FilleService {
 					Double.valueOf(cleanDoubleString(leftListInfo.select(".collect_money .s_value").text())));
 			fille.setCollectable(leftListInfo.select(".salary.loads>button").text().trim().isEmpty());
 			String avatarUrl = leftListInfo.select(".left img").attr("src");
+			Rarity rarity = Rarity.valueOfType(leftListInfo.select("div[rarity]").get(0).attr("rarity"));
+			fille.setRarity(rarity);
 
 			fille.setAvatar(avatarUrl);
 
@@ -97,6 +100,10 @@ public class FilleService {
 					affLeft = cumulAff = Fille.LEVEL_UPGRADE;
 				} else {
 					affLeft = cumulAff = Fille.LEVEL_MAX;
+				}
+			} else {
+				if (!subBlocks.get(1).select(".upgrade_star").isEmpty()) {
+					affLeft = cumulAff = Fille.LEVEL_UPGRADE;
 				}
 			}
 

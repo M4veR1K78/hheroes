@@ -37,6 +37,8 @@ function FilleService($http) {
 	service.getAll = getAll;
 	service.collectSalary = collectSalary;
 	service.doCollectSalaries = doCollectSalaries;
+	service.getRarityLibelle = getRarityLibelle;
+	service.getRarityClass = getRarityClass;
 	
 	function getAll() {
 		return $http.get(api);
@@ -48,6 +50,45 @@ function FilleService($http) {
 	
 	function doCollectSalaries() {
 		return $http.post(api + '/doCollectAll');
+	}
+	
+	/**
+	 * Récupère le libellé de la rareté d'une fille.
+	 */
+	function getRarityLibelle(filleRarity) {
+		if (filleRarity === 'DEPART') {
+			return 'Départ';
+		} else if (filleRarity === 'COMMUN') {
+			return 'Commune';
+		} else if (filleRarity === 'RARE') {
+			return 'Rare';
+		} else if (filleRarity === 'EPIQUE') {
+			return 'Épique';
+		} else if (filleRarity === 'LEGENDAIRE') {
+			return 'Légendaire';
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Récupère la classe d'une fille en fonction de sa rareté.
+	 */
+	function getRarityClass(filleRarity) {
+		var rarity = {};
+		if (filleRarity === 'DEPART') {
+			rarity.starting = true;
+		} else if (filleRarity === 'COMMUN') {
+			rarity.common = true;
+		} else if (filleRarity === 'RARE') {
+			rarity.rare = true;
+		} else if (filleRarity === 'EPIQUE') {
+			rarity.epic = true;
+		} else if (filleRarity === 'LEGENDAIRE') {
+			rarity.legendary = true;
+		}
+		
+		return rarity;
 	}
 	
 	return service;
@@ -474,7 +515,7 @@ function ModalLoginController($uibModalInstance, GameService) {
 	}
 }
 
-ModalAvatarController.$inject = ['$uibModalInstance', 'girl'];
+ModalAvatarController.$inject = ['$uibModalInstance', 'girl', 'FilleService'];
 
 /**
  * Modal permettant de voir les avatars des filles.
@@ -483,21 +524,28 @@ ModalAvatarController.$inject = ['$uibModalInstance', 'girl'];
  * @param girl
  * @returns
  */
-function ModalAvatarController($uibModalInstance, girl) {
+function ModalAvatarController($uibModalInstance, girl, FilleService) {
 	var vm = this;
 
 	vm.girl = girl;
 	vm.grades = [];
 	
-	for (var i = 0; i <= girl.grade; i++) {
-		vm.grades.push(i);
-	}
-	
 	vm.close = close;
+	
+	function activate() {
+		for (var i = 0; i <= girl.grade; i++) {
+			vm.grades.push(i);
+		}
+		
+		vm.rarityLabel = FilleService.getRarityLibelle(vm.girl.rarity);
+		vm.rarityClass = FilleService.getRarityClass(vm.girl.rarity);
+	}	
 	
 	function close() {
 		$uibModalInstance.dismiss('cancel');
 	}
+	
+	activate();
 }
 
 // components
