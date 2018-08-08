@@ -3,7 +3,6 @@ package mav.com.hheroes.services;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -20,7 +19,6 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,8 +26,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mav.com.hheroes.domain.Fille;
-import mav.com.hheroes.domain.Rarity;
-import mav.com.hheroes.domain.Skill;
 import mav.com.hheroes.services.dtos.FilleDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 
@@ -53,77 +49,9 @@ public class FilleService {
 	}
 
 	public List<Fille> getFilles(String login) throws IOException {
-		Document harem = gameService.getHarem(login);
-
-		harem.outputSettings().escapeMode(EscapeMode.base);
-		harem.outputSettings().charset(Charset.defaultCharset());
-
 		List<Fille> filles = new ArrayList<>();
 
-		Elements leftPanel = harem.select("#harem_left div[girl]");
-		Elements rightPanel = harem.select("#harem_right div[girl]");
-
-		rightPanel.forEach(girl -> {
-			Fille fille = new Fille();
-			fille.setId(Integer.valueOf(girl.select("div[girl]").attr("girl")));
-			fille.setName(girl.select("h3").text());
-			if (fille.getName().isEmpty()) {
-				return;
-			}
-
-			// récupération de données de la liste de gauche
-			Elements leftListInfo = leftPanel.select("[girl=" + fille.getId() + "]");
-			fille.setSalary(
-					Double.valueOf(cleanDoubleString(leftListInfo.select(".collect_money .s_value").text())));
-			fille.setCollectable(leftListInfo.select(".salary.loads>button").text().trim().isEmpty());
-			String avatarUrl = leftListInfo.select(".left img").attr("src");
-			Rarity rarity = Rarity.valueOfType(leftListInfo.select("div[rarity]").get(0).attr("rarity"));
-			fille.setRarity(rarity);
-
-			fille.setAvatar(avatarUrl);
-
-			// retour à la liste de droite
-			Element typeElement = girl.select("h3 span[carac]").get(0);
-			Skill typeFille = Skill.valueOfClass(typeElement.attr("carac"));
-			fille.setType(typeFille.getType());
-			fille.setTypeId(typeFille.getCode());
-			fille.setLevel(Integer.parseInt(girl.select("span[rel='level']").text()));
-			fille.setGrade(girl.select(".girl_quests .done").size());
-			Elements subBlocks = girl.select(".girl_line");
-
-			String expLeft = cleanExpAffLeft(subBlocks.get(0).select(".girl_exp_left").text());
-			fille.setExpLeftNextLevel((!expLeft.isEmpty()) ? expLeft : Fille.LEVEL_MAX);
-			String affLeft = cleanExpAffLeft(subBlocks.get(1).select(".girl_exp_left").text());
-			String cumulAff = subBlocks.get(1).select(".girl_bar .over").text();
-			if (affLeft.isEmpty()) {
-				if (subBlocks.get(1).select(".grey_text_button").isEmpty()) {
-					affLeft = cumulAff = Fille.LEVEL_UPGRADE;
-				} else {
-					affLeft = cumulAff = Fille.LEVEL_MAX;
-				}
-			} else {
-				if (!subBlocks.get(1).select(".upgrade_star").isEmpty()) {
-					affLeft = cumulAff = Fille.LEVEL_UPGRADE;
-				}
-			}
-
-			fille.setAffLeftNextLevel(affLeft);
-			fille.setCumulAff(cumulAff.replaceAll("\u00a0", " ").replace(",", " "));
-
-			fille.setSalaryPerHour(Double
-					.valueOf(cleanDoubleString(
-							girl.select(".girl_line .revenue-title .salary").text().replace("/h", ""))));
-			fille.setFavoritePosition(girl.select(".girl_pos img").attr("src"));
-
-			Elements assets = girl.select(".carac_girl div[carac]");
-			fille.setHardcore(Double.valueOf(assets.get(0).text().replace(",", ".")));
-			fille.setCharme(Double.valueOf(assets.get(1).text().replace(",", ".")));
-			fille.setSavoirFaire(Double.valueOf(assets.get(2).text().replace(",", ".")));
-			fille.setExpertiseBaseValue(getInitialExpertiseValue(fille));
-
-			filles.add(fille);
-		});
-
+		Document harem = gameService.getHarem(login);
 		Elements select = harem.select("script");
 		List<FilleDTO> dtos = new ArrayList<>();
 		for (Element script : select) {
@@ -148,12 +76,30 @@ public class FilleService {
 			}
 		}
 
-		filles.stream().forEach(fille -> {
-			dtos.stream().filter(dto -> dto.getIdGirl().equals(fille.getId())).findFirst().ifPresent(dto -> {
-				fille.setPayTime(dto.getPayTime());
-				fille.setPayIn(dto.getPayIn());
-				fille.setPseudo(dto.getName());
-			});
+		dtos.forEach(dto -> {
+			Fille fille = new Fille();
+			fille.setId(dto.getIdGirl());
+			fille.setName(dto.getRef().getFullName());
+			fille.setPseudo(dto.getName());
+			fille.setGrade(dto.getGraded());
+			fille.setPayTime(dto.getPayTime());
+			fille.setPayIn(dto.getPayIn());
+			fille.setPseudo(dto.getName());
+			fille.setSalary(dto.getSalary());
+			fille.setSalaryPerHour(dto.getSalaryPerHour());
+			fille.setAvatar(dto.getIcone());
+			fille.setTypeId(dto.getTypeId());
+			fille.setHardcore(dto.getCaracs().getHardcore());
+			fille.setCharme(dto.getCaracs().getCharme());
+			fille.setSavoirFaire(dto.getCaracs().getSavoirFaire());
+			fille.setLevel(dto.getLevel());
+			fille.setMaxAff(dto.getAffection().getMax());
+			fille.setCurrentAff(dto.getAffection().getCurrent());
+			fille.setAffLeftNextLevel(dto.getAffection().getLeft());
+			fille.setExpLeftNextLevel(dto.getXp().getLeft());
+			fille.setExpertiseBaseValue(getInitialExpertiseValue(fille));
+			fille.setFavoritePosition(dto.getPosition());
+			filles.add(fille);
 		});
 
 		rankGirls(filles);
@@ -182,22 +128,6 @@ public class FilleService {
 				.sum();
 	}
 
-	private String cleanExpAffLeft(String value) {
-		return value.replaceAll("\u00a0", " ")
-				.replaceAll(".*?(\\d+[ ,]?\\d*)", "$1")
-				.replaceAll(",", " ");
-	}
-
-	/**
-	 * Pour les string destinés à être transformés en double.
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private String cleanDoubleString(String value) {
-		return value.replace("\u00a0", "").replace(",", "");
-	}
-
 	private void rankGirls(List<Fille> filles) {
 		filles.stream().collect(Collectors.groupingBy(Fille::getTypeId))
 				.entrySet()
@@ -210,7 +140,7 @@ public class FilleService {
 
 	}
 
-	static <T, V> SortedMap<Integer, List<T>> rank(Stream<T> stream, Function<T, V> propertyExtractor,
+	private static <T, V> SortedMap<Integer, List<T>> rank(Stream<T> stream, Function<T, V> propertyExtractor,
 			Comparator<V> propertyComparator) {
 		return stream.sorted(Comparator.comparing(propertyExtractor, propertyComparator))
 				.collect(TreeMap::new,

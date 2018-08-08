@@ -20,6 +20,7 @@
 		vm.start = start;
 		vm.showButton = showButton;
 		vm.claimRewards = claimRewards;
+		vm.canClaimReward = canClaimReward;
 		
 		function activate() {
 			vm.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
@@ -104,6 +105,18 @@
 			}, function() {
 				alert('Echec du lancement de script automatique des missions');
 			})
+		}
+		
+		function canClaimReward() {
+			var over = false
+			if (vm.missions && vm.missions.length > 0) {
+				Object.keys(vm.missions).forEach(function(key) {
+				    if (vm.missions[key].statut === 'TERMINEE') {
+				    	over = true;
+				    }
+				});	
+			}
+			return over;
 		}
 		
 		activate();

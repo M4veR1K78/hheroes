@@ -138,6 +138,10 @@ public class GameService {
 			this.locale = language;
 		}
 	}
+	
+	public byte[] getPosition(String imagePosition, String login) throws IOException {
+		return getImage(String.format("%s/pictures/design/figures/%s", URL_HHEROES_CONTENT, imagePosition), login);
+	}
 
 	public byte[] getAvatar(Integer girlId, Integer grade, String login) throws IOException {
 		return getImage(String.format("%s/pictures/girls/%s/ava%s.png", URL_HHEROES_CONTENT, girlId, grade), login);

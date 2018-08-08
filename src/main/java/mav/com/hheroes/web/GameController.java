@@ -57,8 +57,15 @@ public class GameController {
 
 	@GetMapping(value = "/image")
 	public ResponseEntity<byte[]> getImage(@RequestParam("urlImage") String urlImage) throws IOException {
-		byte[] image = gameService.getImage(urlImage, httpSession.getAttribute(GameService.LOGIN).toString());
+		return returnImage(gameService.getImage(urlImage, httpSession.getAttribute(GameService.LOGIN).toString()));
+	}
+	
+	@GetMapping(value = "/position")
+	public ResponseEntity<byte[]> getPosition(@RequestParam("image") String urlImage) throws IOException {
+		return returnImage(gameService.getPosition(urlImage, httpSession.getAttribute(GameService.LOGIN).toString()));
+	}
 
+	private ResponseEntity<byte[]> returnImage(byte[] image) throws IOException {
 		if (image != null) {
 			String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(image));
 			return ResponseEntity.ok().contentType(MediaType.valueOf(contentType)).body(image);

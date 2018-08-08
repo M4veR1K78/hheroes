@@ -18,11 +18,9 @@ public class Fille {
 
 	private Integer grade;
 
-	private String expLeftNextLevel;
+	private Integer expLeftNextLevel;
 
-	private String affLeftNextLevel;
-
-	private String cumulAff;
+	private Integer affLeftNextLevel;
 
 	private Double salaryPerHour;
 
@@ -34,15 +32,11 @@ public class Fille {
 
 	private Double savoirFaire;
 
-	private String type;
-
 	private Integer typeId;
 
 	private String avatar;
 
 	private Double salary;
-
-	private Boolean collectable;
 
 	private Double expertiseBaseValue;
 
@@ -53,6 +47,10 @@ public class Fille {
 	private Integer payIn;
 	
 	private Rarity rarity;
+	
+	private Integer currentAff;
+	
+	private Integer maxAff;
 
 	public String getName() {
 		return name;
@@ -70,19 +68,19 @@ public class Fille {
 		this.level = level;
 	}
 
-	public String getExpLeftNextLevel() {
+	public int getExpLeftNextLevel() {
 		return expLeftNextLevel;
 	}
 
-	public void setExpLeftNextLevel(String expLeftNextLevel) {
+	public void setExpLeftNextLevel(int expLeftNextLevel) {
 		this.expLeftNextLevel = expLeftNextLevel;
 	}
 
-	public String getAffLeftNextLevel() {
+	public int getAffLeftNextLevel() {
 		return affLeftNextLevel;
 	}
 
-	public void setAffLeftNextLevel(String affLeftNextLevel) {
+	public void setAffLeftNextLevel(int affLeftNextLevel) {
 		this.affLeftNextLevel = affLeftNextLevel;
 	}
 
@@ -140,11 +138,7 @@ public class Fille {
 	}
 
 	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
+		return Skill.valueOf(typeId).getType();
 	}
 
 	public String getAvatar() {
@@ -171,39 +165,17 @@ public class Fille {
 		this.typeId = typeId;
 	}
 
-	public String getCumulAff() {
-		return cumulAff;
-	}
-
-	public void setCumulAff(String cumulAff) {
-		this.cumulAff = cumulAff;
-	}
-
 	public Double getAffProgress() {
-		if (LEVEL_MAX.equals(cumulAff) || LEVEL_UPGRADE.equals(cumulAff)) {
-			return 1.0;
-		}
-		if (cumulAff.isEmpty()) {
+		if (currentAff == null) {
 			return null;
 		}
+		if (maxAff.equals(currentAff)) {
+			return 1.0;
+		}
 
-		Double cumul = getDoubleValue(cumulAff);
-		return new BigDecimal(cumul / (cumul + getDoubleValue(affLeftNextLevel)))
+		return new BigDecimal(currentAff / maxAff)
 				.setScale(2, RoundingMode.HALF_UP)
 				.doubleValue();
-	}
-
-	private Double getDoubleValue(String valeur) {
-		String valeurCleaned = valeur.replaceAll(" ", "");
-
-		if (valeurCleaned.equals(LEVEL_MAX)) {
-			return 9999.0;
-		}
-		if (valeurCleaned.equals(LEVEL_UPGRADE)) {
-			return 0.0;
-		}
-
-		return Double.valueOf(valeurCleaned);
 	}
 
 	public Double getSalary() {
@@ -220,12 +192,9 @@ public class Fille {
 	 * @return
 	 */
 	public Boolean isCollectable() {
-		return collectable;
+		return payIn == 0;
 	}
 
-	public void setCollectable(Boolean canCollect) {
-		this.collectable = canCollect;
-	}
 
 	public Integer getExpertiseRanking() {
 		return expertiseRanking;
@@ -295,6 +264,22 @@ public class Fille {
 
 	public void setRarity(Rarity rarity) {
 		this.rarity = rarity;
+	}
+
+	public Integer getCurrentAff() {
+		return currentAff;
+	}
+
+	public void setCurrentAff(Integer currentAff) {
+		this.currentAff = currentAff;
+	}
+
+	public Integer getMaxAff() {
+		return maxAff;
+	}
+
+	public void setMaxAff(Integer maxAff) {
+		this.maxAff = maxAff;
 	}
 
 }

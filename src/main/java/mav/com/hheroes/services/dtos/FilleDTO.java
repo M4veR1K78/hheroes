@@ -15,7 +15,10 @@ public class FilleDTO {
 	@JsonProperty("Name")
 	private String name;
 	
-	private Integer salary;
+	private Double salary;
+	
+	@JsonProperty("salary_per_hour")
+	private Double salaryPerHour;
 	
 	@JsonProperty("pay_time")
 	private Integer payTime;
@@ -24,6 +27,27 @@ public class FilleDTO {
 	private Integer payIn;
 	
 	private Boolean own;
+	
+	private RefDTO ref;
+	
+	private CaracDTO caracs;
+	
+	@JsonProperty("Affection")
+	private StatDTO affection;
+	
+	@JsonProperty("Xp")
+	private StatDTO xp;
+	
+	@JsonProperty("class")
+	private Integer typeId;
+	
+	@JsonProperty("ico")
+	private String icone;
+	
+	private String avatar;
+	
+	@JsonProperty("position_img")
+	private String position;
 
 	public Integer getIdGirl() {
 		return idGirl;
@@ -57,11 +81,11 @@ public class FilleDTO {
 		this.name = name;
 	}
 
-	public Integer getSalary() {
+	public Double getSalary() {
 		return salary;
 	}
 
-	public void setSalary(Integer salary) {
+	public void setSalary(Double salary) {
 		this.salary = salary;
 	}
 
@@ -92,5 +116,186 @@ public class FilleDTO {
 
 	public void setOwn(Boolean own) {
 		this.own = own;
+	}
+	
+	public RefDTO getRef() {
+		return ref;
+	}
+
+	public void setRef(RefDTO ref) {
+		this.ref = ref;
+	}
+
+	public Double getSalaryPerHour() {
+		return salaryPerHour;
+	}
+
+	public void setSalaryPerHour(Double salaryPerHour) {
+		this.salaryPerHour = salaryPerHour;
+	}
+
+	public Integer getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
+	}
+
+	public String getIcone() {
+		return icone;
+	}
+
+	public void setIcone(String icone) {
+		this.icone = icone;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	public Boolean getOwn() {
+		return own;
+	}
+
+	public CaracDTO getCaracs() {
+		return caracs;
+	}
+
+	public void setCaracs(CaracDTO caracs) {
+		this.caracs = caracs;
+	}
+
+	public StatDTO getAffection() {
+		return affection;
+	}
+
+	public void setAffection(StatDTO affection) {
+		this.affection = affection;
+	}
+
+	public StatDTO getXp() {
+		return xp;
+	}
+
+	public void setXp(StatDTO xp) {
+		this.xp = xp;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static class RefDTO {
+		@JsonProperty("full_name")
+		private String fullName;
+		
+		@JsonProperty("description")
+		private String description;
+
+		public String getFullName() {
+			return fullName;
+		}
+
+		public void setFullName(String fullName) {
+			this.fullName = fullName;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}		
+	}
+	
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static class CaracDTO {
+		@JsonProperty("carac1")
+		private Double hardcore;
+		
+		@JsonProperty("carac2")
+		private Double charme;
+		
+		@JsonProperty("carac3")
+		private Double savoirFaire;
+
+		public Double getHardcore() {
+			return hardcore;
+		}
+
+		public void setHardcore(Double hardcore) {
+			this.hardcore = hardcore;
+		}
+
+		public Double getCharme() {
+			return charme;
+		}
+
+		public void setCharme(Double charme) {
+			this.charme = charme;
+		}
+
+		public Double getSavoirFaire() {
+			return savoirFaire;
+		}
+
+		public void setSavoirFaire(Double savoirFaire) {
+			this.savoirFaire = savoirFaire;
+		}
+	}
+	
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static class StatDTO {
+		private int left;
+		
+		@JsonProperty("cur")
+		private int current;
+		
+		private int max;
+		
+		private boolean maxed;
+
+		public int getLeft() {
+			return left;
+		}
+
+		public void setLeft(int left) {
+			this.left = left;
+		}
+
+		public int getCurrent() {
+			return current;
+		}
+
+		public void setCurrent(int current) {
+			this.current = current;
+		}
+
+		public boolean isMaxed() {
+			return maxed;
+		}
+
+		public void setMaxed(boolean maxed) {
+			this.maxed = maxed;
+		}
+
+		public int getMax() {
+			return max;
+		}
+
+		public void setMax(int max) {
+			this.max = max;
+		}
 	}
 }

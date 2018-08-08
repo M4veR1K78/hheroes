@@ -4,6 +4,6 @@
 	<button type="button" class="btn btn-primary" ng-click="vm.start()"  ng-disabled="vm.disabled">Lancer les missions</button>
 	<span class="text-danger">Ne pas lancer plusieurs fois</span>
 </div>
-<button type="button" class="btn btn-success" ng-click="vm.claimRewards()" ng-if="vm.missions.length">
+<button type="button" class="btn btn-success" ng-click="vm.claimRewards()" ng-if="vm.canClaimReward()">
 Récupérer les récompenses <span ng-class="{'fa-warning': vm.levelWarning, fa: true}" uib-tooltip="Vous allez gagner un niveau et regagner toute votre énergie"></span>
 </button>
