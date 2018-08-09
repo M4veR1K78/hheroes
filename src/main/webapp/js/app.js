@@ -412,7 +412,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		var girl = { name: 'Aucune', affLeftNextLevel: 99999, affProgress: 0 };
 		
 		angular.forEach(vm.filles, function(fille) {
-			if (getFloatValue(fille.affLeftNextLevel) < getFloatValue(girl.affLeftNextLevel)) {
+			if (!fille.maxed && getFloatValue(fille.affLeftNextLevel) < getFloatValue(girl.affLeftNextLevel)) {
 				girl = fille;
 			}
 		});

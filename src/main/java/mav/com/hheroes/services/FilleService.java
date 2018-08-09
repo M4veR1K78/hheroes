@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mav.com.hheroes.domain.Fille;
+import mav.com.hheroes.domain.Rarity;
 import mav.com.hheroes.services.dtos.FilleDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 
@@ -99,6 +100,9 @@ public class FilleService {
 			fille.setExpLeftNextLevel(dto.getXp().getLeft());
 			fille.setExpertiseBaseValue(getInitialExpertiseValue(fille));
 			fille.setFavoritePosition(dto.getPosition());
+			fille.setMaxed(dto.getAffection().isMaxed());
+			fille.setUpgradable(dto.isUpgradable());
+			fille.setRarity(Rarity.valueOfType(dto.getRarity()));
 			filles.add(fille);
 		});
 

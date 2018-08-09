@@ -4,7 +4,7 @@
 		<h5 class="widget-user-desc">{{ ::vm.fille.pseudo }}</h5>
 	</div>
 	<div class="widget-user-image">
-		<img class="img-circle" ng-src="image?urlImage={{ ::vm.fille.avatar }}" alt="{{ ::vm.fille.pseudo }}">
+		<img class="rounded-circle" ng-src="image?urlImage={{ ::vm.fille.avatar }}" alt="{{ ::vm.fille.pseudo }}">
 	</div>
 	<div class="box-footer">
 		<div class="row">
@@ -22,7 +22,7 @@
 			</div>
 			<div class="col-sm-4">
 				<div class="description-block">
-					<h5 class="description-header"><span class="glyphicon glyphicon-star" ng-repeat="i in ::vm.getNumber(vm.fille.grade) track by $index"></span></h5>
+					<h5 class="description-header"><span class="fa fa-star" ng-repeat="i in ::vm.getNumber(vm.fille.grade) track by $index"></span></h5>
 					<small class="description-text">GRADE</small>
 				</div>
 			</div>

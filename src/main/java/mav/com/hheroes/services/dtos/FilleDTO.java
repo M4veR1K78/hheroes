@@ -48,6 +48,19 @@ public class FilleDTO {
 	
 	@JsonProperty("position_img")
 	private String position;
+	
+	@JsonProperty("can_upgrade")
+	private boolean upgradable;
+	
+	private String rarity;
+
+	public boolean isUpgradable() {
+		return upgradable;
+	}
+
+	public void setUpgradable(boolean upgradable) {
+		this.upgradable = upgradable;
+	}
 
 	public Integer getIdGirl() {
 		return idGirl;
@@ -192,6 +205,14 @@ public class FilleDTO {
 
 	public void setPosition(String position) {
 		this.position = position;
+	}
+
+	public String getRarity() {
+		return rarity;
+	}
+
+	public void setRarity(String rarity) {
+		this.rarity = rarity;
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)

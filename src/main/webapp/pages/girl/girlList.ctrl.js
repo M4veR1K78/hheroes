@@ -77,8 +77,7 @@
 				            });
 				        });
 					}
-				})
-				.withBootstrap();
+				});
 			
 			vm.dtColumnDefs = [
 		        DTColumnDefBuilder.newColumnDef(0).notSortable().withOption('width', '60px'),

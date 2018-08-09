@@ -1,4 +1,4 @@
-<table class="table table-bordered table-striped table-condensed dataTable" datatable="ng" dt-options="vm.dtOptions" dt-column-defs="vm.dtColumnDefs" dt-instance="vm.dtInstance">
+<table class="table table-bordered table-striped table-sm" datatable="ng" dt-options="vm.dtOptions" dt-column-defs="vm.dtColumnDefs" dt-instance="vm.dtInstance">
 	<thead>
 		<th></th>
 		<th>Nom</th>
@@ -26,16 +26,16 @@
 			<td class="align-middle">
 				<img ng-src="img/carac{{ fille.typeId }}.png" width="20px" /> {{ ::fille.type }}
 			</td>
-			<td class="text-center align-middle"><a href class="btn btn-link" ng-click="vm.openModalAvatar(fille)">{{ ::fille.grade }}</a></td>
+			<td class="text-center align-middle"><button class="btn btn-outline-secondary" ng-click="vm.openModalAvatar(fille)">{{ ::fille.grade }}</button></td>
 			<td class="text-center align-middle">{{ ::fille.salaryPerHour }}</td>
 			<td class="text-center align-middle">{{ ::fille.salary }}</td>
 			<td class="text-center align-middle">{{ ::fille.expLeftNextLevel }}</td>
-			<td class="text-center align-middle">{{ ::fille.affLeftNextLevel }}</td>
+			<td class="text-center align-middle">{{ (fille.maxed) ? 'Max.' : fille.affLeftNextLevel }}</td>
 			<td class="text-center align-middle"><img ng-src="position?image={{fille.favoritePosition}}" width="50px" height="50px" /></td>
 			<td class="text-center align-middle">{{ ::fille.hardcore }}</td>
 			<td class="text-center align-middle">{{ ::fille.charme }}</td>
 			<td class="text-center align-middle">{{ ::fille.savoirFaire }}</td>
-			<td class="text-center align-middle"><span class="label bg-red" title="{{ ::fille.expertiseBaseValue }}">{{ ::fille.expertiseRanking | ordinal }}</span></td>
+			<td class="text-center align-middle"><span class="badge badge-pill bg-red" title="{{ ::fille.expertiseBaseValue }}">{{ ::fille.expertiseRanking | ordinal }}</span></td>
 			<td ng-hide="true">{{ ::vm.getRarityLibelle(fille.rarity) }}</td>
 		</tr>
 	</tbody>

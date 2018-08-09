@@ -120,3 +120,7 @@ input:checked+.slider:before {
 	background-image: url("../img/legendary.jpg");
 	background-size: cover;
 }
+
+.nav-link-stacked {
+	border-bottom: 1px solid lightgrey; 
+}

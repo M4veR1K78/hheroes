@@ -51,6 +51,34 @@ public class Fille {
 	private Integer currentAff;
 	
 	private Integer maxAff;
+	
+	public boolean upgradable;
+	
+	public boolean maxed;
+
+	public boolean isUpgradable() {
+		return upgradable;
+	}
+
+	public void setUpgradable(boolean upgradable) {
+		this.upgradable = upgradable;
+	}
+
+	public boolean isMaxed() {
+		return maxed;
+	}
+
+	public void setMaxed(boolean maxed) {
+		this.maxed = maxed;
+	}
+
+	public void setExpLeftNextLevel(Integer expLeftNextLevel) {
+		this.expLeftNextLevel = expLeftNextLevel;
+	}
+
+	public void setAffLeftNextLevel(Integer affLeftNextLevel) {
+		this.affLeftNextLevel = affLeftNextLevel;
+	}
 
 	public String getName() {
 		return name;
@@ -72,16 +100,8 @@ public class Fille {
 		return expLeftNextLevel;
 	}
 
-	public void setExpLeftNextLevel(int expLeftNextLevel) {
-		this.expLeftNextLevel = expLeftNextLevel;
-	}
-
 	public int getAffLeftNextLevel() {
 		return affLeftNextLevel;
-	}
-
-	public void setAffLeftNextLevel(int affLeftNextLevel) {
-		this.affLeftNextLevel = affLeftNextLevel;
 	}
 
 	public Double getSalaryPerHour() {
