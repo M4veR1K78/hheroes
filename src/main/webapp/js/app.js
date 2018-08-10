@@ -266,9 +266,7 @@ function secondsToDateTime() {
 
 function ordinal() {
 	return function(input) {
-		var s = ['ème', 'ère', 'ème', 'ème'],
-		v = input % 100;
-		return input + (s[(v-20) % 10] || s[v] || s[0]);
+		return input + (input == 1 ? 'ère' : 'ème');
 	}
 };
 

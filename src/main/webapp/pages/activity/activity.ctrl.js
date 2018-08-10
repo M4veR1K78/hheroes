@@ -1,6 +1,18 @@
 (function() {
 	'use strict';
 	
+	angular.module('heroesApp').filter('beautifyStatut', function() {
+		var statuts = [];
+		statuts['EN_COURS'] = 'En cours';
+		statuts['TERMINEE'] = 'Terminée';
+		statuts['EN_ATTENTE'] = 'En attente';
+		statuts['PRETE'] = 'Prête';
+		
+		return function(value) {
+			return statuts[value];
+		}
+	});
+	
 	angular.module('heroesApp').component('activityList', {
 		templateUrl: 'pages/activity/activity.tpl.html',
 		controller: ListeMissionController,
@@ -45,7 +57,7 @@
 		        	return '<span ng-class="{ \'bg-blue\': vm.missions[' + mission.id + '].statut === \'TERMINEE\', ' +
 		        		'\'bg-red\': vm.missions[' + mission.id + '].statut === \'EN_COURS\', ' +
 		        		'\'bg-yellow\': vm.missions[' + mission.id + '].statut === \'EN_ATTENTE\', ' +
-		        		'\'bg-green\': vm.missions[' + mission.id + '].statut === \'PRETE\', badge: true }" style="text-transform: capitalize">{{ vm.missions[' + mission.id + '].statut | lowercase }}</span>';
+		        		'\'bg-green\': vm.missions[' + mission.id + '].statut === \'PRETE\', badge: true }">{{ vm.missions[' + mission.id + '].statut | beautifyStatut }}</span>';
 		        }),
 		    ];
 		}

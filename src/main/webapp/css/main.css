@@ -1,7 +1,7 @@
 body {
 	width: 100%;
 	heigth: 100%;
-	background-color: #ecf0f5;
+	background-color: #e4e5e6;
 }
 
 .icon {
@@ -123,4 +123,20 @@ input:checked+.slider:before {
 
 .nav-link-stacked {
 	border-bottom: 1px solid lightgrey; 
+}
+
+/* workaround bootstrap 4 modal not showing */
+.fade.in {
+  opacity: 1;
+}
+
+.modal.in .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+
+.modal-backdrop.in {
+  opacity: 0.5;
 }

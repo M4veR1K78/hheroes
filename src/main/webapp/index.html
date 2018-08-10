@@ -29,38 +29,38 @@
 	<div class="wrapper">
 		<header-widget hero="vm.hero" nb-filles="vm.filles.length"></header-widget>
 		<div class="content-wrapper" style="margin-left: 0; margin-top: 55px">
-			<section class="content" >
+			<section class="content">
 				<div class="row" ng-if="vm.filles.length">	
-					<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="col">
 						<girl-evolve-widget fille="::vm.nextGirlToEvolve"></girl-evolve-widget>
 					</div>
-					<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="col">
 						<girl-weakest-widget fille="vm.getWeakestGirl()"></girl-weakest-widget>		
 					</div>
-					<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="col">
 						<girl-salary-widget filles="vm.filles" on-collect="vm.collectSalary(collectedSalary)" on-do-collect="vm.doCollectSalaries()"></girl-salary-widget>	
 					</div>
-					<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="col">
 						<gift-sum-widget cadeaux="vm.cadeaux"></gift-sum-widget>	
 					</div>
 				</div>
 				<div class="row" ng-if="vm.filles.length">
-					<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="col">
 						<hero-widget hero="vm.hero"></hero-widget>		
 					</div>
-					<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="col">
 						<girl-best-widget fille="vm.getBestOnTypeGirl('hardcore')" type="vm.types.hardcore"></girl-best-widget>		
 					</div>
-					<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="col">
 						<girl-best-widget fille="vm.getBestOnTypeGirl('charme')" type="vm.types.charme"></girl-best-widget>		
 					</div>
-					<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="col">
 						<girl-best-widget fille="vm.getBestOnTypeGirl('savoirFaire')" type="vm.types.savoirFaire"></girl-best-widget>		
 					</div>	
 				</div>
 				<div class="row">
 					<!-- Combat de boss -->
-					<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="col">
 						<div class="box collapsed-box">
 							<div class="box-header with-border">
 								<h3 class="box-title">Combats de boss</h3>
@@ -83,7 +83,7 @@
 						</div>
 					</div>
 					<!-- Faire les missions automatiquements -->
-					<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="col">
 						<div class="box collapsed-box">
 							<div class="box-header with-border">
 								<h3 class="box-title">Missions automatiques</h3>
@@ -100,7 +100,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-12">
+					<div class="col">
 						<div class="box">
 							<div class="box-header with-border">
 								<h3 class="box-title">Harem</h3>

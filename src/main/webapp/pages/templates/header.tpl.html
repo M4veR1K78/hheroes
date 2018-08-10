@@ -29,7 +29,7 @@
 				</li>	
 				<li class="nav-item user user-menu">
 					<a href="" class="nav-link" data-toggle="dropdown" aria-expanded="false" ng-click="vm.updateUser()"> 
-						<img ng-src="image?urlImage={{ vm.hero.avatarUrl }}" class="user-image" alt="User Image"> 
+						<img ng-src="image?urlImage={{ vm.hero.avatarUrl }}" class="user-image" alt="User Image" ng-show="vm.hero.avatarUrl"> 
 						<span class="hidden-xs">{{ vm.hero.name }}</span>
 					</a>
 				</li>

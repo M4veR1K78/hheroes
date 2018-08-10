@@ -1,8 +1,8 @@
 <div class="box box-widget widget-user-2">
 	<!-- Add the bg color to the header using any of the bg-* classes -->
-	<div class="widget-user-header bg-green">
+	<div class="widget-user-header bg-light">
 			<div class="widget-user-image">
-				<img class="img-circle" ng-src="image?urlImage={{ vm.hero.avatarUrl }}" alt="User Avatar">
+				<img class="rounded-circle" ng-src="image?urlImage={{ vm.hero.avatarUrl }}" alt="User Avatar">
 			</div>
 			<small class="pull-right">
 				<img src="img/energy.png" width="20px" /> {{ vm.hero.energyQuest }} / {{ vm.hero.energyQuestMax }}<br>
@@ -10,13 +10,13 @@
 			</small>
 			<!-- /.widget-user-image -->
 			<h3 class="widget-user-username">{{ vm.hero.name }}</h3>
-			<h5 class="widget-user-desc">Level <b>{{ vm.hero.level }}</b></h5>({{ vm.hero.xp.toLocaleString() }} xp)
+			<p class="widget-user-desc">Level <b>{{ vm.hero.level }}</b> ({{ vm.hero.xp.toLocaleString() }} xp)</p>
 	</div>
 	<div class="box-footer no-padding">
 		<div class="nav-stacked">
 			<div class="nav-link nav-link-stacked"><a href="">Compte en banque <span class="pull-right badge bg-blue">{{ vm.hero.money.toLocaleString() }} $</span></a></div>
 			<div class="nav-link nav-link-stacked"><a href="">Kobans <span class="pull-right badge bg-aqua">{{ vm.hero.kobans.toLocaleString() }}</span></a></div>
-			<div class="nav-link nav-link-stacked"><a href="">Expérience avant prochain niveau <span class="pull-right badge bg-green">{{ vm.hero.experience.left.toLocaleString() }}</span></a></div>
+			<div class="nav-link nav-link-stacked"><a href="">Expérience avant prochain niveau <span class="pull-right badge bg-green">{{ vm.hero.experience.left.toLocaleString() }} xp</span></a></div>
 		</div>
 	</div>
 </div>
