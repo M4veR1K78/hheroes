@@ -64,7 +64,7 @@ public class FilleService {
 				Arrays.asList(girls.split("\\n")).stream()
 						.filter(line -> line.contains("girlsDataList["))
 						.forEach(line -> {
-							String filleJson = line.replaceAll("(?s).*girlsDataList\\['\\d+'\\] = (.+?);.*", "$1");
+							String filleJson = line.replaceAll("(?s).*girlsDataList\\['\\d+'\\] = (.*);$", "$1");
 							try {
 								FilleDTO fille = new ObjectMapper().readValue(filleJson, FilleDTO.class);
 								if (fille.isOwn()) {

@@ -100,6 +100,7 @@ function GameService($http) {
 	var service = {};
 	
 	service.login = login;
+	service.logout = logout;
 	service.isAuthenticated = isAuthenticated;
 	
 	function login(user) {
@@ -108,6 +109,10 @@ function GameService($http) {
 	
 	function isAuthenticated() {
 		return $http.get('auth');
+	}
+	
+	function logout() {
+		return $http.get('logout');
 	}
 	
 	return service;
@@ -311,6 +316,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	vm.destroyBoss = destroyBoss;
 	vm.getMissions = getMissions;
 	vm.doCollectSalaries = doCollectSalaries;
+	vm.logout = logout;
 
 	activate();
 	
@@ -319,7 +325,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 			if (response.data) {
 				getFilles();				
 			} else {
-				login();
+				showLoginModal();
 			}
 		}, function(response) {
 			console.debug('Impossible de savoir si on est connecté', response);
@@ -358,7 +364,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		return deferred.promise;
 	}
 	
-	function login() {
+	function showLoginModal() {
 		var modalInstance = $uibModal.open({
 			animation : true,
 			templateUrl : 'pages/templates/login.html',
@@ -371,6 +377,17 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	    }, function () {
 	    	console.log('User is not connected, no data to display');
 	    });
+	}
+	
+	function logout() {
+		EntityService.gameSrv.logout().then(function() {
+			vm.filles = [];
+			vm.cadeaux = [];
+			vm.bosses = [];
+			vm.hero = {};
+			vm.user = {};
+			showLoginModal();
+		});
 	}
 	
 	function openModalAvatar(fille) {
@@ -663,7 +680,8 @@ heroesApp.component('headerWidget', {
 	controllerAs: 'vm',
 	bindings: {
 		hero: '<',
-		nbFilles: '<'
+		nbFilles: '<',
+		onLogout: '&'
 	}
 });
 
@@ -672,6 +690,7 @@ HeaderWidgetController.$inject = ['$uibModal'];
 function HeaderWidgetController($uibModal) { 
 	var vm = this; 
 	vm.updateUser = updateUser;
+	vm.logout = logout;
 	
 	function updateUser() {
 		var modalInstance = $uibModal.open({
@@ -689,6 +708,10 @@ function HeaderWidgetController($uibModal) {
 		modalInstance.result.then(function() {
 			//
 	    });
+	}
+	
+	function logout() {
+		vm.onLogout();
 	}
 }
 

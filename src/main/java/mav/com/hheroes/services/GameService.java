@@ -38,6 +38,7 @@ public class GameService {
 	private static final String URL_HAREM = URL_HHEROES + "/harem.html";
 	private static final String URL_SHOP = URL_HHEROES + "/shop.html";
 	private static final String URL_BATTLE = URL_HHEROES + "/battle.html";
+	private static final String URL_INTRO = URL_HHEROES + "/intro.php";
 	private static final String URL_MISSIONS = URL_HHEROES + "/activities.html?tab=missions";
 	private static final String URL_LOGIN = URL_HHEROES + "/phoenix-ajax.php";
 	private static final String URL_ACTION = URL_HHEROES + "/ajax.php";
@@ -184,6 +185,15 @@ public class GameService {
 
 		return null;
 	}
+	
+	public void logout(String login) throws IOException {
+		 Jsoup
+			.connect(URL_INTRO + "?phoenix_member=logout")
+			.cookies(getCookies(login))
+			.method(Method.GET)
+			.ignoreContentType(true)
+			.execute();		
+	}
 
 	public void acceptMission(Mission mission, String login) throws IOException {
 		Map<String, String> data = new HashMap<>();
@@ -276,6 +286,7 @@ public class GameService {
 		
 		doPost(URL_ACTION, login, data);
 	}
+
 
 	/**
 	 * Fait une requête POST.

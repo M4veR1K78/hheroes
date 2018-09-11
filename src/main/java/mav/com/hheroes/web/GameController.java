@@ -64,6 +64,12 @@ public class GameController {
 	public ResponseEntity<byte[]> getPosition(@RequestParam("image") String urlImage) throws IOException {
 		return returnImage(gameService.getPosition(urlImage, httpSession.getAttribute(GameService.LOGIN).toString()));
 	}
+	
+	@GetMapping("/logout")
+	public void logout() throws IOException {
+		gameService.logout(httpSession.getAttribute(GameService.LOGIN).toString());
+		httpSession.setAttribute(GameService.COOKIES, null);
+	}
 
 	private ResponseEntity<byte[]> returnImage(byte[] image) throws IOException {
 		if (image != null) {

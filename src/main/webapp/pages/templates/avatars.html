@@ -1,8 +1,8 @@
 
 <div class="modal-header">
     <h3 class="modal-title " id="modal-title">Avatars de {{ vm.girl.name }}
-    	<span class="label pull-right" ng-class="vm.rarityClass">{{ vm.rarityLabel }}</span>
     </h3>
+   	<span class="badge badge-pill float-right" ng-class="vm.rarityClass">{{ vm.rarityLabel }}</span>
 </div>
 <div class="modal-body text-center">
 	<img ng-repeat="gradeId in vm.grades" ng-src="filles/{{vm.girl.id}}/avatar/{{gradeId}}" width="160px" class="img-fluid" />
