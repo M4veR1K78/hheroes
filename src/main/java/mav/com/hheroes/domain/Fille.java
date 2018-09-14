@@ -7,6 +7,12 @@ import java.util.Objects;
 public class Fille {
 	public static final String LEVEL_UPGRADE = "En upgrade";
 	public static final String LEVEL_MAX = "Max.";
+	
+	private static final Double COEFF_1_STAR = 1.3;
+	private static final Double COEFF_2_STAR = 1.6;
+	private static final Double COEFF_3_STAR = 1.9;
+	private static final Double COEFF_4_STAR = 2.2;
+	private static final Double COEFF_5_STAR = 2.5;
 
 	private Integer id;
 
@@ -37,9 +43,7 @@ public class Fille {
 	private String avatar;
 
 	private Double salary;
-
-	private Double expertiseBaseValue;
-
+	
 	private Integer expertiseRanking;
 
 	private Integer payTime;
@@ -225,11 +229,7 @@ public class Fille {
 	}
 
 	public Double getExpertiseBaseValue() {
-		return expertiseBaseValue;
-	}
-
-	public void setExpertiseBaseValue(Double expertiseBaseValue) {
-		this.expertiseBaseValue = expertiseBaseValue;
+		return getInitialExpertiseValue();
 	}
 
 	public Integer getPayTime() {
@@ -300,6 +300,43 @@ public class Fille {
 
 	public void setMaxAff(Integer maxAff) {
 		this.maxAff = maxAff;
+	}
+	
+	private Double getInitialExpertiseValue() {
+		Double value = 0.0;
+		switch (getTypeId()) {
+		case 1:
+			value = getHardcore();
+			break;
+		case 2:
+			value = getCharme();
+			break;
+		case 3:
+			value = getSavoirFaire();
+			break;
+		}
+		value = value / getLevel();
+
+		switch (getGrade()) {
+		case 1:
+			value = value / COEFF_1_STAR;
+			break;
+		case 2:
+			value = value / COEFF_2_STAR;
+			break;
+		case 3:
+			value = value / COEFF_3_STAR;
+			break;
+		case 4:
+			value = value / COEFF_4_STAR;
+			break;
+		case 5:
+			value = value / COEFF_5_STAR;
+			break;
+		}
+		return new BigDecimal(value)
+				.setScale(2, RoundingMode.HALF_UP)
+				.doubleValue();
 	}
 
 }

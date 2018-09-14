@@ -1,13 +1,12 @@
 package mav.com.hheroes.services;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -18,27 +17,21 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mav.com.hheroes.domain.Fille;
-import mav.com.hheroes.domain.Rarity;
 import mav.com.hheroes.services.dtos.FilleDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
+import mav.com.hheroes.services.mappers.DomainMapper;
 
 @Service
 public class FilleService {
-	private final Logger logger = Logger.getLogger(getClass());
+	private static final String LINE_BREAK = "\\n";
 
-	private static final Double COEFF_1_STAR = 1.3;
-	private static final Double COEFF_2_STAR = 1.6;
-	private static final Double COEFF_3_STAR = 1.9;
-	private static final Double COEFF_4_STAR = 2.2;
-	private static final Double COEFF_5_STAR = 2.5;
+	private final Logger logger = Logger.getLogger(getClass());
 
 	@Resource
 	private GameService gameService;
@@ -50,64 +43,44 @@ public class FilleService {
 	}
 
 	public List<Fille> getFilles(String login) throws IOException {
-		List<Fille> filles = new ArrayList<>();
+		final List<Fille> filles = new ArrayList<>();
 
 		Document harem = gameService.getHarem(login);
-		Elements select = harem.select("script");
-		List<FilleDTO> dtos = new ArrayList<>();
-		for (Element script : select) {
-			if (script.html().contains("var girlsDataList = {}")) {
-				String girls = script.html()
-						.substring(script.html().indexOf("var girlsDataList = {}"),
-								script.html().indexOf("var girls = {};"));
-
-				Arrays.asList(girls.split("\\n")).stream()
+		harem.select("script").stream()
+			.map(script -> script.html())
+			.filter(html -> html.contains("var girlsDataList = {}"))
+			.findFirst()
+			.map(html -> html.substring(html.indexOf("var girlsDataList = {}"), html.indexOf("var girls = {};")))
+			.ifPresent(girls -> {
+				Arrays.asList(girls.split(LINE_BREAK)).stream()
 						.filter(line -> line.contains("girlsDataList["))
-						.forEach(line -> {
-							String filleJson = line.replaceAll("(?s).*girlsDataList\\['\\d+'\\] = (.*);$", "$1");
-							try {
-								FilleDTO fille = new ObjectMapper().readValue(filleJson, FilleDTO.class);
-								if (fille.isOwn()) {
-									dtos.add(fille);
-								}
-							} catch (IOException e) {
-								logger.error("Failed getting girl JSON", e);
-							}
-						});
-			}
-		}
-
-		dtos.forEach(dto -> {
-			Fille fille = new Fille();
-			fille.setId(dto.getIdGirl());
-			fille.setName(dto.getRef().getFullName());
-			fille.setPseudo(dto.getName());
-			fille.setGrade(dto.getGraded());
-			fille.setPayTime(dto.getPayTime());
-			fille.setPayIn(dto.getPayIn());
-			fille.setPseudo(dto.getName());
-			fille.setSalary(dto.getSalary());
-			fille.setSalaryPerHour(dto.getSalaryPerHour());
-			fille.setAvatar(dto.getIcone());
-			fille.setTypeId(dto.getTypeId());
-			fille.setHardcore(dto.getCaracs().getHardcore());
-			fille.setCharme(dto.getCaracs().getCharme());
-			fille.setSavoirFaire(dto.getCaracs().getSavoirFaire());
-			fille.setLevel(dto.getLevel());
-			fille.setMaxAff(dto.getAffection().getMax());
-			fille.setCurrentAff(dto.getAffection().getCurrent());
-			fille.setAffLeftNextLevel(dto.getAffection().getLeft());
-			fille.setExpLeftNextLevel(dto.getXp().getLeft());
-			fille.setExpertiseBaseValue(getInitialExpertiseValue(fille));
-			fille.setFavoritePosition(dto.getPosition());
-			fille.setMaxed(dto.getAffection().isMaxed());
-			fille.setUpgradable(dto.isUpgradable());
-			fille.setRarity(Rarity.valueOfType(dto.getRarity()));
-			filles.add(fille);
-		});
+						.map(this::serializeFille)
+						.filter(Objects::nonNull)
+						.filter(FilleDTO::isOwn)
+						.map(DomainMapper::asFille)
+						.forEach(filles::add);
+			});
 
 		rankGirls(filles);
 		return filles;
+	}
+
+	/**
+	 * Parse la ligne et récupère le json. Le json est ensuite sérialisé en
+	 * FilleDTO.
+	 * 
+	 * @param line
+	 *            ligne à parser.
+	 * @return Un objet fille si l'objet json s'est bien parsé. {@code null} sinon.
+	 */
+	private FilleDTO serializeFille(String line) {
+		String filleJson = line.replaceAll("(?s).*girlsDataList\\['\\d+'\\] = (.*);$", "$1");
+		try {
+			return new ObjectMapper().readValue(filleJson, FilleDTO.class);
+		} catch (IOException e) {
+			logger.error("Failed getting girl JSON", e);
+			return null;
+		}
 	}
 
 	public SalaryDTO collectSalary(Integer filleId, String login) throws IOException {
@@ -173,49 +146,6 @@ public class FilleService {
 								rank1.put(offset + r, items);
 							});
 						});
-	}
-
-	/**
-	 * Récupère la valeur initiale dans le domaine d'expertise de la fille.
-	 * 
-	 * @param fille
-	 * @return
-	 */
-	private Double getInitialExpertiseValue(Fille fille) {
-		Double value = 0.0;
-		switch (fille.getTypeId()) {
-		case 1:
-			value = fille.getHardcore();
-			break;
-		case 2:
-			value = fille.getCharme();
-			break;
-		case 3:
-			value = fille.getSavoirFaire();
-			break;
-		}
-		value = value / fille.getLevel();
-
-		switch (fille.getGrade()) {
-		case 1:
-			value = value / COEFF_1_STAR;
-			break;
-		case 2:
-			value = value / COEFF_2_STAR;
-			break;
-		case 3:
-			value = value / COEFF_3_STAR;
-			break;
-		case 4:
-			value = value / COEFF_4_STAR;
-			break;
-		case 5:
-			value = value / COEFF_5_STAR;
-			break;
-		}
-		return new BigDecimal(value)
-				.setScale(2, RoundingMode.HALF_UP)
-				.doubleValue();
 	}
 
 	/**

@@ -2,15 +2,18 @@ package mav.com.hheroes.services.mappers;
 
 import mav.com.hheroes.domain.Boss;
 import mav.com.hheroes.domain.Experience;
+import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.domain.Hero;
+import mav.com.hheroes.domain.Rarity;
 import mav.com.hheroes.domain.Skill;
 import mav.com.hheroes.services.dtos.BossDTO;
+import mav.com.hheroes.services.dtos.FilleDTO;
 import mav.com.hheroes.services.dtos.HeroDTO;
 
 public class DomainMapper {
 	public static Hero asHero(HeroDTO dto) {
 		Hero hero = null;
-		
+
 		if (dto != null) {
 			hero = new Hero();
 			hero.setId(dto.getId());
@@ -35,13 +38,13 @@ public class DomainMapper {
 				hero.setExperience(exp);
 			}
 		}
-		
+
 		return hero;
 	}
-	
+
 	public static BossDTO asBossDTO(Boss boss) {
 		BossDTO dto = null;
-		
+
 		if (boss != null) {
 			dto = new BossDTO();
 			dto.setId(String.valueOf(boss.getId()));
@@ -53,7 +56,38 @@ public class DomainMapper {
 			dto.setWorld(boss.getWorld());
 			dto.setOrgasm(boss.getOrgasm());
 		}
-		
+
 		return dto;
+	}
+
+	public static Fille asFille(FilleDTO dto) {
+		if (dto != null) {
+			Fille fille = new Fille();
+			fille.setId(dto.getIdGirl());
+			fille.setName(dto.getRef().getFullName());
+			fille.setPseudo(dto.getName());
+			fille.setGrade(dto.getGraded());
+			fille.setPayTime(dto.getPayTime());
+			fille.setPayIn(dto.getPayIn());
+			fille.setPseudo(dto.getName());
+			fille.setSalary(dto.getSalary());
+			fille.setSalaryPerHour(dto.getSalaryPerHour());
+			fille.setAvatar(dto.getIcone());
+			fille.setTypeId(dto.getTypeId());
+			fille.setHardcore(dto.getCaracs().getHardcore());
+			fille.setCharme(dto.getCaracs().getCharme());
+			fille.setSavoirFaire(dto.getCaracs().getSavoirFaire());
+			fille.setLevel(dto.getLevel());
+			fille.setMaxAff(dto.getAffection().getMax());
+			fille.setCurrentAff(dto.getAffection().getCurrent());
+			fille.setAffLeftNextLevel(dto.getAffection().getLeft());
+			fille.setExpLeftNextLevel(dto.getXp().getLeft());
+			fille.setFavoritePosition(dto.getPosition());
+			fille.setMaxed(dto.getAffection().isMaxed());
+			fille.setUpgradable(dto.isUpgradable());
+			fille.setRarity(Rarity.valueOfType(dto.getRarity()));
+			return fille;
+		}
+		return null;
 	}
 }
