@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,11 +22,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Fille;
+import mav.com.hheroes.domain.Opponent;
 import mav.com.hheroes.services.ArenaService;
 import mav.com.hheroes.services.BossService;
 import mav.com.hheroes.services.FilleService;
 import mav.com.hheroes.services.GameService;
 import mav.com.hheroes.services.MissionService;
+import mav.com.hheroes.services.TowerFameService;
 import mav.com.hheroes.services.UserService;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
@@ -49,6 +52,8 @@ public class TaskExecutor {
 
 	private ArenaService arenaService = new ArenaService(gameService);
 
+	private TowerFameService towerService = new TowerFameService(gameService);
+
 	@Resource
 	private BossService bossService;
 
@@ -63,6 +68,9 @@ public class TaskExecutor {
 
 	@Value("${hheroes.boss}")
 	private Integer bossId;
+
+	@Value("${hheroes.league}")
+	private Integer league;
 
 	private Map<Integer, SchedulerInfo> threads = new HashMap<>();
 
@@ -85,31 +93,33 @@ public class TaskExecutor {
 				.forEach(fille -> {
 					logger.info(String.format("Starting thread for %s. Collect every %s", fille.getPseudo(),
 							LocalTime.MIN.plusSeconds(fille.getPayTime()).toString()));
-					
+
 					ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 					ScheduledFuture<?> response = scheduler.scheduleWithFixedDelay(
 							new PremiumAutoSalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
 							fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS);
-					
+
 					threads.put(fille.getId(), new SchedulerInfo(scheduler, fille, response));
 				});
 
-		// on regarde parmis les threads existants si une fille a monté en grade et donc son timer a changé
+		// on regarde parmis les threads existants si une fille a monté en grade et donc
+		// son timer a changé
 		threads.entrySet().stream()
-			.map(entry -> entry.getValue())
-			.forEach(info -> {
-				Fille fille = filles.get(filles.indexOf(info.getFille())); 
-				
-				if (!fille.getPayTime().equals(info.getFille().getPayTime())) {
-					// timer différent: on remplace la tâche existante par une nouvelle avec le nouveau délai
-					logger.info(String.format("Changing delay for %s", fille.getPseudo()));
-					info.getResponse().cancel(false);
-					info.setResponse(info.getScheduler().scheduleWithFixedDelay(
-							new PremiumAutoSalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
-							fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS));
-					info.setFille(fille);
-				}
-			});
+				.map(entry -> entry.getValue())
+				.forEach(info -> {
+					Fille fille = filles.get(filles.indexOf(info.getFille()));
+
+					if (!fille.getPayTime().equals(info.getFille().getPayTime())) {
+						// timer différent: on remplace la tâche existante par une nouvelle avec le
+						// nouveau délai
+						logger.info(String.format("Changing delay for %s", fille.getPseudo()));
+						info.getResponse().cancel(false);
+						info.setResponse(info.getScheduler().scheduleWithFixedDelay(
+								new PremiumAutoSalaryTask(filleService, fille.getId(), new UserDTO(login, password)),
+								fille.getPayIn() + 1, fille.getPayTime(), TimeUnit.SECONDS));
+						info.setFille(fille);
+					}
+				});
 	}
 
 	/**
@@ -173,22 +183,56 @@ public class TaskExecutor {
 			if (!response.getSuccess()) {
 				logger.info("\tErreur lors du combat d'arène. Success = false");
 			}
-			
+
 		}
 		if (joueurs.isEmpty()) {
 			logger.info("\tNo fight to do...");
 		}
 	}
-	
+
 	@Scheduled(fixedDelayString = "${hheroes.cronDoPachinko}")
 	public void doPachinko() throws AuthenticationException, IOException {
 		if (gameService.getCookies(login) == null) {
 			logger.info("Batch doPachinko login");
 			gameService.login(login, password);
 		}
-		
+
 		logger.info("Doing pachinko...");
 		gameService.playPachinko(login);
+	}
+
+	@Scheduled(cron = "${hheroes.cronDoLeagueBattle}")
+	public void doLeagueBattle() throws AuthenticationException, IOException {
+		if (gameService.getCookies(login) == null) {
+			logger.info("Batch doPachinko login");
+			gameService.login(login, password);
+		}
+
+		logger.info("Doing league battles...");
+		List<Opponent> opponents = towerService.getOpponents(login);
+		boolean success = true;
+		try {
+			for (Opponent opponent : opponents) {
+				while (success && opponent.getNbAttack() < 3) {
+					logger.info("Preparing to attack " + opponent.getName() + " that has " + opponent.getNbAttack() + " attacks");
+					Optional<JoueurDTO> joueur = arenaService.getJoueur(league, opponent.getId(), login);
+					if (joueur.isPresent()) {
+						ResponseDTO response = gameService.fightOpponent(joueur.get(), login);
+						if (response.getSuccess()) {
+							opponent.setNbAttack(opponent.getNbAttack() + 1);
+						}
+						success = response.getSuccess();
+					} else {
+						success = false;
+					}
+				}
+				if (!success) {
+					break;
+				}
+			}
+		} catch (IOException e) {
+			logger.error("Erreur lors du combat de league", e);
+		}
 	}
 
 	@PreDestroy

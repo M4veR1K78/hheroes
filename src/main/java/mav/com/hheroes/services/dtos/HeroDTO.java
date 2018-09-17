@@ -32,6 +32,9 @@ public class HeroDTO {
 	@JsonProperty("energy_fight_max")
 	private Integer energyFightMax;
 	
+	@JsonProperty("energy_challenge")
+	private Integer energyChallenge;
+	
 	@JsonProperty("class")
 	private Integer classe;
 	
@@ -134,6 +137,14 @@ public class HeroDTO {
 		this.energyFightMax = energyFightMax;
 	}
 	
+	public Integer getEnergyChallenge() {
+		return energyChallenge;
+	}
+
+	public void setEnergyChallenge(Integer energyChallenge) {
+		this.energyChallenge = energyChallenge;
+	}
+
 	public class XpDTO {
 		private Integer cur;
 		

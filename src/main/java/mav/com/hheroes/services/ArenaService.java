@@ -12,7 +12,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mav.com.hheroes.services.dtos.JoueurDTO;
@@ -29,7 +31,16 @@ public class ArenaService {
 	}
 	
 	public Optional<JoueurDTO> getJoueur(int numArena, String login) throws IOException {
-		Document arena = gameService.getBattle(numArena, login);
+		Document arena = gameService.getBattleForArena(numArena, login);
+		return getJoueur(arena);	
+	}
+	
+	public Optional<JoueurDTO> getJoueur(int league, long idJoueur, String login) throws IOException {
+		Document arena = gameService.getBattleForLeague(league, idJoueur, login);
+		return getJoueur(arena);
+	}
+
+	private Optional<JoueurDTO> getJoueur(Document arena) throws IOException, JsonParseException, JsonMappingException {
 		String joueurJson = "";
 		List<JoueurDTO> joueurs = new ArrayList<>();
 		
@@ -43,7 +54,7 @@ public class ArenaService {
 		if (!joueurJson.isEmpty()) {
 			joueurs = new ObjectMapper().readValue(joueurJson, new TypeReference<List<JoueurDTO>>(){});
 		}
-		return (joueurs.size() > 1) ? Optional.of(joueurs.get(1)) : Optional.empty();	
+		return (joueurs.size() > 1) ? Optional.of(joueurs.get(1)) : Optional.empty();
 	}
 	
 	public ResponseDTO fight(JoueurDTO joueur, String login) throws IOException {

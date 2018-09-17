@@ -42,6 +42,7 @@ public class GameService {
 	private static final String URL_MISSIONS = URL_HHEROES + "/activities.html?tab=missions";
 	private static final String URL_LOGIN = URL_HHEROES + "/phoenix-ajax.php";
 	private static final String URL_ACTION = URL_HHEROES + "/ajax.php";
+	private static final String URL_TOWER_OF_FAME = URL_HHEROES + "/leaderboard.html?tab=leagues";
 
 	public static final String COOKIES = "cookies";
 	public static final String LANGUAGE = "lang";
@@ -99,6 +100,10 @@ public class GameService {
 		return getPage(URL_HOME, login);
 	}
 
+	public Document getTowerOfFame(String login) throws IOException {
+		return getPage(URL_TOWER_OF_FAME, login);
+	}
+
 	private Document getPage(String url, String login) throws IOException {
 		return Jsoup.connect(url)
 				.cookies(getCookies(login))
@@ -139,7 +144,7 @@ public class GameService {
 			this.locale = language;
 		}
 	}
-	
+
 	public byte[] getPosition(String imagePosition, String login) throws IOException {
 		return getImage(String.format("%s/pictures/design/figures/%s", URL_HHEROES_CONTENT, imagePosition), login);
 	}
@@ -185,14 +190,14 @@ public class GameService {
 
 		return null;
 	}
-	
+
 	public void logout(String login) throws IOException {
-		 Jsoup
-			.connect(URL_INTRO + "?phoenix_member=logout")
-			.cookies(getCookies(login))
-			.method(Method.GET)
-			.ignoreContentType(true)
-			.execute();		
+		Jsoup
+				.connect(URL_INTRO + "?phoenix_member=logout")
+				.cookies(getCookies(login))
+				.method(Method.GET)
+				.ignoreContentType(true)
+				.execute();
 	}
 
 	public void acceptMission(Mission mission, String login) throws IOException {
@@ -230,8 +235,18 @@ public class GameService {
 		return response;
 	}
 
-	public Document getBattle(int arena, String login) throws IOException {
+	/**
+	 * Récupère la page de combat pour une arène.
+	 */
+	public Document getBattleForArena(int arena, String login) throws IOException {
 		return getPage(URL_BATTLE + "?id_arena=" + arena, login);
+	}
+
+	/**
+	 * Récupère la page de combat pour une league.
+	 */
+	public Document getBattleForLeague(int league, Long idJoueur, String login) throws IOException {
+		return getPage(URL_BATTLE + "?league_battle=" + league + "&id_member=" + idJoueur, login);
 	}
 
 	public ResponseDTO fightJoueur(JoueurDTO joueur, String login) throws IOException {
@@ -258,17 +273,44 @@ public class GameService {
 		}
 		return response;
 	}
-	
+
+	/**
+	 * Combat contre un joueur de league.
+	 */
+	public ResponseDTO fightOpponent(JoueurDTO joueur, String login) throws IOException {
+		Objects.requireNonNull(joueur, "Le joueur ne doit pas être null");
+
+		Map<String, String> data = new HashMap<>();
+		data.put("class", "Battle");
+		data.put("action", "fight");
+		data.put("who[id_member]", joueur.getId());
+		data.put("who[orgasm]", String.valueOf(joueur.getOrgasm()));
+		data.put("who[ego]", String.valueOf(joueur.getEgo()));
+		data.put("who[x]", String.valueOf(joueur.getX().intValue()));
+		data.put("who[curr_ego]", String.valueOf(joueur.getCurrentEgo()));
+		data.put("who[nb_org]", String.valueOf(joueur.getNbOrg()));
+		data.put("who[figure]", String.valueOf(joueur.getFigure()));
+		data.put("autoFight", "0");
+
+		Response res = doPost(URL_ACTION, login, data);
+
+		ResponseDTO response = new ObjectMapper().readValue(res.body(), ResponseDTO.class);
+		if (response.getSuccess()) {
+			response.getEnd().setDrops(Jsoup.parse(response.getEnd().getReward().getHtml()).text());
+		}
+		return response;
+	}
+
 	public void playPachinko(String login) throws IOException {
 		Map<String, String> data = new HashMap<>();
 		data.put("class", "Pachinko");
 		data.put("action", "play");
 		data.put("what", "pachinko0");
 		data.put("how_many", "1");
-		
+
 		doPost(URL_ACTION, login, data);
 	}
-	
+
 	public void claimMissionReward(Mission mission, String login) throws IOException {
 		Map<String, String> data = new HashMap<>();
 		data.put("class", "Missions");
@@ -278,15 +320,14 @@ public class GameService {
 
 		doPost(URL_ACTION, login, data);
 	}
-	
+
 	public void giveGift(String login) throws IOException {
 		Map<String, String> data = new HashMap<>();
 		data.put("class", "Missions");
 		data.put("action", "give_gift");
-		
+
 		doPost(URL_ACTION, login, data);
 	}
-
 
 	/**
 	 * Fait une requête POST.
@@ -305,7 +346,7 @@ public class GameService {
 		if (userCookies == null) {
 			userCookies = new HashMap<>();
 		}
-		
+
 		Response res = Jsoup.connect(url)
 				.cookies(userCookies)
 				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)

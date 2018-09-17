@@ -26,6 +26,8 @@ public class Hero {
 	private Experience experience;
 	
 	private String avatarUrl;
+	
+	private Integer eneryChallenge;
 
 	public Integer getId() {
 		return id;
@@ -129,6 +131,14 @@ public class Hero {
 
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
+	}
+
+	public Integer getEneryChallenge() {
+		return eneryChallenge;
+	}
+
+	public void setEneryChallenge(Integer eneryChallenge) {
+		this.eneryChallenge = eneryChallenge;
 	}
 
 }

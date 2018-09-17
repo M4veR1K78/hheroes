@@ -21,6 +21,7 @@ public class DomainMapper {
 			hero.setEnergyFightMax(dto.getEnergyFightMax());
 			hero.setEnergyQuest(dto.getEnergyQuest());
 			hero.setEnergyQuestMax(dto.getEneryQuestMax());
+			hero.setEneryChallenge(dto.getEnergyChallenge());
 			hero.setKobans(dto.getKobans());
 			hero.setLevel(dto.getLevel());
 			hero.setName(dto.getName());
