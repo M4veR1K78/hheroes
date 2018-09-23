@@ -14,7 +14,11 @@
 	</div>
 	<div class="box-footer no-padding">
 		<div class="nav-stacked">
-			<div class="nav-link nav-link-stacked"><a href="">Compte en banque <span class="pull-right badge bg-blue">{{ vm.hero.money.toLocaleString() }} $</span></a></div>
+			<div class="nav-link nav-link-stacked d-flex justify-content-around">
+				<button type="button" class="btn btn-sm btn-outline-dark" ng-click="vm.updateStat(1)" ng-disabled="vm.disableButton1">x100 <img ng-src="img/carac1.png" width="15px" ng-show="!vm.disableButton1"><span class="fa fa-spin fa-refresh" ng-show="vm.disableButton1"></span></button>
+				<button type="button" class="btn btn-sm btn-outline-danger"  ng-click="vm.updateStat(2)" ng-disabled="vm.disableButton2">x100 <img ng-src="img/carac2.png" width="15px" ng-show="!vm.disableButton2"><span class="fa fa-spin fa-refresh" ng-show="vm.disableButton2"></span></button>
+				<button type="button" class="btn btn-sm btn-outline-success" ng-click="vm.updateStat(3)" ng-disabled="vm.disableButton3">x100 <img ng-src="img/carac3.png" width="15px" ng-show="!vm.disableButton3"><span class="fa fa-spin fa-refresh" ng-show="vm.disableButton3"></span></button>
+			</div>
 			<div class="nav-link nav-link-stacked"><a href="">Kobans <span class="pull-right badge bg-aqua">{{ vm.hero.kobans.toLocaleString() }}</span></a></div>
 			<div class="nav-link nav-link-stacked"><a href="">Expérience avant prochain niveau <span class="pull-right badge bg-green">{{ vm.hero.experience.left.toLocaleString() }} xp</span></a></div>
 		</div>

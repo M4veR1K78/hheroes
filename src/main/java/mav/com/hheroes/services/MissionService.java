@@ -143,7 +143,7 @@ public class MissionService {
 		if (getMissions(login).isEmpty()) {
 			// toutes les missions sont terminées et les récompenses ont été récupérés,
 			// on récupère alors les kobans
-			gameService.giveGift(login);
+			gameService.retrieveGift(login);
 		}
 	}
 

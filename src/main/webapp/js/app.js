@@ -138,9 +138,14 @@ function HeroService($http) {
 	var service = {};
 	
 	service.getHero = getHero;
+	service.updateStat = updateStat;
 	
 	function getHero(user) {
 		return $http.get('hero');
+	}
+	
+	function updateStat(carac) {
+		return $http.post('hero/update?carac=' + carac);
 	}
 	
 	return service;
@@ -667,7 +672,7 @@ function GiftSumWidgetController() {
 
 heroesApp.component('heroWidget', {
 	templateUrl: 'pages/templates/heroWidget.html',
-	controller: function HeroWidgetController() { var vm = this; },
+	controller: HeroWidgetController,
 	controllerAs: 'vm',
 	bindings: {
 		hero: '<',
@@ -747,4 +752,37 @@ function ModalUserController($uibModalInstance, EntityService, Notification, her
 		$uibModalInstance.dismiss('cancel');
 	}
 	
+}
+
+HeroWidgetController.$inejct = ['HeroService', 'Notification'];
+
+function HeroWidgetController(HeroService, Notification) { 
+	var vm = this; 
+	vm.updateStat = updateStat;
+	
+	function updateStat(carac) {
+		if (carac === 1) {
+			vm.disableButton1 = true;
+		} else if (carac === 2) {
+			vm.disableButton2 = true;
+ 		} else {
+ 			vm.disableButton3 = true;
+ 		}
+		
+		HeroService.updateStat(carac).then(function(response) {
+			var stat = response.data;
+			var moneySpent = vm.hero.money - stat.soft_currency;
+			var message = 'Nouvelles statistiques:<br>' 
+				+ '<b>Chance</b>: ' + stat.chance.toLocaleString() 
+				+ '<br><b>Endurance: </b>' + stat.endurance.toLocaleString() 
+				+ '<br><b>Argent dépensé</b>: ' + moneySpent.toLocaleString() + ' $';
+			vm.hero.money = stat.soft_currency;
+			
+			vm.disableButton1 = vm.disableButton2 = vm.disableButton3 = false;
+			Notification.success({ message: message });
+		}, function(response) {
+			vm.disableButton1 = vm.disableButton2 = vm.disableButton3 = false;
+			Notification.error({ message: 'Erreur lors de la mise des stats du héros : ' + response.data.message });
+		});
+	}
 }

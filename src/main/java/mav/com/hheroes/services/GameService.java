@@ -22,6 +22,7 @@ import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
+import mav.com.hheroes.services.dtos.StatUpdateResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 
 /**
@@ -321,12 +322,22 @@ public class GameService {
 		doPost(URL_ACTION, login, data);
 	}
 
-	public void giveGift(String login) throws IOException {
+	public void retrieveGift(String login) throws IOException {
 		Map<String, String> data = new HashMap<>();
 		data.put("class", "Missions");
 		data.put("action", "give_gift");
 
 		doPost(URL_ACTION, login, data);
+	}
+	
+	public StatUpdateResponseDTO updateStat(int carac, String login) throws IOException {
+		Map<String, String> data = new HashMap<>();
+		data.put("class", "Hero");
+		data.put("carac", String.valueOf(carac));
+		data.put("action", "pay_up_carac");
+
+		Response res = doPost(URL_ACTION, login, data);
+		return new ObjectMapper().readValue(res.body(), StatUpdateResponseDTO.class);
 	}
 
 	/**

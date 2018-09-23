@@ -6,13 +6,16 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mav.com.hheroes.domain.Hero;
 import mav.com.hheroes.services.GameService;
 import mav.com.hheroes.services.HeroService;
+import mav.com.hheroes.services.dtos.StatUpdateResponseDTO;
 
 @RestController
 @RequestMapping("/hero")
@@ -23,8 +26,13 @@ public class HeroController {
 	@Resource
 	private HttpSession httpSession;
 	
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	public Hero getHero() throws IOException {
 		return heroService.getHero(httpSession.getAttribute(GameService.LOGIN).toString());
+	}
+	
+	@PostMapping("/update")
+	public StatUpdateResponseDTO updateStats(@RequestParam("carac") int carac) {
+		return heroService.updateStats(carac, httpSession.getAttribute(GameService.LOGIN).toString());
 	}
 }
