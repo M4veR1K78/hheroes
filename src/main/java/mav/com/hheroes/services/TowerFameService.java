@@ -27,7 +27,7 @@ public class TowerFameService {
 		return tower.select(".leagues_table .leadTable tr").stream()
 				.map(tr -> {
 					Opponent opponent = new Opponent();
-					opponent.setId(Long.valueOf(tr.attr("mid").trim()));
+					opponent.setId(Long.valueOf(tr.attr("sorting_id").trim()));
 					opponent.setRank(Integer.valueOf(tr.select("td:nth-child(1)").text().trim()));
 					opponent.setName(tr.select("td:nth-child(2)").text().trim());
 					opponent.setLevel(Integer.valueOf(tr.select("td:nth-child(3)").text().trim()));
