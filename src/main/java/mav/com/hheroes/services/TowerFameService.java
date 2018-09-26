@@ -35,7 +35,7 @@ public class TowerFameService {
 					if (!temp[0].equals("-")) {
 						opponent.setNbAttack(Integer.valueOf(temp[0]));						
 					}
-					opponent.setPoints(Integer.valueOf(tr.select("td:nth-child(5)").text().trim()));
+					opponent.setPoints(Integer.valueOf(tr.select("td:nth-child(5)").text().trim().replaceAll("\u00a0", "")));
 					return opponent;
 				})
 				.filter(op -> op.getNbAttack() != null && op.getNbAttack() < 3)
