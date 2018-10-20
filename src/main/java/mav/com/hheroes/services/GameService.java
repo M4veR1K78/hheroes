@@ -147,7 +147,7 @@ public class GameService {
 	}
 
 	public byte[] getPosition(String imagePosition, String login) throws IOException {
-		return getImage(String.format("%s/pictures/design/figures/%s", URL_HHEROES_CONTENT, imagePosition), login);
+		return getImage(String.format("%s/pictures/design/harem_positions/%s", URL_HHEROES_CONTENT, imagePosition), login);
 	}
 
 	public byte[] getAvatar(Integer girlId, Integer grade, String login) throws IOException {
