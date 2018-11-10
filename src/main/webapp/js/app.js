@@ -772,11 +772,14 @@ function HeroWidgetController(HeroService, Notification) {
 		HeroService.updateStat(carac).then(function(response) {
 			var stat = response.data;
 			var moneySpent = vm.hero.money - stat.soft_currency;
-			var message = 'Nouvelles statistiques:<br>' 
-				+ '<b>Chance</b>: ' + stat.chance.toLocaleString() 
-				+ '<br><b>Endurance: </b>' + stat.endurance.toLocaleString() 
-				+ '<br><b>Argent dépensé</b>: ' + moneySpent.toLocaleString() + ' $';
-			vm.hero.money = stat.soft_currency;
+			var message = 'Vous êtes arrivé au max de vos stats';
+			if (stat.success) {
+				message = 'Nouvelles statistiques:<br>' 
+					+ '<b>Chance</b>: ' + stat.chance.toLocaleString() 
+					+ '<br><b>Endurance: </b>' + stat.endurance.toLocaleString() 
+					+ '<br><b>Argent dépensé</b>: ' + moneySpent.toLocaleString() + ' $';
+				vm.hero.money = stat.soft_currency;
+			}
 			
 			vm.disableButton1 = vm.disableButton2 = vm.disableButton3 = false;
 			Notification.success({ message: message });

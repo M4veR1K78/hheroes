@@ -3,8 +3,11 @@ package mav.com.hheroes.services;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
@@ -77,46 +80,27 @@ public class MissionService {
 	 * @param log
 	 * @throws IOException
 	 */
-	@Async
+	//@Async
 	public void doAllMissions(String login, boolean log) throws IOException {
 		UUID uuid = UUID.randomUUID();
 
 		logger.info(String.format("Batch doMissions Start (id: %s)", uuid));
 
+		AtomicInteger timer = new AtomicInteger(0);
 		List<Mission> missions = getMissions(login);
-		while (!missions.isEmpty() && !allFinished(missions)) {
-			Optional<Mission> findAny = missions.stream()
-					.filter(mission -> StatutMission.PRETE.equals(mission.getStatut()))
-					.findAny();
-
-			if (findAny.isPresent()) {
-				Mission mission = findAny.get();
-				acceptMission(mission, login);
-				if (log) {
-					logger.info(String.format("Executing mission %s and sleeping %s secondes...", mission.getId(),
-							mission.getDuree()));
-				}
-				try {
-					Thread.sleep(mission.getDuree() * 1000L + 1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			} else {
-				try {
-					if (log) {
-						logger.info(String.format("No mission available for now, sleeping 10 minutes..."));
-					}
-					// on dort 10 minutes
-					Thread.sleep(10 * 1000L * 60);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-			missions = getMissions(login);
-		}
-
-		logger.info(String.format("Batch doMissions end  (id: %s)", uuid));
+		missions.stream()
+				.filter(mission -> StatutMission.PRETE.equals(mission.getStatut()))
+				.forEach(mission -> {
+					ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+					scheduler.schedule(() -> {
+						try {
+							logger.info(String.format("Executing mission %s and sleeping %s secondes...", mission.getId(), mission.getDuree()));
+							acceptMission(mission, login);
+						} catch (IOException e) {
+							logger.info(e);
+						}
+					}, timer.getAndAdd(mission.getDuree() + 1), TimeUnit.SECONDS);
+				});
 	}
 
 	/**
@@ -145,10 +129,6 @@ public class MissionService {
 			// on récupère alors les kobans
 			gameService.retrieveGift(login);
 		}
-	}
-
-	private boolean allFinished(List<Mission> missions) {
-		return missions.stream().allMatch(mission -> StatutMission.TERMINEE.equals(mission.getStatut()));
 	}
 
 	/**
