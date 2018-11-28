@@ -39,8 +39,8 @@ public class HeroService {
 		return hero;
 	}
 
-	public StatUpdateResponseDTO updateStats(int carac, String login) {
-		return IntStream.range(0, 100).mapToObj(i -> {
+	public StatUpdateResponseDTO updateStats(int carac, int size, String login) {
+		return IntStream.range(0, size).mapToObj(i -> {
 			try {
 				return gameService.updateStat(carac, login);
 			} catch (IOException e) {

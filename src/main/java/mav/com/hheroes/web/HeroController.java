@@ -33,6 +33,6 @@ public class HeroController {
 	
 	@PostMapping("/update")
 	public StatUpdateResponseDTO updateStats(@RequestParam("carac") int carac) {
-		return heroService.updateStats(carac, httpSession.getAttribute(GameService.LOGIN).toString());
+		return heroService.updateStats(carac, 500, httpSession.getAttribute(GameService.LOGIN).toString());
 	}
 }

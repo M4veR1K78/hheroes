@@ -10,8 +10,8 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -53,7 +53,7 @@ public class GameService {
 
 	private String locale;
 	private Map<String, Map<String, String>> cookies = new HashMap<>();
-
+	
 	public GameService() {
 		// français par défaut
 		locale = DEFAULT_LOCALE;
@@ -108,7 +108,7 @@ public class GameService {
 	private Document getPage(String url, String login) throws IOException {
 		return Jsoup.connect(url)
 				.cookies(getCookies(login))
-				.header("Accept-Language", getLocale())
+				.header(HttpHeaders.ACCEPT_LANGUAGE, getLocale())
 				.parser(Parser.htmlParser())
 				.get();
 	}
@@ -182,7 +182,7 @@ public class GameService {
 		Map<String, String> data = new HashMap<>();
 		data.put("class", "Girl");
 		data.put("action", "get_salary");
-		data.put("who", girlId.toString());
+		data.put("which", girlId.toString());
 		Response result = doPost(URL_ACTION, login, data);
 
 		if (result.statusCode() == HttpStatus.OK.value()) {
@@ -360,7 +360,6 @@ public class GameService {
 
 		Response res = Jsoup.connect(url)
 				.cookies(userCookies)
-				.header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 				.data(data)
 				.method(Method.POST)
 				.ignoreContentType(true)

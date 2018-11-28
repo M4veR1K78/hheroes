@@ -759,15 +759,10 @@ HeroWidgetController.$inejct = ['HeroService', 'Notification'];
 function HeroWidgetController(HeroService, Notification) { 
 	var vm = this; 
 	vm.updateStat = updateStat;
+	vm.carac = 0;
 	
 	function updateStat(carac) {
-		if (carac === 1) {
-			vm.disableButton1 = true;
-		} else if (carac === 2) {
-			vm.disableButton2 = true;
- 		} else {
- 			vm.disableButton3 = true;
- 		}
+		vm.carac = carac;
 		
 		HeroService.updateStat(carac).then(function(response) {
 			var stat = response.data;
@@ -781,10 +776,10 @@ function HeroWidgetController(HeroService, Notification) {
 				vm.hero.money = stat.soft_currency;
 			}
 			
-			vm.disableButton1 = vm.disableButton2 = vm.disableButton3 = false;
+			vm.carac = 0;
 			Notification.success({ message: message });
 		}, function(response) {
-			vm.disableButton1 = vm.disableButton2 = vm.disableButton3 = false;
+			vm.carac = 0;
 			Notification.error({ message: 'Erreur lors de la mise des stats du héros : ' + response.data.message });
 		});
 	}
