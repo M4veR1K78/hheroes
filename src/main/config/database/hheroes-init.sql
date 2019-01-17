@@ -7,3 +7,4 @@ INSERT INTO hheroes.boss (id, libelle, orgasm, ego, x, d, nb_org, figure, world)
 INSERT INTO hheroes.boss (id, libelle, orgasm, ego, x, d, nb_org, figure, world) VALUES (7, 'Bremen', 16361, 6195.28, 0, 6195.28, 0, 1, '8');
 INSERT INTO hheroes.boss (id, libelle, orgasm, ego, x, d, nb_org, figure, world) VALUES (8, 'Finalmecia', 13395, 6394.56, 0, 6394.56, 0, 12, '9');
 INSERT INTO hheroes.boss (id, libelle, orgasm, ego, x, d, nb_org, figure, world) VALUES (9, 'Roko Seiseï', 34003, 15704.8, 0, 15704.8, 0, 7, '10');
+INSERT INTO hheroes.boss (id, libelle, orgasm, ego, x, d, nb_org, figure, world) VALUES (10, 'Karole', 49504, 21622.4, 0, 21622.4, 0, 2, '11');
