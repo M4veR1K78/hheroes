@@ -140,3 +140,12 @@ input:checked+.slider:before {
 .modal-backdrop.in {
   opacity: 0.5;
 }
+
+.rewards li img {
+	width: 30px;
+	height: 30px;
+}
+
+.rewards li div {
+	display: inline-block;
+}

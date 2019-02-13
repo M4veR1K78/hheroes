@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import mav.com.hheroes.domain.Boss;
 import mav.com.hheroes.services.BossService;
 import mav.com.hheroes.services.GameService;
-import mav.com.hheroes.services.dtos.ResponseDTO;
+import mav.com.hheroes.services.dtos.response.ResponseDTO;
 import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 
 @RestController

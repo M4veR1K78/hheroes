@@ -1,4 +1,4 @@
-package mav.com.hheroes.services.dtos;
+package mav.com.hheroes.services.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

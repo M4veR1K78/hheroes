@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Boss;
 import mav.com.hheroes.domain.dao.BossRepository;
-import mav.com.hheroes.services.dtos.ResponseDTO;
+import mav.com.hheroes.services.dtos.response.ResponseDTO;
 import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 import mav.com.hheroes.services.mappers.DomainMapper;
 
@@ -60,7 +60,7 @@ public class BossService {
 
 		ResponseDTO response = fight(boss, login);
 		while (response.getSuccess()) {
-			rewards.add(response.getEnd().getDrops());
+			rewards.add(response.getEnd().getRewards().getData().toString());
 			if (log) {
 				logger.info(String.format("\tCollected from %s : %s", boss.getLibelle(), response.getEnd()));
 			}

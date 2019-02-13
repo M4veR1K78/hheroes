@@ -20,9 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mav.com.hheroes.domain.Mission;
 import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.JoueurDTO;
-import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 import mav.com.hheroes.services.dtos.StatUpdateResponseDTO;
+import mav.com.hheroes.services.dtos.response.ResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 
 /**
@@ -229,11 +229,7 @@ public class GameService {
 
 		Response res = doPost(URL_ACTION, login, data);
 
-		ResponseDTO response = new ObjectMapper().readValue(res.body(), ResponseDTO.class);
-		if (response.getSuccess()) {
-			response.getEnd().setDrops(Jsoup.parse(response.getEnd().getReward().getHtml()).text());
-		}
-		return response;
+		return new ObjectMapper().readValue(res.body(), ResponseDTO.class);
 	}
 
 	/**
@@ -268,11 +264,7 @@ public class GameService {
 
 		Response res = doPost(URL_ACTION, login, data);
 
-		ResponseDTO response = new ObjectMapper().readValue(res.body(), ResponseDTO.class);
-		if (response.getSuccess()) {
-			response.getEnd().setDrops(Jsoup.parse(response.getEnd().getReward().getHtml()).text());
-		}
-		return response;
+		return new ObjectMapper().readValue(res.body(), ResponseDTO.class);
 	}
 
 	/**
@@ -295,11 +287,7 @@ public class GameService {
 
 		Response res = doPost(URL_ACTION, login, data);
 
-		ResponseDTO response = new ObjectMapper().readValue(res.body(), ResponseDTO.class);
-		if (response.getSuccess()) {
-			response.getEnd().setDrops(Jsoup.parse(response.getEnd().getReward().getHtml()).text());
-		}
-		return response;
+		return new ObjectMapper().readValue(res.body(), ResponseDTO.class);
 	}
 
 	public void playPachinko(String login) throws IOException {

@@ -31,8 +31,8 @@ import mav.com.hheroes.services.MissionService;
 import mav.com.hheroes.services.TowerFameService;
 import mav.com.hheroes.services.UserService;
 import mav.com.hheroes.services.dtos.JoueurDTO;
-import mav.com.hheroes.services.dtos.ResponseDTO;
 import mav.com.hheroes.services.dtos.UserDTO;
+import mav.com.hheroes.services.dtos.response.ResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 

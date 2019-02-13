@@ -125,7 +125,7 @@ public class Fille {
 	}
 
 	public Double getHardcore() {
-		return hardcore;
+		return (double) Math.round(hardcore * 100) / 100;
 	}
 
 	public void setHardcore(Double hardcore) {
@@ -133,7 +133,7 @@ public class Fille {
 	}
 
 	public Double getCharme() {
-		return charme;
+		return (double) Math.round(charme * 100) / 100;
 	}
 
 	public void setCharme(Double charme) {
@@ -141,7 +141,7 @@ public class Fille {
 	}
 
 	public Double getSavoirFaire() {
-		return savoirFaire;
+		return (double) Math.round(savoirFaire * 100) / 100;
 	}
 
 	public void setSavoirFaire(Double savoirFaire) {

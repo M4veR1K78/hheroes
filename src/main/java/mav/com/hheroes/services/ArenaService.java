@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mav.com.hheroes.services.dtos.JoueurDTO;
-import mav.com.hheroes.services.dtos.ResponseDTO;
+import mav.com.hheroes.services.dtos.response.ResponseDTO;
 
 @Service
 public class ArenaService {

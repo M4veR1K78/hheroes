@@ -1,20 +1,12 @@
-package mav.com.hheroes.services.dtos;
+package mav.com.hheroes.services.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RewardDTO {
-	private String html;
-	
 	private boolean lose;
-
-	public String getHtml() {
-		return html;
-	}
-
-	public void setHtml(String html) {
-		this.html = html;
-	}
+	
+	private DataDTO data;
 
 	public boolean isLose() {
 		return lose;
@@ -23,9 +15,12 @@ public class RewardDTO {
 	public void setLose(boolean lose) {
 		this.lose = lose;
 	}
-	
-	@Override
-	public String toString() {
-		return html;
+
+	public DataDTO getData() {
+		return data;
+	}
+
+	public void setData(DataDTO data) {
+		this.data = data;
 	}
 }
