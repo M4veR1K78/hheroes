@@ -15,6 +15,7 @@ CREATE TABLE hheroes.boss (
 CREATE TABLE hheroes.user (
  id serial PRIMARY KEY,
  email text NOT NULL UNIQUE,
+ password text,
  boss_id INTEGER,
  admin boolean NOT NULL,
  auto_salary boolean NOT NULL DEFAULT false,

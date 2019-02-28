@@ -350,6 +350,7 @@ public class GameService {
 				.cookies(userCookies)
 				.data(data)
 				.method(Method.POST)
+				.referrer(URL_HHEROES)
 				.ignoreContentType(true)
 				.execute();
 		setCookies(login, res.cookies());
