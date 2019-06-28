@@ -13,7 +13,6 @@ import org.jsoup.parser.Parser;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -61,6 +60,12 @@ public class GameService {
 
 	public Map<String, String> login(String mail, String password) throws AuthenticationException {
 		Response res;
+		Map<String, String> reqCookies = new HashMap<>();
+		reqCookies.put("HH_SESS_13", "g99hdimo85qi7j6vvt5acv5qsd");
+		reqCookies.put("age_verification", "1");
+		reqCookies.put("lang", "fr");
+		reqCookies.put("member_guid", "5777370F-B25A-4CA9-9BF4-C2897AE2B734");
+		
 		try {
 			res = Jsoup.connect(URL_LOGIN)
 					.data("login", mail)
@@ -70,18 +75,20 @@ public class GameService {
 					.data("action", "form_log_in")
 					.data("call", "Member")
 					.timeout(0)
+					.cookies(reqCookies)
 					.ignoreContentType(true)
 					.method(Method.POST)
 					.execute();
 		} catch (IOException e) {
 			throw new AuthenticationException("L'authentification a échoué", e);
 		}
+		
+//		if (StringUtils.isEmpty(res.cookie(STAY_ONLINE))) {
+//			throw new AuthenticationException("Les identifiants n'ont pas réussi à authentifier l'utilisateur");
+//		}
 
-		if (StringUtils.isEmpty(res.cookie(STAY_ONLINE))) {
-			throw new AuthenticationException("Les identifiants n'ont pas réussi à authentifier l'utilisateur");
-		}
-
-		setCookies(mail, res.cookies());
+//		setCookies(mail, res.cookies());
+		setCookies(mail, reqCookies);
 		return getCookies(mail);
 	}
 
@@ -122,11 +129,14 @@ public class GameService {
 	}
 
 	public void setCookies(String login, Map<String, String> cookies) {
-		Map<String, String> c = this.cookies.get(login);
-		if (c != null) {
-			c.putAll(cookies);
-		} else {
-			this.cookies.put(login, cookies);
+		if (cookies != null && !cookies.isEmpty()) {
+			Map<String, String> c = this.cookies.get(login);
+			
+			if (c != null) {
+				c.putAll(cookies);
+			} else {
+				this.cookies.put(login, cookies);
+			}
 		}
 	}
 
