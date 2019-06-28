@@ -9,7 +9,8 @@ import java.util.stream.StreamSupport;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Boss;
@@ -20,7 +21,7 @@ import mav.com.hheroes.services.mappers.DomainMapper;
 
 @Service
 public class BossService {
-	private final Logger logger = Logger.getLogger(getClass());
+	private final Logger logger = LogManager.getLogger(getClass());
 
 	@Resource
 	private GameService gameService;
@@ -62,7 +63,7 @@ public class BossService {
 		while (response.getSuccess()) {
 			rewards.add(response.getEnd().getRewards().getData().toString());
 			if (log) {
-				logger.info(String.format("\tCollected from %s : %s", boss.getLibelle(), response.getEnd()));
+				logger.info(String.format("\tCollected from %s : %s", boss.getLibelle(), response.getEnd().getRewards().getData()));
 			}
 			response = fight(boss, login);
 		}

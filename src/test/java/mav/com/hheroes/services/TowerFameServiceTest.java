@@ -3,7 +3,6 @@ package mav.com.hheroes.services;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -18,12 +17,6 @@ import mav.com.hheroes.services.exceptions.AuthenticationException;
 @Profile({ "dev", "test" })
 @Import(MainApplication.class)
 public class TowerFameServiceTest {
-	@Autowired
-	private GameService gameService;
-	
-	@Autowired
-	private TowerFameService service;
-	
 	@Value("test.login")
 	private String login;
 	

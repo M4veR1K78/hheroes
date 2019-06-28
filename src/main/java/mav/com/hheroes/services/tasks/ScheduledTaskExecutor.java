@@ -5,8 +5,8 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -37,8 +38,8 @@ import mav.com.hheroes.services.exceptions.AuthenticationException;
 import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 
 @Service
-public class TaskExecutor {
-	private final Logger logger = Logger.getLogger(getClass());
+public class ScheduledTaskExecutor {
+	private final Logger logger = LogManager.getLogger(getClass());
 
 	/**
 	 * On a notre propre GameService ici pour ne pas qu'il interfere avec celui de

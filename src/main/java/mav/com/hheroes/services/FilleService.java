@@ -15,7 +15,8 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ import mav.com.hheroes.services.mappers.DomainMapper;
 public class FilleService {
 	private static final String LINE_BREAK = "\\n";
 
-	private final Logger logger = Logger.getLogger(getClass());
+	private final Logger logger = LogManager.getLogger(getClass());
 
 	@Resource
 	private GameService gameService;
@@ -124,7 +125,7 @@ public class FilleService {
 						(rank, item) -> {
 							V property = propertyExtractor.apply(item);
 							if (rank.isEmpty()) {
-								rank.put(new Integer(1), new LinkedList<T>());
+								rank.put(Integer.valueOf(1), new LinkedList<T>());
 							} else {
 								Integer r = rank.lastKey();
 								List<T> items = rank.get(r);

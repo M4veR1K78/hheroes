@@ -489,7 +489,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 				vm.hero.energyFight = 0;
 				var rewards = response.data;
 				if (rewards.length) {
-					Notification.success({ message: '<b>Butin collecté</b> :<br><ul><li> ' + rewards.join('</li><li>').replace(/\<i\>i\<\/i\>/g, '') + '</li></ul>' });
+					Notification.success({ message: '<b>Butin collecté</b> :<br><ul class="rewards"><li> ' + rewards.join('</li><li>').replace(/\<i\>i\<\/i\>/g, '') + '</li></ul>' });
 				}
 			}, function(response) {
 				console.debug(response.data);

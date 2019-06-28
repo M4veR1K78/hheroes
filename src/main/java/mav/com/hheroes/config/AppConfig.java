@@ -1,6 +1,7 @@
 package mav.com.hheroes.config;
 
 import javax.annotation.Resource;
+import javax.servlet.Filter;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +15,8 @@ public class AppConfig {
 	private AuthenticationFilter filter;
 	
 	@Bean
-	public FilterRegistrationBean someFilterRegistration() {
-	    FilterRegistrationBean registration = new FilterRegistrationBean();
+	public FilterRegistrationBean<? super Filter> someFilterRegistration() {
+	    FilterRegistrationBean<? super Filter> registration = new FilterRegistrationBean<>();
 	    registration.setFilter(filter);
 	    registration.addUrlPatterns(
 	    		"/filles/*", 

@@ -2,14 +2,15 @@ package mav.com.hheroes.services.tasks;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import mav.com.hheroes.services.FilleService;
 import mav.com.hheroes.services.dtos.UserDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 
 public class PremiumAutoSalaryTask implements Runnable {
-	private final Logger logger = Logger.getLogger(getClass());
+	private final Logger logger = LogManager.getLogger(getClass());
 	
 	private FilleService filleService;
 	
