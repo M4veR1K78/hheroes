@@ -82,7 +82,7 @@ public class TaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronCollectSalary}")
 	public void collectSalary() throws IOException, AuthenticationException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch collectSalary login");
 			gameService.login(login, password);
 		}
@@ -132,7 +132,7 @@ public class TaskExecutor {
 	@Async
 	@Scheduled(cron = "${hheroes.cronDoMissions}")
 	public void doMissions() throws IOException, AuthenticationException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doMissions login");
 			gameService.login(login, password);
 		}
@@ -148,7 +148,7 @@ public class TaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronDoBoss}")
 	public void doBoss() throws IOException, AuthenticationException, ObjectNotFoundException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doBoss login");
 			gameService.login(login, password);
 		}
@@ -171,7 +171,7 @@ public class TaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronDoArena}")
 	public void doArena() throws IOException, AuthenticationException, ObjectNotFoundException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doArene login");
 			gameService.login(login, password);
 		}
@@ -192,7 +192,7 @@ public class TaskExecutor {
 
 	@Scheduled(fixedDelayString = "${hheroes.cronDoPachinko}")
 	public void doPachinko() throws AuthenticationException, IOException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doPachinko login");
 			gameService.login(login, password);
 		}
@@ -203,7 +203,7 @@ public class TaskExecutor {
 
 	@Scheduled(cron = "${hheroes.cronDoLeagueBattle}")
 	public void doLeagueBattle() throws AuthenticationException, IOException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doPachinko login");
 			gameService.login(login, password);
 		}

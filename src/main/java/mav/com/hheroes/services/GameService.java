@@ -48,7 +48,6 @@ public class GameService {
 
 	public static final String COOKIES = "cookies";
 	public static final String LANGUAGE = "lang";
-	private static final String STAY_ONLINE = "stay_online";
 	private static final String DEFAULT_LOCALE = "fr-FR";
 	public static final String LOGIN = "login";
 
@@ -63,10 +62,7 @@ public class GameService {
 	public Map<String, String> login(String mail, String password) throws AuthenticationException {
 		Response res;
 		Map<String, String> reqCookies = new HashMap<>();
-		reqCookies.put("HH_SESS_13", "g99hdimo85qi7j6vvt5acv5qsd");
 		reqCookies.put("age_verification", "1");
-//		reqCookies.put("lang", "fr");
-//		reqCookies.put("member_guid", "5777370F-B25A-4CA9-9BF4-C2897AE2B734");
 		
 		try {
 			res = Jsoup.connect(URL_LOGIN)
@@ -85,12 +81,11 @@ public class GameService {
 			throw new AuthenticationException("L'authentification a échoué", e);
 		}
 		
-//		if (StringUtils.isEmpty(res.cookie(STAY_ONLINE))) {
-//			throw new AuthenticationException("Les identifiants n'ont pas réussi à authentifier l'utilisateur");
-//		}
+		if (res.body().contains("{\"success\":false}")) {
+			throw new AuthenticationException("Les identifiants n'ont pas réussi à authentifier l'utilisateur");
+		}
 
-//		setCookies(mail, res.cookies());
-		setCookies(mail, reqCookies);
+		setCookies(mail, res.cookies());
 		return getCookies(mail);
 	}
 
@@ -142,8 +137,8 @@ public class GameService {
 		}
 	}
 
-	public boolean isConnected() {
-		return cookies != null;
+	public boolean isConnected(String login) {
+		return cookies.get(login) != null;
 	}
 
 	public String getLocale() {
@@ -378,7 +373,6 @@ public class GameService {
 		if (userCookies == null) {
 			userCookies = new HashMap<>();
 		}
-		System.out.println(userCookies);
 
 		Response res = Jsoup.connect(url)
 				.cookies(userCookies)
@@ -387,7 +381,7 @@ public class GameService {
 				.referrer(URL_HHEROES)
 				.ignoreContentType(true)
 				.execute();
-		System.out.println("Cookies after a POST request : " + res.cookies());
+		
 		setCookies(login, res.cookies());
 		return res;
 	}
