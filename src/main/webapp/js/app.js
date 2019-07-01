@@ -374,7 +374,8 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 			animation : true,
 			templateUrl : 'pages/templates/login.html',
 			controller : 'ModalLoginController',
-			controllerAs : 'vm'
+			controllerAs : 'vm',
+			backdrop: false
 		});
 		
 		modalInstance.result.then(function() {

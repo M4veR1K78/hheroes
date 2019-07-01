@@ -16,11 +16,13 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import mav.com.hheroes.domain.Currency;
 import mav.com.hheroes.domain.Mission;
 import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 import mav.com.hheroes.services.dtos.StatUpdateResponseDTO;
+import mav.com.hheroes.services.dtos.response.ChampionResponseDTO;
 import mav.com.hheroes.services.dtos.response.ResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 
@@ -63,8 +65,8 @@ public class GameService {
 		Map<String, String> reqCookies = new HashMap<>();
 		reqCookies.put("HH_SESS_13", "g99hdimo85qi7j6vvt5acv5qsd");
 		reqCookies.put("age_verification", "1");
-		reqCookies.put("lang", "fr");
-		reqCookies.put("member_guid", "5777370F-B25A-4CA9-9BF4-C2897AE2B734");
+//		reqCookies.put("lang", "fr");
+//		reqCookies.put("member_guid", "5777370F-B25A-4CA9-9BF4-C2897AE2B734");
 		
 		try {
 			res = Jsoup.connect(URL_LOGIN)
@@ -337,6 +339,27 @@ public class GameService {
 		Response res = doPost(URL_ACTION, login, data);
 		return new ObjectMapper().readValue(res.body(), StatUpdateResponseDTO.class);
 	}
+	
+	public ChampionResponseDTO doChampionBattle(Currency currency, String login) throws IOException {
+		Map<String, String> data = new HashMap<>();
+		data.put("class", "TeamBattle");
+		data.put("battle_type", "champion");
+		data.put("currency", currency.toString());
+		data.put("defender_id", "1");
+		data.put("attacker[team][]", "17");
+		data.put("attacker[team][]", "838868621");
+		data.put("attacker[team][]", "1850048");
+		data.put("attacker[team][]", "986125");
+		data.put("attacker[team][]", "127");
+		data.put("attacker[team][]", "1");
+		data.put("attacker[team][]", "21");
+		data.put("attacker[team][]", "2914195");
+		data.put("attacker[team][]", "1800186");
+		data.put("attacker[team][]", "18");
+		
+		Response res = doPost(URL_ACTION, login, data);
+		return new ObjectMapper().readValue(res.body(), ChampionResponseDTO.class);
+	}
 
 	/**
 	 * Fait une requête POST.
@@ -355,6 +378,7 @@ public class GameService {
 		if (userCookies == null) {
 			userCookies = new HashMap<>();
 		}
+		System.out.println(userCookies);
 
 		Response res = Jsoup.connect(url)
 				.cookies(userCookies)
@@ -363,6 +387,7 @@ public class GameService {
 				.referrer(URL_HHEROES)
 				.ignoreContentType(true)
 				.execute();
+		System.out.println("Cookies after a POST request : " + res.cookies());
 		setCookies(login, res.cookies());
 		return res;
 	}
