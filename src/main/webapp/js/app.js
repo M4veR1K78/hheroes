@@ -39,6 +39,7 @@ function FilleService($http) {
 	service.doCollectSalaries = doCollectSalaries;
 	service.getRarityLibelle = getRarityLibelle;
 	service.getRarityClass = getRarityClass;
+	service.getBestGirlPerPosition = getBestGirlPerPosition;
 	
 	function getAll() {
 		return $http.get(api);
@@ -50,6 +51,10 @@ function FilleService($http) {
 	
 	function doCollectSalaries() {
 		return $http.post(api + '/doCollectAll');
+	}
+	
+	function getBestGirlPerPosition(top) {
+		return $http.get(api + '/bestPerPosition?top=' + top);
 	}
 	
 	/**
@@ -356,6 +361,9 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		});
 		EntityService.userSrv.getMe().then(function(response) {
 			vm.user = response.data;
+		});
+		EntityService.filleSrv.getBestGirlPerPosition(3).then(function(response) {
+			vm.bestGirlsPerPosition = response.data;
 		});
 	}
 	
@@ -755,7 +763,7 @@ function ModalUserController($uibModalInstance, EntityService, Notification, her
 	
 }
 
-HeroWidgetController.$inejct = ['HeroService', 'Notification'];
+HeroWidgetController.$inject = ['HeroService', 'Notification'];
 
 function HeroWidgetController(HeroService, Notification) { 
 	var vm = this; 
@@ -783,5 +791,30 @@ function HeroWidgetController(HeroService, Notification) {
 			vm.carac = 0;
 			Notification.error({ message: 'Erreur lors de la mise des stats du héros : ' + response.data.message });
 		});
+	}
+}
+
+heroesApp.component('girlBestPosition', {
+	templateUrl: 'pages/templates/girlBestPositionWidget.html',
+	controller: BestGirlPerPositionCtrl,
+	controllerAs: 'vm',
+	bindings: {
+		position: '<',
+		filles: '<',
+	}
+});
+
+BestGirlPerPositionCtrl.$inject = ['FilleService'];
+
+function BestGirlPerPositionCtrl(FilleService) {
+	var vm = this;
+	
+	vm.getRarityClass = getRarityClass;
+	
+	/**
+	 * Récupère la classe d'une fille en fonction de sa rareté.
+	 */
+	function getRarityClass(filleRarity) {
+		return FilleService.getRarityClass(filleRarity);
 	}
 }

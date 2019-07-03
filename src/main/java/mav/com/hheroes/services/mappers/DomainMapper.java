@@ -8,6 +8,7 @@ import mav.com.hheroes.domain.Rarity;
 import mav.com.hheroes.domain.Skill;
 import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.FilleDTO;
+import mav.com.hheroes.services.dtos.FilleLightDTO;
 import mav.com.hheroes.services.dtos.HeroDTO;
 
 public class DomainMapper {
@@ -90,5 +91,23 @@ public class DomainMapper {
 			return fille;
 		}
 		return null;
+	}
+	
+	public static FilleLightDTO asFilleLightDTO(Fille fille) {
+		if (fille == null) {
+			return null;
+		}
+		
+		FilleLightDTO dto = new FilleLightDTO();
+		dto.setAvatar(fille.getAvatar());
+		dto.setLevel(fille.getLevel());
+		dto.setPseudo(fille.getPseudo());
+		dto.setTypeId(fille.getTypeId());
+		dto.setRarity(fille.getRarity());
+		dto.setType(fille.getType());
+		dto.setExpertiseBaseValue(fille.getExpertiseBaseValue());
+		dto.setExpertiseRanking(fille.getExpertiseRanking());
+		
+		return dto;
 	}
 }

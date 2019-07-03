@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.services.FilleService;
 import mav.com.hheroes.services.GameService;
+import mav.com.hheroes.services.dtos.BestGirlPerPositionDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 
 @RestController
@@ -30,7 +32,7 @@ public class FilleController
 	@Resource
 	private HttpSession httpSession;
 	
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	public List<Fille> getAllFilles() throws IOException {
 		return filleService.getFilles(httpSession.getAttribute(GameService.LOGIN).toString());
 	}
@@ -59,5 +61,10 @@ public class FilleController
 	@RequestMapping(value = "/doCollectAll", method = RequestMethod.POST)
 	public void doCollectSalaries() throws IOException {
 		filleService.doCollectAllSalaries(httpSession.getAttribute(GameService.LOGIN).toString());
+	}
+	
+	@GetMapping("/bestPerPosition")
+	public List<BestGirlPerPositionDTO> getBestFillesByPosition(@RequestParam int top) throws IOException {
+		return filleService.getBestFillesByPosition(top, httpSession.getAttribute(GameService.LOGIN).toString());
 	}
 }
