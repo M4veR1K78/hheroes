@@ -315,7 +315,8 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		hardcore: { libelle: 'Hardcore', field: 'hardcore', id: 1},
 		charme: { libelle: 'Charme', field: 'charme', id: 2},
 		savoirFaire: { libelle: 'Savoir-faire', field: 'savoirFaire', id: 3}
-	}
+	};
+	vm.bestGirlPerPositionTop = 3;
 	
 	// méthodes
 	vm.openModalAvatar = openModalAvatar;
@@ -362,7 +363,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		EntityService.userSrv.getMe().then(function(response) {
 			vm.user = response.data;
 		});
-		EntityService.filleSrv.getBestGirlPerPosition(3).then(function(response) {
+		EntityService.filleSrv.getBestGirlPerPosition(vm.bestGirlPerPositionTop).then(function(response) {
 			vm.bestGirlsPerPosition = response.data;
 		});
 	}

@@ -2,16 +2,18 @@ package mav.com.hheroes.services.dtos;
 
 import java.util.List;
 
+import mav.com.hheroes.domain.FavoritePosition;
+
 public class BestGirlPerPositionDTO {
-	private String position;
+	private FavoritePosition position;
 	
 	private List<FilleLightDTO> filles;
 
-	public String getPosition() {
+	public FavoritePosition getPosition() {
 		return position;
 	}
 
-	public void setPosition(String position) {
+	public void setPosition(FavoritePosition position) {
 		this.position = position;
 	}
 

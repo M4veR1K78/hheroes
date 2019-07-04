@@ -2,6 +2,7 @@ package mav.com.hheroes.services.mappers;
 
 import mav.com.hheroes.domain.Boss;
 import mav.com.hheroes.domain.Experience;
+import mav.com.hheroes.domain.FavoritePosition;
 import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.domain.Hero;
 import mav.com.hheroes.domain.Rarity;
@@ -84,7 +85,7 @@ public class DomainMapper {
 			fille.setCurrentAff(dto.getAffection().getCurrent());
 			fille.setAffLeftNextLevel(dto.getAffection().getLeft());
 			fille.setExpLeftNextLevel(dto.getXp().getLeft());
-			fille.setFavoritePosition(dto.getPosition());
+			fille.setFavoritePosition(FavoritePosition.ofImage(dto.getPosition()));
 			fille.setMaxed(dto.getAffection().isMaxed());
 			fille.setUpgradable(dto.isUpgradable());
 			fille.setRarity(Rarity.valueOfType(dto.getRarity()));

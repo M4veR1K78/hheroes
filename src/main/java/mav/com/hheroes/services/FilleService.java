@@ -171,6 +171,8 @@ public class FilleService {
 					dto.setPosition(entry.getKey());
 					dto.setFilles(entry.getValue());
 					return dto;
-				}).collect(Collectors.toList());
+				})
+				.sorted(Comparator.comparing(bgp -> bgp.getPosition().getNom()))
+				.collect(Collectors.toList());
 	}
 }
