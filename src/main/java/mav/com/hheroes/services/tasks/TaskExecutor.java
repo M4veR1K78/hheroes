@@ -255,7 +255,7 @@ public class TaskExecutor {
 			.sorted(Comparator.comparing(ChampionDTO::getId))
 			.forEach(champion -> {
 				try {
-					logger.info("Fighiting champion " + champion.getId() + ": " + champion.getName());
+					logger.info("Fighting champion " + champion.getId() + ": " + champion.getName());
 					championService.fightChampion(champion.getId(), Currency.TICKET, login);
 				} catch (IOException e) {
 					logger.error("An error occured while fighting the champion", e);

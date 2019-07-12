@@ -43,6 +43,7 @@ public class ChampionService {
 						try {
 							return new ObjectMapper().readValue(championJson, ChampionDataDTO.class);
 						} catch (IOException e) {
+							e.printStackTrace();
 							return null;
 						}
 					})
