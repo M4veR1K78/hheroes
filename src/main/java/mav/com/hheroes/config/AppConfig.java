@@ -24,7 +24,8 @@ public class AppConfig {
 	    		"/boss/*", 
 	    		"/hero/*",
 	    		"/tower/*",
-	    		"/arena/*");
+	    		"/arena/*",
+	    		"/champion/*");
 	    registration.setName("authFilter");
 	    return registration;
 	} 

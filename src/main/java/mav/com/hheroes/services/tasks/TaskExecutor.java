@@ -2,11 +2,12 @@ package mav.com.hheroes.services.tasks;
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -21,15 +22,19 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import mav.com.hheroes.domain.Currency;
 import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.domain.Opponent;
 import mav.com.hheroes.services.ArenaService;
 import mav.com.hheroes.services.BossService;
+import mav.com.hheroes.services.ChampionService;
 import mav.com.hheroes.services.FilleService;
 import mav.com.hheroes.services.GameService;
 import mav.com.hheroes.services.MissionService;
 import mav.com.hheroes.services.TowerFameService;
 import mav.com.hheroes.services.UserService;
+import mav.com.hheroes.services.dtos.ChampionDTO;
+import mav.com.hheroes.services.dtos.ChampionDataDTO;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.UserDTO;
 import mav.com.hheroes.services.dtos.response.ResponseDTO;
@@ -53,6 +58,8 @@ public class TaskExecutor {
 	private ArenaService arenaService = new ArenaService(gameService);
 
 	private TowerFameService towerService = new TowerFameService(gameService);
+	
+	private ChampionService championService = new ChampionService(gameService);
 
 	@Resource
 	private BossService bossService;
@@ -233,6 +240,27 @@ public class TaskExecutor {
 		} catch (IOException e) {
 			logger.error("Erreur lors du combat de league", e);
 		}
+	}
+	
+	@Scheduled(cron = "${hheroes.cronDoChampion}")
+	public void doChampionBattle() throws AuthenticationException {
+		if (!gameService.isConnected(login)) {
+			logger.info("Batch doPachinko login");
+			gameService.login(login, password);
+		}
+		
+		championService.getAllChampions(login).stream()
+			.filter(ChampionDataDTO::isActif)
+			.map(ChampionDataDTO::getChampion)
+			.sorted(Comparator.comparing(ChampionDTO::getId))
+			.forEach(champion -> {
+				try {
+					logger.info("Fighiting champion " + champion.getId() + ": " + champion.getName());
+					championService.fightChampion(champion.getId(), Currency.TICKET, login);
+				} catch (IOException e) {
+					logger.error("An error occured while fighting the champion", e);
+				}
+			});
 	}
 
 	@PreDestroy

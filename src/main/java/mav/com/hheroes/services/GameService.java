@@ -45,6 +45,7 @@ public class GameService {
 	private static final String URL_LOGIN = URL_HHEROES + "/phoenix-ajax.php";
 	private static final String URL_ACTION = URL_HHEROES + "/ajax.php";
 	private static final String URL_TOWER_OF_FAME = URL_HHEROES + "/leaderboard.html?tab=leagues";
+	private static final String URL_CHAMPIONS = URL_HHEROES + "/champions";
 
 	public static final String COOKIES = "cookies";
 	public static final String LANGUAGE = "lang";
@@ -245,6 +246,10 @@ public class GameService {
 	public Document getBattleForArena(int arena, String login) throws IOException {
 		return getPage(URL_BATTLE + "?id_arena=" + arena, login);
 	}
+	
+	public Document getChampionArena(int championId, String login) throws IOException {
+		return getPage(URL_CHAMPIONS + "/" + championId, login);
+	}
 
 	/**
 	 * Récupère la page de combat pour une league.
@@ -335,22 +340,12 @@ public class GameService {
 		return new ObjectMapper().readValue(res.body(), StatUpdateResponseDTO.class);
 	}
 	
-	public ChampionResponseDTO doChampionBattle(Currency currency, String login) throws IOException {
+	public ChampionResponseDTO doChampionBattle(Integer championId, Currency currency, String login) throws IOException {
 		Map<String, String> data = new HashMap<>();
 		data.put("class", "TeamBattle");
 		data.put("battle_type", "champion");
 		data.put("currency", currency.toString());
-		data.put("defender_id", "1");
-		data.put("attacker[team][]", "17");
-		data.put("attacker[team][]", "838868621");
-		data.put("attacker[team][]", "1850048");
-		data.put("attacker[team][]", "986125");
-		data.put("attacker[team][]", "127");
-		data.put("attacker[team][]", "1");
-		data.put("attacker[team][]", "21");
-		data.put("attacker[team][]", "2914195");
-		data.put("attacker[team][]", "1800186");
-		data.put("attacker[team][]", "18");
+		data.put("defender_id", championId.toString());
 		
 		Response res = doPost(URL_ACTION, login, data);
 		return new ObjectMapper().readValue(res.body(), ChampionResponseDTO.class);
