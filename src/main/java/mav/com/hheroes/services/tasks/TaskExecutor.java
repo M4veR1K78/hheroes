@@ -251,6 +251,7 @@ public class TaskExecutor {
 		
 		championService.getAllChampions(login).stream()
 			.filter(ChampionDataDTO::isActif)
+			.filter(ChampionDataDTO::hasGirl)
 			.map(ChampionDataDTO::getChampion)
 			.sorted(Comparator.comparing(ChampionDTO::getId))
 			.forEach(champion -> {
