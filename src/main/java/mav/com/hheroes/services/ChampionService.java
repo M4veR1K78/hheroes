@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ public class ChampionService {
 	private GameService gameService;
 
 	private List<Integer> championIds = Arrays.asList(1, 2, 3, 4, 5, 6);
-	
+
 	public ChampionService(GameService gameService) {
 		this.gameService = gameService;
 	}
@@ -36,23 +38,24 @@ public class ChampionService {
 			try {
 				Document champions = gameService.getChampionArena(championId, login);
 				champions.select("script").stream().map(script -> script.html())
-					.filter(html -> html.contains("var championData = "))
-					.findFirst()
-					.map(line -> line.replaceAll("^.* = (.+);\\n.+", "$1"))
-					.map(championJson -> {
-						try {
-							return new ObjectMapper().readValue(championJson, ChampionDataDTO.class);
-						} catch (IOException e) {
-							e.printStackTrace();
-							return null;
-						}
-					})
-					.ifPresent(liste::add);
+						.filter(html -> html.contains("var championData = ")).findFirst()
+						.map(line -> line.replaceAll("^.* = (.+);\\n.+", "$1")).map(championJson -> {
+							try {
+								return new ObjectMapper().readValue(championJson, ChampionDataDTO.class);
+							} catch (IOException e) {
+								e.printStackTrace();
+								return null;
+							}
+						}).ifPresent(liste::add);
 			} catch (IOException e) {
 				e.printStackTrace();
-			}			
+			}
 		});
-		
+
 		return liste;
+	}
+
+	public void setChampionIds(String[] championsIds) {
+		this.championIds = Stream.of(championsIds).map(Integer::valueOf).collect(Collectors.toList());
 	}
 }

@@ -78,6 +78,9 @@ public class TaskExecutor {
 
 	@Value("${hheroes.league}")
 	private Integer league;
+	
+	@Value("${hheroes.championIds}")
+	private String[] championIds;
 
 	private Map<Integer, SchedulerInfo> threads = new HashMap<>();
 
@@ -248,6 +251,8 @@ public class TaskExecutor {
 			logger.info("Batch doPachinko login");
 			gameService.login(login, password);
 		}
+		
+		championService.setChampionIds(championIds);
 		
 		championService.getAllChampions(login).stream()
 			.filter(ChampionDataDTO::isActif)
