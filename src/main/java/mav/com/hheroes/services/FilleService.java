@@ -13,10 +13,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +33,7 @@ public class FilleService {
 
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@Resource
+	@Autowired
 	private GameService gameService;
 
 	public static boolean autoCollect;

@@ -6,10 +6,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class UserService {
 	@Value("${security.key}")
 	private String securityKey;
 
-	@Resource
+	@Autowired
 	private UserRepository userRepository;
 
 	public User create(User user) {

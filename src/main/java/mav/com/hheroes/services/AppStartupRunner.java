@@ -1,7 +1,6 @@
 package mav.com.hheroes.services;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -10,10 +9,10 @@ import mav.com.hheroes.services.tasks.TaskManager;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
-	@Resource
+	@Autowired
 	private UserService userService;
 	
-	@Resource
+	@Autowired
 	private TaskManager taskManager;
 	
 	@Override

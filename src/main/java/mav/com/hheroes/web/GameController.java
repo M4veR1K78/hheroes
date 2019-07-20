@@ -4,9 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +27,13 @@ import mav.com.hheroes.services.exceptions.AuthenticationException;
 @RestController
 @RequestMapping("/")
 public class GameController {
-	@Resource
+	@Autowired
 	private GameService gameService;
 
-	@Resource
+	@Autowired
 	private UserService userService;
 
-	@Resource
+	@Autowired
 	private HttpSession httpSession;
 
 	@PostMapping(value = "/login")

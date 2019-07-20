@@ -3,9 +3,9 @@ package mav.com.hheroes.web;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,10 +20,10 @@ import mav.com.hheroes.services.exceptions.ObjectNotFoundException;
 @RestController
 @RequestMapping("/boss")
 public class BossController {
-	@Resource
+	@Autowired
 	private BossService bossService;
 	
-	@Resource
+	@Autowired
 	private HttpSession httpSession;
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)

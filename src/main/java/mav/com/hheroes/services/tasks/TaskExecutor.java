@@ -14,9 +14,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -61,10 +61,10 @@ public class TaskExecutor {
 	
 	private ChampionService championService = new ChampionService(gameService);
 
-	@Resource
+	@Autowired
 	private BossService bossService;
 
-	@Resource
+	@Autowired
 	private UserService userService;
 
 	@Value("${hheroes.login}")

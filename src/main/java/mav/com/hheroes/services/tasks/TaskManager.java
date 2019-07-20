@@ -9,9 +9,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ import mav.com.hheroes.services.dtos.UserDTO;
 public class TaskManager {
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@Resource
+	@Autowired
 	private FilleService filleService;
 
 	@Value("${hheroes.rateCollectSalary}")

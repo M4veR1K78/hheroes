@@ -5,8 +5,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
@@ -20,9 +18,6 @@ import mav.com.hheroes.services.dtos.CadeauDTO;
 
 @Service
 public class ShopService {
-	@Resource
-	private GameService gameService;
-	
 	public List<Cadeau> getCadeauAvailable(Document shop) {
 		shop.outputSettings().escapeMode(EscapeMode.base);
 		shop.outputSettings().charset(Charset.defaultCharset());

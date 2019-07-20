@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import javax.annotation.Resource;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +19,7 @@ import mav.com.hheroes.services.mappers.DomainMapper;
 
 @Service
 public class HeroService {
-	@Resource
+	@Autowired
 	private GameService gameService;
 
 	public Hero getHero(String login) throws IOException {

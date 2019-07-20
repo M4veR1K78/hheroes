@@ -3,7 +3,6 @@ package mav.com.hheroes.web;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class FilleController
 	@Autowired
 	private FilleService filleService;
 		
-	@Resource
+	@Autowired
 	private HttpSession httpSession;
 	
 	@GetMapping

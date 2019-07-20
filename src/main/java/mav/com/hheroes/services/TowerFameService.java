@@ -5,16 +5,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Opponent;
 
 @Service
 public class TowerFameService {
-	@Resource
+	@Autowired
 	private GameService gameService;
 	
 	public TowerFameService(GameService gameService) {

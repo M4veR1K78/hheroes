@@ -2,7 +2,6 @@ package mav.com.hheroes.web;
 
 import java.io.IOException;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class HeroController {
 	@Autowired
 	private HeroService heroService;
 	
-	@Resource
+	@Autowired
 	private HttpSession httpSession;
 	
 	@GetMapping

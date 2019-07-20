@@ -7,9 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mav.com.hheroes.domain.Boss;
@@ -22,10 +21,10 @@ import mav.com.hheroes.services.mappers.DomainMapper;
 public class BossService {
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@Resource
+	@Autowired
 	private GameService gameService;
 
-	@Resource
+	@Autowired
 	private BossRepository bossRepository;
 
 	public BossService(GameService gameService) {
