@@ -70,6 +70,11 @@
 								<outputDirectory>deployments</outputDirectory>
 								<warName>hheroes</warName>
 								<!-- <warName>ROOT</warName> http://wotan-anthavio.rhcloud.com/ -->
+								<archive>
+									<manifestEntries>
+										<Dependencies>jdk.unsupported</Dependencies>
+									</manifestEntries>
+								</archive>
 							</configuration>
 						</plugin>
 					</plugins>
