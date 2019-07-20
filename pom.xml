@@ -68,8 +68,8 @@
 							<artifactId>maven-war-plugin</artifactId>
 							<configuration>
 								<outputDirectory>deployments</outputDirectory>
-								<warName>hheroes</warName>
-								<!-- <warName>ROOT</warName> http://wotan-anthavio.rhcloud.com/ -->
+<!-- 								<warName>hheroes</warName> -->
+								<warName>ROOT</warName>
 								<archive>
 									<manifestEntries>
 										<Dependencies>jdk.unsupported</Dependencies>
