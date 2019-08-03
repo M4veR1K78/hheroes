@@ -2,6 +2,7 @@ package mav.com.hheroes.services.tasks;
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,24 +14,28 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import mav.com.hheroes.domain.Currency;
 import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.domain.Opponent;
 import mav.com.hheroes.services.ArenaService;
 import mav.com.hheroes.services.BossService;
+import mav.com.hheroes.services.ChampionService;
 import mav.com.hheroes.services.FilleService;
 import mav.com.hheroes.services.GameService;
 import mav.com.hheroes.services.MissionService;
 import mav.com.hheroes.services.TowerFameService;
 import mav.com.hheroes.services.UserService;
+import mav.com.hheroes.services.dtos.ChampionDTO;
+import mav.com.hheroes.services.dtos.ChampionDataDTO;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.UserDTO;
 import mav.com.hheroes.services.dtos.response.ResponseDTO;
@@ -54,11 +59,13 @@ public class ScheduledTaskExecutor {
 	private ArenaService arenaService = new ArenaService(gameService);
 
 	private TowerFameService towerService = new TowerFameService(gameService);
+	
+	private ChampionService championService = new ChampionService(gameService);
 
-	@Resource
+	@Autowired
 	private BossService bossService;
 
-	@Resource
+	@Autowired
 	private UserService userService;
 
 	@Value("${hheroes.login}")
@@ -72,6 +79,9 @@ public class ScheduledTaskExecutor {
 
 	@Value("${hheroes.league}")
 	private Integer league;
+	
+	@Value("${hheroes.championIds}")
+	private String[] championIds;
 
 	private Map<Integer, SchedulerInfo> threads = new HashMap<>();
 
@@ -83,7 +93,7 @@ public class ScheduledTaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronCollectSalary}")
 	public void collectSalary() throws IOException, AuthenticationException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch collectSalary login");
 			gameService.login(login, password);
 		}
@@ -133,7 +143,7 @@ public class ScheduledTaskExecutor {
 	@Async
 	@Scheduled(cron = "${hheroes.cronDoMissions}")
 	public void doMissions() throws IOException, AuthenticationException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doMissions login");
 			gameService.login(login, password);
 		}
@@ -149,7 +159,7 @@ public class ScheduledTaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronDoBoss}")
 	public void doBoss() throws IOException, AuthenticationException, ObjectNotFoundException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doBoss login");
 			gameService.login(login, password);
 		}
@@ -172,7 +182,7 @@ public class ScheduledTaskExecutor {
 	 */
 	@Scheduled(cron = "${hheroes.cronDoArena}")
 	public void doArena() throws IOException, AuthenticationException, ObjectNotFoundException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doArene login");
 			gameService.login(login, password);
 		}
@@ -193,7 +203,7 @@ public class ScheduledTaskExecutor {
 
 	@Scheduled(fixedDelayString = "${hheroes.cronDoPachinko}")
 	public void doPachinko() throws AuthenticationException, IOException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doPachinko login");
 			gameService.login(login, password);
 		}
@@ -204,7 +214,7 @@ public class ScheduledTaskExecutor {
 
 	@Scheduled(cron = "${hheroes.cronDoLeagueBattle}")
 	public void doLeagueBattle() throws AuthenticationException, IOException {
-		if (gameService.getCookies(login) == null) {
+		if (!gameService.isConnected(login)) {
 			logger.info("Batch doPachinko login");
 			gameService.login(login, password);
 		}
@@ -234,6 +244,30 @@ public class ScheduledTaskExecutor {
 		} catch (IOException e) {
 			logger.error("Erreur lors du combat de league", e);
 		}
+	}
+	
+	@Scheduled(cron = "${hheroes.cronDoChampion}")
+	public void doChampionBattle() throws AuthenticationException {
+		if (!gameService.isConnected(login)) {
+			logger.info("Batch doPachinko login");
+			gameService.login(login, password);
+		}
+		
+		championService.setChampionIds(championIds);
+		
+		championService.getAllChampions(login).stream()
+			.filter(ChampionDataDTO::isActif)
+			.filter(ChampionDataDTO::hasGirl)
+			.map(ChampionDataDTO::getChampion)
+			.sorted(Comparator.comparing(ChampionDTO::getId))
+			.forEach(champion -> {
+				try {
+					logger.info("Fighting champion " + champion.getId() + ": " + champion.getName());
+					championService.fightChampion(champion.getId(), Currency.TICKET, login);
+				} catch (IOException e) {
+					logger.error("An error occured while fighting the champion", e);
+				}
+			});
 	}
 
 	@PreDestroy

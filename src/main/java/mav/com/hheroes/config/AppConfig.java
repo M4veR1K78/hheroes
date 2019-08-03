@@ -1,8 +1,8 @@
 package mav.com.hheroes.config;
 
-import javax.annotation.Resource;
 import javax.servlet.Filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import mav.com.hheroes.web.filter.AuthenticationFilter;
 
 @Configuration
 public class AppConfig {
-	@Resource
+	@Autowired
 	private AuthenticationFilter filter;
 	
 	@Bean
@@ -25,7 +25,8 @@ public class AppConfig {
 	    		"/boss/*", 
 	    		"/hero/*",
 	    		"/tower/*",
-	    		"/arena/*");
+	    		"/arena/*",
+	    		"/champion/*");
 	    registration.setName("authFilter");
 	    return registration;
 	} 

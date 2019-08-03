@@ -149,3 +149,11 @@ input:checked+.slider:before {
 .rewards li div {
 	display: inline-block;
 }
+
+.topCard .box-header {
+	padding: 5px;
+}
+
+.topCard .products-list>.item {
+	padding: 7px 0;
+}

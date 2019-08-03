@@ -13,15 +13,16 @@ import org.jsoup.parser.Parser;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import mav.com.hheroes.domain.Currency;
 import mav.com.hheroes.domain.Mission;
 import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 import mav.com.hheroes.services.dtos.StatUpdateResponseDTO;
+import mav.com.hheroes.services.dtos.response.ChampionResponseDTO;
 import mav.com.hheroes.services.dtos.response.ResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 
@@ -44,10 +45,10 @@ public class GameService {
 	private static final String URL_LOGIN = URL_HHEROES + "/phoenix-ajax.php";
 	private static final String URL_ACTION = URL_HHEROES + "/ajax.php";
 	private static final String URL_TOWER_OF_FAME = URL_HHEROES + "/leaderboard.html?tab=leagues";
+	private static final String URL_CHAMPIONS = URL_HHEROES + "/champions";
 
 	public static final String COOKIES = "cookies";
 	public static final String LANGUAGE = "lang";
-	private static final String STAY_ONLINE = "stay_online";
 	private static final String DEFAULT_LOCALE = "fr-FR";
 	public static final String LOGIN = "login";
 
@@ -61,12 +62,10 @@ public class GameService {
 
 	public Map<String, String> login(String mail, String password) throws AuthenticationException {
 		Response res;
-		Map<String, String> reqCookies = Map.ofEntries(
-				Map.entry("HAPBK", "web5"), 
-				Map.entry("HH_SESS_13", "g99hdimo85qi7j6vvt5acv5qsd"), 
-				Map.entry("age_verification", "1"),
-				Map.entry("lang", "fr"),
-				Map.entry("member_guid", "5777370F-B25A-4CA9-9BF4-C2897AE2B734"));
+
+		Map<String, String> reqCookies = new HashMap<>();
+		reqCookies.put("age_verification", "1");
+		
 		try {
 			res = Jsoup.connect(URL_LOGIN)
 					.data("login", mail)
@@ -84,12 +83,11 @@ public class GameService {
 			throw new AuthenticationException("L'authentification a échoué", e);
 		}
 		
-//		if (StringUtils.isEmpty(res.cookie(STAY_ONLINE))) {
-//			throw new AuthenticationException("Les identifiants n'ont pas réussi à authentifier l'utilisateur");
-//		}
+		if (res.body().contains("{\"success\":false}")) {
+			throw new AuthenticationException("Les identifiants n'ont pas réussi à authentifier l'utilisateur");
+		}
 
-//		setCookies(mail, res.cookies());
-		setCookies(mail, reqCookies);
+		setCookies(mail, res.cookies());
 		return getCookies(mail);
 	}
 
@@ -134,15 +132,15 @@ public class GameService {
 			Map<String, String> c = this.cookies.get(login);
 			
 			if (c != null) {
-				c.putAll(Map.copyOf(cookies));
+				c.putAll(cookies);
 			} else {
 				this.cookies.put(login, cookies);
 			}
 		}
 	}
 
-	public boolean isConnected() {
-		return cookies != null;
+	public boolean isConnected(String login) {
+		return cookies.get(login) != null;
 	}
 
 	public String getLocale() {
@@ -249,6 +247,10 @@ public class GameService {
 	public Document getBattleForArena(int arena, String login) throws IOException {
 		return getPage(URL_BATTLE + "?id_arena=" + arena, login);
 	}
+	
+	public Document getChampionArena(int championId, String login) throws IOException {
+		return getPage(URL_CHAMPIONS + "/" + championId, login);
+	}
 
 	/**
 	 * Récupère la page de combat pour une league.
@@ -338,6 +340,17 @@ public class GameService {
 		Response res = doPost(URL_ACTION, login, data);
 		return new ObjectMapper().readValue(res.body(), StatUpdateResponseDTO.class);
 	}
+	
+	public ChampionResponseDTO doChampionBattle(Integer championId, Currency currency, String login) throws IOException {
+		Map<String, String> data = new HashMap<>();
+		data.put("class", "TeamBattle");
+		data.put("battle_type", "champion");
+		data.put("currency", currency.toString());
+		data.put("defender_id", championId.toString());
+		
+		Response res = doPost(URL_ACTION, login, data);
+		return new ObjectMapper().readValue(res.body(), ChampionResponseDTO.class);
+	}
 
 	/**
 	 * Fait une requête POST.
@@ -364,6 +377,7 @@ public class GameService {
 				.referrer(URL_HHEROES)
 				.ignoreContentType(true)
 				.execute();
+		
 		setCookies(login, res.cookies());
 		return res;
 	}

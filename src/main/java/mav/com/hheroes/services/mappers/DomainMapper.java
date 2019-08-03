@@ -2,12 +2,14 @@ package mav.com.hheroes.services.mappers;
 
 import mav.com.hheroes.domain.Boss;
 import mav.com.hheroes.domain.Experience;
+import mav.com.hheroes.domain.FavoritePosition;
 import mav.com.hheroes.domain.Fille;
 import mav.com.hheroes.domain.Hero;
 import mav.com.hheroes.domain.Rarity;
 import mav.com.hheroes.domain.Skill;
 import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.FilleDTO;
+import mav.com.hheroes.services.dtos.FilleLightDTO;
 import mav.com.hheroes.services.dtos.HeroDTO;
 
 public class DomainMapper {
@@ -83,12 +85,30 @@ public class DomainMapper {
 			fille.setCurrentAff(dto.getAffection().getCurrent());
 			fille.setAffLeftNextLevel(dto.getAffection().getLeft());
 			fille.setExpLeftNextLevel(dto.getXp().getLeft());
-			fille.setFavoritePosition(dto.getPosition());
+			fille.setFavoritePosition(FavoritePosition.ofImage(dto.getPosition()));
 			fille.setMaxed(dto.getAffection().isMaxed());
 			fille.setUpgradable(dto.isUpgradable());
 			fille.setRarity(Rarity.valueOfType(dto.getRarity()));
 			return fille;
 		}
 		return null;
+	}
+	
+	public static FilleLightDTO asFilleLightDTO(Fille fille) {
+		if (fille == null) {
+			return null;
+		}
+		
+		FilleLightDTO dto = new FilleLightDTO();
+		dto.setAvatar(fille.getAvatar());
+		dto.setLevel(fille.getLevel());
+		dto.setPseudo(fille.getPseudo());
+		dto.setTypeId(fille.getTypeId());
+		dto.setRarity(fille.getRarity());
+		dto.setType(fille.getType());
+		dto.setExpertiseBaseValue(fille.getExpertiseBaseValue());
+		dto.setExpertiseRanking(fille.getExpertiseRanking());
+		
+		return dto;
 	}
 }

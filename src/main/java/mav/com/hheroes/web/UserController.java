@@ -1,8 +1,8 @@
 package mav.com.hheroes.web;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +17,13 @@ import mav.com.hheroes.services.tasks.TaskManager;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-	@Resource
+	@Autowired
 	private UserService userService;
 	
-	@Resource
+	@Autowired
 	private HttpSession httpSession;
 	
-	@Resource
+	@Autowired
 	private TaskManager taskManager;
 	
 	@GetMapping("/me")

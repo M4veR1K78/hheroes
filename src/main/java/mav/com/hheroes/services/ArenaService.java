@@ -5,11 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Resource;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -23,7 +22,7 @@ import mav.com.hheroes.services.dtos.response.ResponseDTO;
 @Service
 public class ArenaService {
 	private static final int NB_ARENA = 3;
-	@Resource
+	@Autowired
 	private GameService gameService;
 	
 	public ArenaService(GameService gameService) {

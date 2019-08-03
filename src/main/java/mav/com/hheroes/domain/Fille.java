@@ -30,7 +30,7 @@ public class Fille {
 
 	private Double salaryPerHour;
 
-	private String favoritePosition;
+	private FavoritePosition favoritePosition;
 
 	private Double hardcore;
 
@@ -116,11 +116,11 @@ public class Fille {
 		this.salaryPerHour = salaryPerHour;
 	}
 
-	public String getFavoritePosition() {
+	public FavoritePosition getFavoritePosition() {
 		return favoritePosition;
 	}
 
-	public void setFavoritePosition(String favoritePosition) {
+	public void setFavoritePosition(FavoritePosition favoritePosition) {
 		this.favoritePosition = favoritePosition;
 	}
 

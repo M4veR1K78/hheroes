@@ -116,6 +116,22 @@
 						</div>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col">
+						<div class="callout callout-info">
+			                <h4>Combat contre les champions</h4>
+			
+			                <p>Savoir quelle fille est la meilleure dans sa position permet de prioriser son évolution afin de composer les meilleures équipes.
+			                Veuillez vous référer aux tableaux des top {{vm.bestGirlPerPositionTop}} par position ci-dessous.
+			                </p>
+			            </div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-3" ng-repeat="obj in vm.bestGirlsPerPosition">
+						<girl-best-position position="obj.position" filles="obj.filles" class="topCard"></girl-best-position>
+					</div>
+				</div>	
 			</section>
 		</div>
 	</div>
