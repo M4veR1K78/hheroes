@@ -3,6 +3,8 @@ package mav.com.hheroes.services.dtos;
 import mav.com.hheroes.domain.Rarity;
 
 public class FilleLightDTO {
+	private Integer id;
+	
 	private String pseudo;
 	
 	private String avatar;
@@ -81,5 +83,13 @@ public class FilleLightDTO {
 
 	public void setExpertiseRanking(Integer expertiseRanking) {
 		this.expertiseRanking = expertiseRanking;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}	
 }

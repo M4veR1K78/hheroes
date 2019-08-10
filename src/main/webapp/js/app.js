@@ -316,7 +316,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		charme: { libelle: 'Charme', field: 'charme', id: 2},
 		savoirFaire: { libelle: 'Savoir-faire', field: 'savoirFaire', id: 3}
 	};
-	vm.bestGirlPerPositionTop = 3;
+	vm.bestGirlPerPositionTop = 4;
 	
 	// méthodes
 	vm.openModalAvatar = openModalAvatar;

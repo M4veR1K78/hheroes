@@ -1,4 +1,4 @@
-package mav.com.hheroes.services.dtos;
+package mav.com.hheroes.services.dtos.champion;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -84,6 +84,5 @@ public class ChampionDTO {
 		public void setMax(Integer max) {
 			this.max = max;
 		}
-
 	}
 }

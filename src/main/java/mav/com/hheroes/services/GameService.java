@@ -1,13 +1,17 @@
 package mav.com.hheroes.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.HttpConnection.KeyVal;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +26,10 @@ import mav.com.hheroes.services.dtos.BossDTO;
 import mav.com.hheroes.services.dtos.JoueurDTO;
 import mav.com.hheroes.services.dtos.SalaryDTO;
 import mav.com.hheroes.services.dtos.StatUpdateResponseDTO;
-import mav.com.hheroes.services.dtos.response.ChampionResponseDTO;
+import mav.com.hheroes.services.dtos.champion.ChampionDataDTO;
+import mav.com.hheroes.services.dtos.champion.GirlTeamDTO;
+import mav.com.hheroes.services.dtos.champion.responses.ChampionResponseDTO;
+import mav.com.hheroes.services.dtos.champion.responses.DraftResponseDTO;
 import mav.com.hheroes.services.dtos.response.ResponseDTO;
 import mav.com.hheroes.services.exceptions.AuthenticationException;
 
@@ -340,15 +347,41 @@ public class GameService {
 		return new ObjectMapper().readValue(res.body(), StatUpdateResponseDTO.class);
 	}
 	
-	public ChampionResponseDTO doChampionBattle(Integer championId, Currency currency, String login) throws IOException {
-		Map<String, String> data = new HashMap<>();
-		data.put("class", "TeamBattle");
-		data.put("battle_type", "champion");
-		data.put("currency", currency.toString());
-		data.put("defender_id", championId.toString());
+	public ChampionResponseDTO fightChampion(ChampionDataDTO champion, Currency currency, String login) throws IOException {
+		List<org.jsoup.Connection.KeyVal> data = new ArrayList<>();
+
+		data.add(KeyVal.create("class", "TeamBattle"));
+		data.add(KeyVal.create("battle_type", "champion"));
+		data.add(KeyVal.create("currency", currency.toString()));
+		data.add(KeyVal.create("defender_id", champion.getChampion().getId().toString()));
+		champion.getTeam().forEach(team -> data.add(KeyVal.create("attacker[team][]", team.getIdGirl().toString())));
 		
 		Response res = doPost(URL_ACTION, login, data);
 		return new ObjectMapper().readValue(res.body(), ChampionResponseDTO.class);
+	}
+	
+	public ResponseDTO doChampionTeamReorder(ChampionDataDTO champion, String login) throws IOException {
+		List<org.jsoup.Connection.KeyVal> data = new ArrayList<>();
+		data.add(KeyVal.create("class", "Champions"));
+		data.add(KeyVal.create("namespace", "h\\Champions"));
+		data.add(KeyVal.create("id_champion", champion.getChampion().getId().toString()));
+		data.add(KeyVal.create("action", "team_reorder"));
+		champion.getTeam().forEach(team -> data.add(KeyVal.create("team_order[]", team.getIdGirl().toString())));
+
+		Response res = doPost(URL_ACTION, login, data);
+		return new ObjectMapper().readValue(res.body(), ResponseDTO.class);
+	}
+	
+	public DraftResponseDTO newChampionDraft(Integer championId, List<GirlTeamDTO> teamToKeep, String login) throws IOException {
+		List<org.jsoup.Connection.KeyVal> data = new ArrayList<>();
+		data.add(KeyVal.create("class", "Champions"));
+		data.add(KeyVal.create("namespace", "h\\Champions"));
+		data.add(KeyVal.create("id_champion", championId.toString()));
+		data.add(KeyVal.create("action", "team_draft"));
+		teamToKeep.forEach(team -> data.add(KeyVal.create("girls_to_keep[]", team.getIdGirl().toString())));
+		
+		Response res = doPost(URL_ACTION, login, data);
+		return new ObjectMapper().readValue(res.body(), DraftResponseDTO.class);
 	}
 
 	/**
@@ -364,6 +397,33 @@ public class GameService {
 	 * @throws IOException
 	 */
 	private Response doPost(String url, String login, Map<String, String> data) throws IOException {
+		Map<String, String> userCookies = getCookies(login);
+		if (userCookies == null) {
+			userCookies = new HashMap<>();
+		}
+
+		Response res = Jsoup.connect(url)
+				.cookies(userCookies)
+				.data(data)
+				.method(Method.POST)
+				.referrer(URL_HHEROES)
+				.ignoreContentType(true)
+				.execute();
+		
+		setCookies(login, res.cookies());
+		return res;
+	}
+	
+	/**
+	 * 
+	 * @param url
+	 * @param login
+	 * @param data
+	 * @return
+	 * @throws IOException
+	 * @see {@link #doPost(String, String, Map)}
+	 */
+	private Response doPost(String url, String login, Collection<org.jsoup.Connection.KeyVal> data) throws IOException {
 		Map<String, String> userCookies = getCookies(login);
 		if (userCookies == null) {
 			userCookies = new HashMap<>();

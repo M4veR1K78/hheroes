@@ -1,4 +1,4 @@
-package mav.com.hheroes.services.dtos;
+package mav.com.hheroes.services.dtos.champion;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -16,6 +16,8 @@ public class ChampionDataDTO {
 	private TimerDTO timers;
 	
 	private RewardDTO reward;
+	
+	private List<GirlTeamDTO> team;
 
 	public boolean isActif() {
 		return timers.getChampionRest() == null && timers.getTeamRest() == null;
@@ -31,6 +33,14 @@ public class ChampionDataDTO {
 
 	public TimerDTO getTimers() {
 		return timers;
+	}
+	
+	public List<GirlTeamDTO> getTeam() {
+		return team;
+	}
+
+	public void setTeam(List<GirlTeamDTO> team) {
+		this.team = team;
 	}
 
 	public void setTimers(Object timers) {

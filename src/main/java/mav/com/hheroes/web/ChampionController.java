@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import mav.com.hheroes.domain.Currency;
 import mav.com.hheroes.services.ChampionService;
 import mav.com.hheroes.services.GameService;
-import mav.com.hheroes.services.dtos.ChampionDataDTO;
-import mav.com.hheroes.services.dtos.response.ChampionResponseDTO;
+import mav.com.hheroes.services.dtos.champion.ChampionDataDTO;
+import mav.com.hheroes.services.dtos.champion.responses.ChampionResponseDTO;
+import mav.com.hheroes.services.dtos.response.ResponseDTO;
 
 @RestController
 @RequestMapping("/champion")
@@ -31,6 +32,11 @@ public class ChampionController {
 	@PostMapping("/{id}/fight")
 	public ChampionResponseDTO fightChampion(@PathVariable("id") Integer id, @RequestParam("currency") Currency currency) throws IOException {
 		return championService.fightChampion(id, currency, httpSession.getAttribute(GameService.LOGIN).toString());
+	}
+	
+	@PostMapping("/{id}/reorder")
+	public ResponseDTO reorderTeam(@PathVariable("id") Integer id) throws IOException {
+		return championService.reorderTeam(id, httpSession.getAttribute(GameService.LOGIN).toString());
 	}
 	
 	@GetMapping("/all")

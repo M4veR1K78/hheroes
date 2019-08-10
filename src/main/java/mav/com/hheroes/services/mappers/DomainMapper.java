@@ -100,6 +100,7 @@ public class DomainMapper {
 		}
 		
 		FilleLightDTO dto = new FilleLightDTO();
+		dto.setId(fille.getId());
 		dto.setAvatar(fille.getAvatar());
 		dto.setLevel(fille.getLevel());
 		dto.setPseudo(fille.getPseudo());
