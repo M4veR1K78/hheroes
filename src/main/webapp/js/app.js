@@ -309,7 +309,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 	vm.filles = [];
 	vm.cadeaux = [];
 	vm.bosses = [];
-	vm.bossSelected = "1";
+	vm.bossSelected = 1;
 	vm.hhUrl = conf.HHEROES_URL;
 	vm.types = {
 		hardcore: { libelle: 'Hardcore', field: 'hardcore', id: 1},
@@ -356,7 +356,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 		});
 		EntityService.bossSrv.getAll().then(function(response) {
 			vm.bosses = response.data;
-			if (vm.bosses.length) {
+			if (!vm.bossSelected && vm.bosses.length) {
 				vm.bossSelected = vm.bosses[0].id;
 			}
 		});
@@ -499,7 +499,7 @@ function IndexController($q, $uibModal, EntityService, conf, Notification) {
 				vm.hero.energyFight = 0;
 				var rewards = response.data;
 				if (rewards.length) {
-					Notification.success({ message: '<b>Butin collecté</b> :<br><ul><li> ' + rewards.join('</li><li>').replace(/\<i\>i\<\/i\>/g, '') + '</li></ul>' });
+					Notification.success({ message: '<b>Butin collecté</b> :<br><ul class="rewards"><li> ' + rewards.join('</li><li>').replace(/\<i\>i\<\/i\>/g, '') + '</li></ul>' });
 				}
 			}, function(response) {
 				console.debug(response.data);

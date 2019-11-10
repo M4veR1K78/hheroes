@@ -73,8 +73,7 @@ public class GameController {
 
 	private ResponseEntity<byte[]> returnImage(byte[] image) throws IOException {
 		if (image != null) {
-			String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(image));
-			return ResponseEntity.ok().contentType(MediaType.valueOf(contentType)).body(image);
+			return ResponseEntity.ok().body(image);
 		} else {
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
 		}

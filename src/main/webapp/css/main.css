@@ -157,3 +157,7 @@ input:checked+.slider:before {
 .topCard .products-list>.item {
 	padding: 7px 0;
 }
+
+.rewards img {
+	height: 25px;
+}

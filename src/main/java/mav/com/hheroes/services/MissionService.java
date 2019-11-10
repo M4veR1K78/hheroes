@@ -80,8 +80,7 @@ public class MissionService {
 	 * @param log
 	 * @throws IOException
 	 */
-	//@Async
-	public void doAllMissions(String login, boolean log) throws IOException {
+	public List<Mission> doAllMissions(String login, boolean log) throws IOException {
 		UUID uuid = UUID.randomUUID();
 
 		logger.info(String.format("Batch doMissions Start (id: %s)", uuid));
@@ -90,17 +89,20 @@ public class MissionService {
 		List<Mission> missions = getMissions(login);
 		missions.stream()
 				.filter(mission -> StatutMission.PRETE.equals(mission.getStatut()))
-				.forEach(mission -> {
-					ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-					scheduler.schedule(() -> {
-						try {
-							logger.info(String.format("Executing mission %s and sleeping %s secondes...", mission.getId(), mission.getDuree()));
-							acceptMission(mission, login);
-						} catch (IOException e) {
-							logger.info(e);
-						}
-					}, timer.getAndAdd(mission.getDuree() + 1), TimeUnit.SECONDS);
-				});
+				.forEach(mission -> createThreadForMission(mission, timer, login));
+		return missions;
+	}
+	
+	private void createThreadForMission(Mission mission, AtomicInteger timer, String login) {
+		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		scheduler.schedule(() -> {
+			try {
+				logger.info(String.format("Executing mission %s and sleeping %s secondes...", mission.getId(), mission.getDuree()));
+				acceptMission(mission, login);
+			} catch (IOException e) {
+				logger.info(e);
+			}
+		}, timer.getAndAdd(mission.getDuree() + 1), TimeUnit.SECONDS);
 	}
 
 	/**

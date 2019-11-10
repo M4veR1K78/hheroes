@@ -146,7 +146,8 @@ public class TaskExecutor {
 			logger.info("Batch doMissions login");
 			gameService.login(login, password);
 		}
-		missionService.doAllMissions(login, true);
+		
+		missionService.claimAllRewards(login);
 	}
 
 	/**

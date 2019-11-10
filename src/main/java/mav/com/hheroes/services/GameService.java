@@ -341,7 +341,7 @@ public class GameService {
 		Map<String, String> data = new HashMap<>();
 		data.put("class", "Hero");
 		data.put("carac", String.valueOf(carac));
-		data.put("action", "pay_up_carac");
+		data.put("action", "update_stats");
 
 		Response res = doPost(URL_ACTION, login, data);
 		return new ObjectMapper().readValue(res.body(), StatUpdateResponseDTO.class);
